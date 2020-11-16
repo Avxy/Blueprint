@@ -1,10 +1,8 @@
-var nullBook = tao;
-
 
 
 function load() {
    
-        var newick = Newick.parse("(RAFA, vamos criar 02 graficos:1(TREE:1(esteParaOgame:1),EYE:1(esteParaVisualização)))")
+        var newick = Newick.parse("(RAFA vamos criar 02 graficos:1(TREE:1(esteParaOgame:1),EYE:1(esteParaVisualização)))")
         
         var newickNodes = []
         function buildNewickNodes(node, callback) {
