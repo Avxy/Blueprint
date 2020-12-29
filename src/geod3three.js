@@ -7,7 +7,7 @@ var camera = new THREE.PerspectiveCamera(
   window.innerWidth / window.innerHeight,
   1,
   10000
-);    
+);
 camera.position.x = 0;
 camera.position.y = 1;
 camera.position.z = 275;
@@ -16,16 +16,16 @@ var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
 light.position.set(1, 3, 2).normalize();
 scene.add(light);
 
-var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
-light.position.set(-1, -3, -2).normalize();
-scene.add(light);
+// var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
+// light.position.set(-1, -3, -2).normalize();
+// scene.add(light);
 //===================================================== add Grid
 /*  var plane = new THREE.GridHelper(5000, 10);
   plane.material.color = new THREE.Color( 'white');
   scene.add(plane);*/
 
 //===================================================== add canvas
-var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+var renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.LinearToneMapping;
 document.body.appendChild(renderer.domElement);
@@ -34,22 +34,13 @@ document.body.appendChild(renderer.domElement);
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 //===================================================== add GLow
-const assetPath = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/';
+const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
 
 const cubemap = new THREE.CubeTextureLoader()
-.setPath( `${assetPath}skybox1_` )
-.load( [
-  'px.jpg',
-  'nx.jpg',
-  'py.jpg',
-  'ny.jpg',
-  'pz.jpg',
-  'nz.jpg'
-] );
+  .setPath(`${assetPath}skybox1_`)
+  .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
 
 scene.background = cubemap;
-
-
 
 var renderScene = new THREE.RenderPass(scene, camera);
 var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
@@ -78,7 +69,7 @@ composer.addPass(bloomPass);
 composer.addPass(copyShader);
 
 //===================================================== resize
-window.addEventListener("resize", function() {
+window.addEventListener("resize", function () {
   let width = window.innerWidth;
   let height = window.innerHeight;
   renderer.setSize(width, height);
@@ -129,12 +120,9 @@ function coordinateToPosition(lat, lng, radius) {
 //===================================================== d3.json
 d3.json(
   "https://raw.githubusercontent.com/baronwatts/data/master/world.json",
-  function(err, data) {
+  function (err, data) {
     //===================================================== crate canvas texturefor the globe
-    var projection = d3.geo
-      .equirectangular()
-      .translate([1024, 512])
-      .scale(326);
+    var projection = d3.geo.equirectangular().translate([1024, 512]).scale(326);
 
     var countries = topojson.feature(data, data.objects.countries);
 
@@ -147,10 +135,7 @@ d3.json(
 
     var context = canvas.node().getContext("2d");
 
-    var path = d3.geo
-      .path()
-      .projection(projection)
-      .context(context);
+    var path = d3.geo.path().projection(projection).context(context);
 
     context.strokeStyle = "white";
     context.lineWidth = 0.25;
@@ -176,7 +161,7 @@ d3.json(
     var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
     var sphereMaterial = new THREE.MeshPhongMaterial({
       map: mapTexture,
-      transparent: true,
+      transparent: false,
       opacity: 1,
       color: new THREE.Color("white")
     });

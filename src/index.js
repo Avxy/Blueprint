@@ -20,8 +20,8 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  //boxFunction();
-  fJenga();
+  boxFunction();
+  //geo();
 
   window.addEventListener("resize", onResize, false);
 
@@ -39,7 +39,7 @@ function init() {
 function update() {
   requestAnimationFrame(update);
   renderer.render(scene, camera);
-  mesh.rotation.y += 0.01;
+  //mesh.rotation.y += 0.01;
   //box2.rotation.y -= 0.01;
   //box3.rotation.y -= 0.01;
 }
