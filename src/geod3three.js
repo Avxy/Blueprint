@@ -364,14 +364,15 @@ d3.json(
     Destination(our_data);
 
     //===================================================== add Animation
-    function animate() {
-      requestAnimationFrame(animate);
+    function update() {
+      requestAnimationFrame(update);
       renderer.render(scene, camera);
+
       composer.render();
       icosahedron.rotate.y += 0.05;
       particle.rotation.x += 0.0;
       particle.rotation.y -= 0.004;
     }
-    animate();
+    update();
   }
 ); //end d3.json
