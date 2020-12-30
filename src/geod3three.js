@@ -11,7 +11,9 @@ var scene,
   particle,
   group,
   player,
-  clock;
+  clock,
+  cubemap,
+  moon;
 
 init();
 
@@ -40,9 +42,9 @@ function init() {
   camera.position.set(0, 1000, 0);
   camera.lookAt(0, 1.5, 0);
   //===================================================== add front & back lighting
-  // var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
-  // light.position.set(1, 3, 2).normalize();
-  // scene.add(light);
+  var light = new THREE.DirectionalLight(new THREE.Color("white"), 3);
+  light.position.set(1, 3, 2).normalize();
+  scene.add(light);
 
   // var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
   // light.position.set(-1, -3, -2).normalize();
@@ -51,9 +53,10 @@ function init() {
   const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
   scene.add(ambient);
 
-  const light = new THREE.DirectionalLight(0xffffff, 3);
-  light.position.set(0, 2, 1);
-  scene.add(light);
+  const ballLight = new THREE.DirectionalLight(0xffffff, 3);
+  ballLight.position.set(0, 2, 1);
+  ballLight.target = moon;
+  scene.add(ballLight.target);
   //===================================================== add Grid
   /*  var plane = new THREE.GridHelper(5000, 10);
   plane.material.color = new THREE.Color( 'white');
@@ -74,7 +77,7 @@ function init() {
   //===================================================== add cubemap
   const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
 
-  const cubemap = new THREE.CubeTextureLoader()
+  cubemap = new THREE.CubeTextureLoader()
     .setPath(`${assetPath}skybox1_`)
     .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
 
@@ -105,22 +108,26 @@ function init() {
   // composer.addPass(effectFXAA);
   // composer.addPass(bloomPass);
   // composer.addPass(copyShader);
-  //===================================================== resize
+  //===================================================== player
   //Add meshes here
   player = new THREE.Group();
   scene.add(player);
 
-  const bodyGeometry = new THREE.CylinderBufferGeometry(10, 0.3, 1.6, 20);
-  const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
-  const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
-  bodyMesh.position.y = 140;
-  bodyMesh.scale.z = 0.5;
-  player.add(bodyMesh);
+  // const bodyGeometry = new THREE.CylinderBufferGeometry(10, 0.3, 1.6, 20);
+  // const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+  // const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
+  // bodyMesh.position.y = 140;
+  // bodyMesh.scale.z = 0.5;
+  // player.add(bodyMesh);
   const headGeometry = new THREE.SphereBufferGeometry(10, 20, 15);
-  const headMesh = new THREE.Mesh(headGeometry, bodyMaterial);
+  const headMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffff00,
+    side: THREE.DoubleSide
+  });
+  const headMesh = new THREE.Mesh(headGeometry, headMaterial);
   headMesh.position.y = 140;
   player.add(headMesh);
-
+  //===================================================== camera
   cameras = [];
   cameraIndex = 0;
 
@@ -387,6 +394,27 @@ d3.json(
     // scene.add(dodecahedron);
     scene.add(icosahedron);
 
+    const ballGeometry = new THREE.SphereGeometry(72, 20, 15);
+    // const material = new THREE.MeshStandardMaterial();
+    const ballMaterial = new THREE.MeshLambertMaterial({
+      wireframe: false,
+      cubemap: cubemap
+    });
+    const sphere = new THREE.Mesh(ballGeometry, ballMaterial);
+
+    //let ball;
+
+    // for(let x=-2; x<=2; x+=200){
+    //   for(let y=-2; y<=2; y+=200){
+    //     for(let z=-2; z<=2; z+=200){
+    moon = sphere.clone();
+    // ball.position.set(x,y,z);
+    moon.position.set(800, 0, 0);
+    scene.add(moon);
+    //     }
+    //   }
+    // }
+
     //scene.fog = new THREE.Fog( 0x605050, 10, 5000 );
 
     //===================================================== add glow effect to globe
@@ -513,14 +541,14 @@ function update() {
 
   // composer.render();
   icosahedron.rotation.x += 0.001;
-  icosahedron.rotation.y += 0.001;
+  icosahedron.rotation.y += 0.0001;
   particle.rotation.x += 0.0;
-  particle.rotation.y -= 0.002;
+  particle.rotation.y -= 0.0002;
 
   const dt = clock.getDelta();
 
   if (player.userData !== undefined && player.userData.move !== undefined) {
-    player.translateZ(player.userData.move.forward * dt * 5);
+    player.translateZ(player.userData.move.forward * dt * 25);
     player.rotateY(player.userData.move.turn * dt);
   }
 
@@ -528,7 +556,7 @@ function update() {
     cameras[cameraIndex].getWorldPosition(new THREE.Vector3()),
     0.05
   );
-  const pos = icosahedron.position.clone();
+  const pos = player.position.clone();
   pos.y += 3;
   camera.lookAt(pos);
 }
