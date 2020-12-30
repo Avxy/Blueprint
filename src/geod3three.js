@@ -1,7 +1,6 @@
 var scene, camera, renderer, cube, tetrahedron, octahedron, dodecahedron, icosahedron, particle;
 
 init();
-//update();
 
 function init() {
   //===================================================== add Scene
@@ -182,7 +181,7 @@ d3.json(
       shading: THREE.FlatShading
     });
 
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 500; i++) {
       var particleMesh = new THREE.Mesh(particleGeometry, particleMaterial);
       particleMesh.position
         .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
@@ -240,21 +239,21 @@ d3.json(
     // var tetrahedronGeometry = new THREE.TetrahedronGeometry(tRADIUS, 0);
     // var octahedronGeometry = new THREE.OctahedronGeometry(oRADIUS, 0);
     // var dodecahedronGeometry = new THREE.DodecahedronGeometry(dRADIUS, 0);
-    // var icosahedronGeometry = new THREE.IcosahedronGeometry(iRADIUS, 0);
+    var icosahedronGeometry = new THREE.IcosahedronGeometry(iRADIUS, 0);
 
-    // var metaMaterial = new THREE.MeshPhongMaterial({ wireframe: true });
+    var metaMaterial = new THREE.MeshPhongMaterial({ wireframe: true });
 
     // cube = new THREE.Mesh(cubeGeometry, metaMaterial);
     // tetrahedron = new THREE.Mesh(tetrahedronGeometry, metaMaterial);
     // octahedron = new THREE.Mesh(octahedronGeometry, metaMaterial);
     // dodecahedron = new THREE.Mesh(dodecahedronGeometry, metaMaterial);
-    // icosahedron = new THREE.Mesh(icosahedronGeometry, metaMaterial);
+    icosahedron = new THREE.Mesh(icosahedronGeometry, metaMaterial);
 
     // scene.add(cube);
     // scene.add(tetrahedron);
     // scene.add(octahedron);
     // scene.add(dodecahedron);
-    //scene.add(icosahedron);
+    scene.add(icosahedron);
 
     //scene.fog = new THREE.Fog( 0x605050, 10, 5000 );
 
@@ -387,9 +386,12 @@ function update() {
   renderer.render(scene, camera);
 
  // composer.render();
-  //icosahedron.rotate.y += 0.05;
+  icosahedron.rotation.x += 0.001;
+  icosahedron.rotation.y += 0.001;
   particle.rotation.x += 0.0;
-  particle.rotation.y -= 0.004;
+  particle.rotation.y -= 0.002;
+
+  
 }
 
 function resize(){
