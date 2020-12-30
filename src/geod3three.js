@@ -5,7 +5,7 @@ var scene = new THREE.Scene();
 //scene.background = new THREE.Color(0x0000ff);
 //===================================================== add Camera
 var camera = new THREE.PerspectiveCamera(
-  45,
+  75,
   window.innerWidth / window.innerHeight,
   50,
   10000
@@ -191,7 +191,7 @@ d3.json(
     //===================================================== add globe
     var group = new THREE.Group();
     scene.add(group);
-    //group.rotateX(Math.PI / 8);
+    group.rotateX(Math.PI / 8);
 
     var RADIUS = 140;
     var cRADIUS = RADIUS * 4;
