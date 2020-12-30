@@ -1,97 +1,104 @@
-var cube, tetrahedron, octahedron, dodecahedron, icosahedron, particle;
+var scene, camera, renderer, cube, tetrahedron, octahedron, dodecahedron, icosahedron, particle;
 
-//===================================================== add Scene
-var scene = new THREE.Scene();
-//scene.background = new THREE.Color(0x0000ff);
-//===================================================== add Camera
-var camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  50,
-  10000
-);
-camera.position.x = 0;
-camera.position.y = 2000;
-camera.position.z = 0;
-//===================================================== add front & back lighting
-// var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
-// light.position.set(1, 3, 2).normalize();
-// scene.add(light);
+init();
+//update();
 
-// var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
-// light.position.set(-1, -3, -2).normalize();
-// scene.add(light);
+function init() {
+  //===================================================== add Scene
+  scene = new THREE.Scene();
+  //scene.background = new THREE.Color(0x0000ff);
+  //===================================================== add Camera
+  camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    50,
+    10000
+  );
+  camera.position.x = 0;
+  camera.position.y = 2000;
+  camera.position.z = 0;
+  //===================================================== add front & back lighting
+  // var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
+  // light.position.set(1, 3, 2).normalize();
+  // scene.add(light);
 
-const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
-scene.add(ambient);
+  // var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
+  // light.position.set(-1, -3, -2).normalize();
+  // scene.add(light);
 
-const light = new THREE.DirectionalLight(0xffffff, 3);
-light.position.set(0, 2, 1);
-scene.add(light);
-//===================================================== add Grid
-/*  var plane = new THREE.GridHelper(5000, 10);
+  const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
+  scene.add(ambient);
+
+  const light = new THREE.DirectionalLight(0xffffff, 3);
+  light.position.set(0, 2, 1);
+  scene.add(light);
+  //===================================================== add Grid
+  /*  var plane = new THREE.GridHelper(5000, 10);
   plane.material.color = new THREE.Color( 'white');
   scene.add(plane);*/
 
-//===================================================== add canvas
-// var renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// renderer.toneMapping = THREE.LinearToneMapping;
-// document.body.appendChild(renderer.domElement);
+  //===================================================== add canvas
+  // renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+  // renderer.setSize(window.innerWidth, window.innerHeight);
+  // renderer.toneMapping = THREE.LinearToneMapping;
+  // document.body.appendChild(renderer.domElement);
 
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-//===================================================== add controls
-var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+  //===================================================== add controls
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-//===================================================== add cubemap
-const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
+  //===================================================== add cubemap
+  const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
 
-const cubemap = new THREE.CubeTextureLoader()
-  .setPath(`${assetPath}skybox1_`)
-  .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
+  const cubemap = new THREE.CubeTextureLoader()
+    .setPath(`${assetPath}skybox1_`)
+    .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
 
-scene.background = cubemap;
-//===================================================== add GLow
-// var renderScene = new THREE.RenderPass(scene, camera);
-// var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
-// effectFXAA.uniforms["resolution"].value.set(
-//   1 / window.innerWidth,
-//   1 / window.innerHeight
-// );
-// var copyShader = new THREE.ShaderPass(THREE.CopyShader);
-// copyShader.renderToScreen = true;
+  scene.background = cubemap;
+  //===================================================== add GLow
+  // var renderScene = new THREE.RenderPass(scene, camera);
+  // var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
+  // effectFXAA.uniforms["resolution"].value.set(
+  //   1 / window.innerWidth,
+  //   1 / window.innerHeight
+  // );
+  // var copyShader = new THREE.ShaderPass(THREE.CopyShader);
+  // copyShader.renderToScreen = true;
 
-// var bloomStrength = 1;
-// var bloomRadius = 0;
-// var bloomThreshold = 0.5;
-// var bloomPass = new THREE.UnrealBloomPass(
-//   new THREE.Vector2(window.innerWidth, window.innerHeight),
-//   bloomStrength,
-//   bloomRadius,
-//   bloomThreshold
-// );
+  // var bloomStrength = 1;
+  // var bloomRadius = 0;
+  // var bloomThreshold = 0.5;
+  // var bloomPass = new THREE.UnrealBloomPass(
+  //   new THREE.Vector2(window.innerWidth, window.innerHeight),
+  //   bloomStrength,
+  //   bloomRadius,
+  //   bloomThreshold
+  // );
 
-// var composer = new THREE.EffectComposer(renderer);
-// composer.setSize(window.innerWidth, window.innerHeight);
-// composer.addPass(renderScene);
-// composer.addPass(effectFXAA);
-// composer.addPass(bloomPass);
-// composer.addPass(copyShader);
+  // var composer = new THREE.EffectComposer(renderer);
+  // composer.setSize(window.innerWidth, window.innerHeight);
+  // composer.addPass(renderScene);
+  // composer.addPass(effectFXAA);
+  // composer.addPass(bloomPass);
+  // composer.addPass(copyShader);
 
-//===================================================== resize
-const btn = document.getElementById('camera-btn');
-//btn.addEventListener('click', changeCamera);
+  //===================================================== resize
+  const btn = document.getElementById("camera-btn");
+  //btn.addEventListener('click', changeCamera);
 
-window.addEventListener("resize", function () {
-  let width = window.innerWidth;
-  let height = window.innerHeight;
-  renderer.setSize(width, height);
-  camera.aspect = width / height;
-  camera.updateProjectionMatrix();
-});
+  // window.addEventListener("resize", function () {
+  //   let width = window.innerWidth;
+  //   let height = window.innerHeight;
+  //   renderer.setSize(width, height);
+  //   camera.aspect = width / height;
+  //   camera.updateProjectionMatrix();
+  // });
+  window.addEventListener( 'resize', resize, false);
 
+ // update();
+}
 //===================================================== data
 const our_data = [
   {
@@ -229,25 +236,25 @@ d3.json(
     // scene.add(dodecahedron);
     // scene.add(icosahedron);
 
-    var cubeGeometry = new THREE.BoxGeometry(cRADIUS, cRADIUS, cRADIUS);
-    var tetrahedronGeometry = new THREE.TetrahedronGeometry(tRADIUS, 0);
-    var octahedronGeometry = new THREE.OctahedronGeometry(oRADIUS, 0);
-    var dodecahedronGeometry = new THREE.DodecahedronGeometry(dRADIUS, 0);
-    var icosahedronGeometry = new THREE.IcosahedronGeometry(iRADIUS, 0);
+    // var cubeGeometry = new THREE.BoxGeometry(cRADIUS, cRADIUS, cRADIUS);
+    // var tetrahedronGeometry = new THREE.TetrahedronGeometry(tRADIUS, 0);
+    // var octahedronGeometry = new THREE.OctahedronGeometry(oRADIUS, 0);
+    // var dodecahedronGeometry = new THREE.DodecahedronGeometry(dRADIUS, 0);
+    // var icosahedronGeometry = new THREE.IcosahedronGeometry(iRADIUS, 0);
 
-    var metaMaterial = new THREE.MeshPhongMaterial({ wireframe: true });
+    // var metaMaterial = new THREE.MeshPhongMaterial({ wireframe: true });
 
-    cube = new THREE.Mesh(cubeGeometry, metaMaterial);
-    tetrahedron = new THREE.Mesh(tetrahedronGeometry, metaMaterial);
-    octahedron = new THREE.Mesh(octahedronGeometry, metaMaterial);
-    dodecahedron = new THREE.Mesh(dodecahedronGeometry, metaMaterial);
-    icosahedron = new THREE.Mesh(icosahedronGeometry, metaMaterial);
+    // cube = new THREE.Mesh(cubeGeometry, metaMaterial);
+    // tetrahedron = new THREE.Mesh(tetrahedronGeometry, metaMaterial);
+    // octahedron = new THREE.Mesh(octahedronGeometry, metaMaterial);
+    // dodecahedron = new THREE.Mesh(dodecahedronGeometry, metaMaterial);
+    // icosahedron = new THREE.Mesh(icosahedronGeometry, metaMaterial);
 
     // scene.add(cube);
     // scene.add(tetrahedron);
     // scene.add(octahedron);
     // scene.add(dodecahedron);
-    scene.add(icosahedron);
+    //scene.add(icosahedron);
 
     //scene.fog = new THREE.Fog( 0x605050, 10, 5000 );
 
@@ -364,15 +371,36 @@ d3.json(
     Destination(our_data);
 
     //===================================================== add Animation
-    function update() {
-      requestAnimationFrame(update);
-      renderer.render(scene, camera);
-
-      composer.render();
-      icosahedron.rotate.y += 0.05;
-      particle.rotation.x += 0.0;
-      particle.rotation.y -= 0.004;
-    }
-    update();
+    // function animate() {
+    //   requestAnimationFrame(animate);
+    //   renderer.render(scene, camera);
+    //   composer.render();
+    // }
+    // animate();
+update();
   }
 ); //end d3.json
+
+
+function update() {
+  requestAnimationFrame(update);
+  renderer.render(scene, camera);
+
+ // composer.render();
+  //icosahedron.rotate.y += 0.05;
+  particle.rotation.x += 0.0;
+  particle.rotation.y -= 0.004;
+}
+
+function resize(){
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+}
+// function resize() {
+//   let width = window.innerWidth;
+//   let height = window.innerHeight;
+//   renderer.setSize(width, height);
+//   camera.aspect = width / height;
+//   camera.updateProjectionMatrix();
+// }
