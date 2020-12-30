@@ -4,7 +4,7 @@ body {
   margin: 0;
 }
 
-#camera-btn{
+#camera-btn {
   position: absolute;
   right: 20px;
   bottom: 20px;
@@ -12,9 +12,9 @@ body {
   background: #0000aa;
   font-size: 30px;
   text-align: center;
-  line-height: 45px;
+  line-height: 60px;
   vertical-align: middle;
-  width: 45px;
-  height: 45px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
 }

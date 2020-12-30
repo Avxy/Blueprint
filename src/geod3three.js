@@ -1,21 +1,44 @@
-var scene, camera, renderer, cube, tetrahedron, octahedron, dodecahedron, icosahedron, particle;
+var scene,
+  camera,
+  cameras,
+  cameraIndex,
+  renderer,
+  // cube,
+  // tetrahedron,
+  // octahedron,
+  // dodecahedron,
+  icosahedron,
+  particle,
+  group,
+  player,
+  clock;
 
 init();
 
 function init() {
+  clock = new THREE.Clock();
   //===================================================== add Scene
   scene = new THREE.Scene();
   //scene.background = new THREE.Color(0x0000ff);
   //===================================================== add Camera
+  // camera = new THREE.PerspectiveCamera(
+  //   75,
+  //   window.innerWidth / window.innerHeight,
+  //   50,
+  //   10000
+  // );
+  // camera.position.x = 0;
+  // camera.position.y = 2000;
+  // camera.position.z = 0;
+
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     50,
     10000
   );
-  camera.position.x = 0;
-  camera.position.y = 2000;
-  camera.position.z = 0;
+  camera.position.set(0, 1000, 0);
+  camera.lookAt(0, 1.5, 0);
   //===================================================== add front & back lighting
   // var light = new THREE.DirectionalLight(new THREE.Color("white"), 1);
   // light.position.set(1, 3, 2).normalize();
@@ -82,21 +105,130 @@ function init() {
   // composer.addPass(effectFXAA);
   // composer.addPass(bloomPass);
   // composer.addPass(copyShader);
-
   //===================================================== resize
+  //Add meshes here
+  player = new THREE.Group();
+  scene.add(player);
+
+  const bodyGeometry = new THREE.CylinderBufferGeometry(10, 0.3, 1.6, 20);
+  const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+  const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
+  bodyMesh.position.y = 140;
+  bodyMesh.scale.z = 0.5;
+  player.add(bodyMesh);
+  const headGeometry = new THREE.SphereBufferGeometry(10, 20, 15);
+  const headMesh = new THREE.Mesh(headGeometry, bodyMaterial);
+  headMesh.position.y = 140;
+  player.add(headMesh);
+
+  cameras = [];
+  cameraIndex = 0;
+
+  const scrollCam = camera;
+  scrollCam.position.copy(camera.position);
+  player.add(scrollCam);
+  cameras.push(scrollCam);
+
+  const followCam = new THREE.Object3D();
+  followCam.position.copy(camera.position);
+  player.add(followCam);
+  cameras.push(followCam);
+
+  const frontCam = new THREE.Object3D();
+  frontCam.position.set(0, 200, -120);
+  player.add(frontCam);
+  cameras.push(frontCam);
+
+  const overheadCam = new THREE.Object3D();
+  overheadCam.position.set(0, 200, 120);
+  cameras.push(overheadCam);
+
+  addKeyboardControl();
+
   const btn = document.getElementById("camera-btn");
-  //btn.addEventListener('click', changeCamera);
+  btn.addEventListener("click", changeCamera);
 
-  // window.addEventListener("resize", function () {
-  //   let width = window.innerWidth;
-  //   let height = window.innerHeight;
-  //   renderer.setSize(width, height);
-  //   camera.aspect = width / height;
-  //   camera.updateProjectionMatrix();
-  // });
-  window.addEventListener( 'resize', resize, false);
+  //player control
 
- // update();
+  function addKeyboardControl() {
+    document.addEventListener("keydown", keyDown);
+    document.addEventListener("keyup", keyUp);
+  }
+
+  function keyDown(evt) {
+    let forward =
+      player.userData !== undefined && player.userData.move !== undefined
+        ? player.userData.move.forward
+        : 0;
+    let turn =
+      player.userData != undefined && player.userData.move !== undefined
+        ? player.userData.move.turn
+        : 0;
+
+    switch (evt.keyCode) {
+      case 87: //W
+        forward = -1;
+        break;
+      case 83: //S
+        forward = 1;
+        break;
+      case 65: //A
+        turn = 1;
+        break;
+      case 68: //D
+        turn = -1;
+        break;
+    }
+
+    playerControl(forward, turn);
+  }
+
+  function keyUp(evt) {
+    let forward =
+      player.userData !== undefined && player.userData.move !== undefined
+        ? player.userData.move.forward
+        : 0;
+    let turn =
+      player.move != undefined && player.userData.move !== undefined
+        ? player.userData.move.turn
+        : 0;
+
+    switch (evt.keyCode) {
+      case 87: //W
+        forward = 0;
+        break;
+      case 83: //S
+        forward = 0;
+        break;
+      case 65: //A
+        turn = 0;
+        break;
+      case 68: //D
+        turn = 0;
+        break;
+    }
+
+    playerControl(forward, turn);
+  }
+
+  function playerControl(forward, turn) {
+    if (forward == 0 && turn == 0) {
+      delete player.userData.move;
+    } else {
+      if (player.userData === undefined) player.userData = {};
+      this.player.userData.move = { forward, turn };
+    }
+  }
+  //===================================================== resize
+
+  window.addEventListener("resize", resize, false);
+
+  // update();
+}
+//===================================================== change camera
+function changeCamera() {
+  cameraIndex++;
+  if (cameraIndex >= cameras.length) cameraIndex = 0;
 }
 //===================================================== data
 const our_data = [
@@ -195,16 +327,16 @@ d3.json(
       particle.add(particleMesh);
     }
     //===================================================== add globe
-    var group = new THREE.Group();
+    group = new THREE.Group();
     scene.add(group);
     group.rotateX(Math.PI / 8);
 
     var RADIUS = 140;
-    var cRADIUS = RADIUS * 4;
-    var tRADIUS = RADIUS * 4;
-    var oRADIUS = RADIUS * 4;
-    var dRADIUS = RADIUS * 2;
-    var iRADIUS = RADIUS * 4;
+    // var cRADIUS = RADIUS * 4;
+    // var tRADIUS = RADIUS * 4;
+    // var oRADIUS = RADIUS * 4;
+    // var dRADIUS = RADIUS * 2;
+    var iRADIUS = RADIUS * 12;
 
     var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
     var sphereMaterial = new THREE.MeshPhongMaterial({
@@ -221,7 +353,7 @@ d3.json(
     earthMesh.name = "earth";
     group.add(earthMesh);
 
-    var metatron = new THREE.Object3D();
+    //var metatron = new THREE.Object3D();
 
     // cube = new THREE.Object3D();
     // tetrahedron = new THREE.Object3D();
@@ -370,39 +502,39 @@ d3.json(
     Destination(our_data);
 
     //===================================================== add Animation
-    // function animate() {
-    //   requestAnimationFrame(animate);
-    //   renderer.render(scene, camera);
-    //   composer.render();
-    // }
-    // animate();
-update();
+
+    update();
   }
 ); //end d3.json
-
 
 function update() {
   requestAnimationFrame(update);
   renderer.render(scene, camera);
 
- // composer.render();
+  // composer.render();
   icosahedron.rotation.x += 0.001;
   icosahedron.rotation.y += 0.001;
   particle.rotation.x += 0.0;
   particle.rotation.y -= 0.002;
 
-  
+  const dt = clock.getDelta();
+
+  if (player.userData !== undefined && player.userData.move !== undefined) {
+    player.translateZ(player.userData.move.forward * dt * 5);
+    player.rotateY(player.userData.move.turn * dt);
+  }
+
+  camera.position.lerp(
+    cameras[cameraIndex].getWorldPosition(new THREE.Vector3()),
+    0.05
+  );
+  const pos = icosahedron.position.clone();
+  pos.y += 3;
+  camera.lookAt(pos);
 }
 
-function resize(){
+function resize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.setSize(window.innerWidth, window.innerHeight);
 }
-// function resize() {
-//   let width = window.innerWidth;
-//   let height = window.innerHeight;
-//   renderer.setSize(width, height);
-//   camera.aspect = width / height;
-//   camera.updateProjectionMatrix();
-// }
