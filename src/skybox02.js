@@ -21,7 +21,7 @@ var percentage = 0;
 //var divContainer = document.querySelector(".container");
 //var maxHeight=(divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight;
 
-//var group;
+var group;
 
 var maxHeight = 7199;
 
@@ -30,7 +30,7 @@ function initThree() {
 
   clock = new THREE.Clock();
 
-  //var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
   scene = new THREE.Scene();
   envMap = new THREE.CubeTextureLoader()
@@ -70,7 +70,7 @@ function initThree() {
   //container.appendChild(renderer.domElement);
   document.body.appendChild(renderer.domElement);
   addGeometry();
-  //geoThree();
+  geoThree();
 }
 
 function addGeometry() {
