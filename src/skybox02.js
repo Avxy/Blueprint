@@ -30,7 +30,7 @@ function initThree() {
 
   clock = new THREE.Clock();
 
-  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  //var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
   scene = new THREE.Scene();
   envMap = new THREE.CubeTextureLoader()
