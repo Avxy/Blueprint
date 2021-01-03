@@ -10,11 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js"></script>
     <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/OrbitControls.js"></script>
     <script src="https://threejs.org/build/three.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.0.1/lib/anime.min.js"></script>
     <link rel="stylesheet" href="src/style.css" />
-  </head>
 
-  <body>
     <div id="app"></div>
     <a id="camera-btn"
       ><div>
@@ -38,7 +36,7 @@
     <script src="https://threejs.org/examples/js/shaders/LuminosityHighPassShader.js"></script>
     <script src="https://threejs.org/examples/js/postprocessing/UnrealBloomPass.js"></script>
     <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
-
+    <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/CurveExtras.js'></script>
     <script id="vertexShader" type="x-shader/x-vertex">
       varying vec3 vNormal;
       void main()
@@ -58,7 +56,14 @@
       }
     </script>
 
-    <script src="src/geod3three.js"></script>
-    <script src="src/box.js"></script>
-  </body>
+    <div class="webgl"></div>
+    <span></span>
+    <div class="container">
+      
+    </div>
+    
+
+    <script src="src/skybox02.js"></script>
+  </head>
+  <body></body>
 </html>
