@@ -7,7 +7,8 @@ var envMap;
 var cube = null;
 var sphere = null;
 
-var container = document.querySelector(".webgl");
+
+//var container = document.querySelector(".webgl");
 var startTime = Date.now();
 var scrollY = 0;
 var _event = {
@@ -17,18 +18,19 @@ var _event = {
 var timeline = null;
 var percentage = 0;
 
-var divContainer = document.querySelector(".container");
-var maxHeight =
-  (divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight;
+//var divContainer = document.querySelector(".container");
+//var maxHeight=(divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight;
 
-var group;
+//var group;
+
+var maxHeight = 7199;
 
 function initThree() {
   const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
 
   clock = new THREE.Clock();
 
-  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  //var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
   scene = new THREE.Scene();
   envMap = new THREE.CubeTextureLoader()
@@ -57,45 +59,22 @@ function initThree() {
   binormal = new THREE.Vector3();
   normal = new THREE.Vector3();
 
-  renderer.setPixelRatio(window.devicePixelRatio || 1);
-  renderer.setClearColor(0x161216);
+  // renderer.setPixelRatio(window.devicePixelRatio || 1);
+  // renderer.setClearColor(0x161216);
+  
+  renderer.setSize(window.innerWidth, window.innerHeight);
   camera.position.y = 10;
   camera.position.z = 1000;
   camera.lookAt(0, 0, 0);
   resize();
-  container.appendChild(renderer.domElement);
+  //container.appendChild(renderer.domElement);
+  document.body.appendChild(renderer.domElement);
   addGeometry();
-  geoThree();
+  //geoThree();
 }
 
 function addGeometry() {
-  const loader = new THREE.TextureLoader();
-
-  // load a resource
-  loader.load(
-    // resource URL
-    "https://github.com/Avxy/hexion/blob/master/bb00.jpg",
-
-    // onLoad callback
-    function (texture) {
-      // in this example we create the material when the texture is loaded
-      const material = new THREE.MeshBasicMaterial({
-        map: texture
-      });
-      const cubeGeometry = new THREE.BoxGeometry(200, 200, 200);
-      const cubeMesh = new THREE.Mesh(cubeGeometry, material);
-
-      scene.add(cubeMesh);
-    },
-
-    // onProgress callback currently not supported
-    undefined,
-
-    // onError callback
-    function (err) {
-      console.error("An error happened.");
-    }
-  );
+  
 
   cube = new THREE.Mesh(
     new THREE.CubeGeometry(50, 50, 50),
@@ -207,7 +186,8 @@ function init() {
   initThree();
   initTimeline();
   window.addEventListener("resize", resize, { passive: true });
-  divContainer.addEventListener("wheel", onWheel, { passive: false });
+  //divContainer.addEventListener("wheel", onWheel, { passive: false });
+  window.addEventListener("wheel", onWheel, { passive: false });
   animate();
 }
 
@@ -222,7 +202,7 @@ function render() {
   var dtime = Date.now() - startTime;
   // easing with treshold on 0.08 (should be between .14 & .2 for smooth animations)
   percentage = lerp(percentage, scrollY, 0.08);
-  timeline.seek(percentage * (4500 / maxHeight));
+  timeline.seek(percentage * (8000 / maxHeight));
   // animate the cube
   //cube.rotation.x += 0.01;
   //cube.rotation.y += 0.0125;
@@ -237,14 +217,18 @@ function lerp(a, b, t) {
 
 function resize() {
   // cointainer height - window height to limit the scroll at the top of the screen when we are at the bottom of the container
-  maxHeight =
-    (divContainer.clientHeight || divContainer.offsetHeight) -
-    window.innerHeight;
-  renderer.width = container.clientWidth;
-  renderer.height = container.clientHeight;
-  renderer.setSize(renderer.width, renderer.height);
-  camera.aspect = renderer.width / renderer.height;
+  // maxHeight =
+  //   (divContainer.clientHeight || divContainer.offsetHeight) -
+  //   window.innerHeight;
+  // renderer.width = container.clientWidth;
+  // renderer.height = container.clientHeight;
+  // renderer.setSize(renderer.width, renderer.height);
+  // camera.aspect = renderer.width / renderer.height;
+  // camera.updateProjectionMatrix();
+
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
+  renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
 function updateCamera() {
@@ -481,12 +465,12 @@ function geoThree() {
       Destination(our_data);
 
       //===================================================== add Animation
-      function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-        composer.render();
-      }
-      animate();
+      // function animate() {
+      //   requestAnimationFrame(animate);
+      //   renderer.render(scene, camera);
+      //   composer.render();
+      // }
+      // animate();
     }
   ); //end d3.json
 }
