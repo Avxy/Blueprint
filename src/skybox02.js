@@ -1,12 +1,11 @@
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer();
 var camera = new THREE.PerspectiveCamera();
-var clock, binormal, normal, tube;
+var clock, binormal, normal, tube, player;
 
 var envMap;
 var cube = null;
 var sphere = null;
-
 
 //var container = document.querySelector(".webgl");
 var startTime = Date.now();
@@ -24,6 +23,8 @@ var percentage = 0;
 var group;
 
 var maxHeight = 7199;
+
+var cameras, cameraIndex;
 
 function initThree() {
   const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
@@ -61,8 +62,8 @@ function initThree() {
 
   // renderer.setPixelRatio(window.devicePixelRatio || 1);
   // renderer.setClearColor(0x161216);
-  
-  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  //renderer.setSize(window.innerWidth, window.innerHeight);
   camera.position.y = 10;
   camera.position.z = 1000;
   camera.lookAt(0, 0, 0);
@@ -71,11 +72,10 @@ function initThree() {
   document.body.appendChild(renderer.domElement);
   addGeometry();
   geoThree();
+  playerCam();
 }
 
 function addGeometry() {
-  
-
   cube = new THREE.Mesh(
     new THREE.CubeGeometry(50, 50, 50),
     new THREE.MeshLambertMaterial({
@@ -182,12 +182,133 @@ function scroll(e) {
   scrollY = -evt.y;
 }
 
+function playerCam() {
+  //===================================================== player
+  //Add meshes here
+  player = new THREE.Group();
+  scene.add(player);
+
+  const headGeometry = new THREE.SphereBufferGeometry(10, 20, 15);
+  const headMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    side: THREE.DoubleSide
+  });
+  const headMesh = new THREE.Mesh(headGeometry, headMaterial);
+  headMesh.position.y = 140;
+  player.add(headMesh);
+  //===================================================== camera
+  cameras = [];
+  cameraIndex = 0;
+
+  // const scrollCam = camera;
+  // scrollCam.position.copy(camera.position);
+  // player.add(scrollCam);
+  // cameras.push(scrollCam);
+
+  const followCam = new THREE.Object3D();
+  followCam.position.copy(camera.position);
+  player.add(followCam);
+  cameras.push(followCam);
+
+  const frontCam = new THREE.Object3D();
+  frontCam.position.set(0, 200, -120);
+  player.add(frontCam);
+  cameras.push(frontCam);
+
+  const overheadCam = new THREE.Object3D();
+  overheadCam.position.set(0, 200, 120);
+  cameras.push(overheadCam);
+
+  addKeyboardControl();
+
+  const btn = document.getElementById("camera-btn");
+  btn.addEventListener("click", changeCamera);
+
+  //=======================================================player control
+
+  function addKeyboardControl() {
+    document.addEventListener("keydown", keyDown);
+    document.addEventListener("keyup", keyUp);
+  }
+
+  function keyDown(evt) {
+    let forward =
+      player.userData !== undefined && player.userData.move !== undefined
+        ? player.userData.move.forward
+        : 0;
+    let turn =
+      player.userData != undefined && player.userData.move !== undefined
+        ? player.userData.move.turn
+        : 0;
+
+    switch (evt.keyCode) {
+      case 87: //W
+        forward = -1;
+        break;
+      case 83: //S
+        forward = 1;
+        break;
+      case 65: //A
+        turn = 1;
+        break;
+      case 68: //D
+        turn = -1;
+        break;
+    }
+
+    playerControl(forward, turn);
+  }
+
+  function keyUp(evt) {
+    let forward =
+      player.userData !== undefined && player.userData.move !== undefined
+        ? player.userData.move.forward
+        : 0;
+    let turn =
+      player.move != undefined && player.userData.move !== undefined
+        ? player.userData.move.turn
+        : 0;
+
+    switch (evt.keyCode) {
+      case 87: //W
+        forward = 0;
+        break;
+      case 83: //S
+        forward = 0;
+        break;
+      case 65: //A
+        turn = 0;
+        break;
+      case 68: //D
+        turn = 0;
+        break;
+    }
+
+    playerControl(forward, turn);
+  }
+
+  function playerControl(forward, turn) {
+    if (forward == 0 && turn == 0) {
+      delete player.userData.move;
+    } else {
+      if (player.userData === undefined) player.userData = {};
+      this.player.userData.move = { forward, turn };
+    }
+  }
+}
+
+function changeCamera() {
+  cameraIndex++;
+  if (cameraIndex >= cameras.length) cameraIndex = 0;
+}
+
 function init() {
   initThree();
   initTimeline();
   window.addEventListener("resize", resize, { passive: true });
   //divContainer.addEventListener("wheel", onWheel, { passive: false });
   window.addEventListener("wheel", onWheel, { passive: false });
+
   animate();
 }
 
@@ -196,6 +317,21 @@ function animate() {
   render();
   // relaunch the 'timer'
   requestAnimationFrame(animate);
+
+  const dt = clock.getDelta();
+
+  if (player.userData !== undefined && player.userData.move !== undefined) {
+    player.translateZ(player.userData.move.forward * dt * 25);
+    player.rotateY(player.userData.move.turn * dt);
+  }
+
+  camera.position.lerp(
+    cameras[cameraIndex].getWorldPosition(new THREE.Vector3()),
+    0.05
+  );
+  const pos = player.position.clone();
+  pos.y += 3;
+  camera.lookAt(pos);
 }
 
 function render() {
@@ -203,6 +339,7 @@ function render() {
   // easing with treshold on 0.08 (should be between .14 & .2 for smooth animations)
   percentage = lerp(percentage, scrollY, 0.08);
   timeline.seek(percentage * (8000 / maxHeight));
+
   // animate the cube
   //cube.rotation.x += 0.01;
   //cube.rotation.y += 0.0125;
@@ -216,19 +353,9 @@ function lerp(a, b, t) {
 }
 
 function resize() {
-  // cointainer height - window height to limit the scroll at the top of the screen when we are at the bottom of the container
-  // maxHeight =
-  //   (divContainer.clientHeight || divContainer.offsetHeight) -
-  //   window.innerHeight;
-  // renderer.width = container.clientWidth;
-  // renderer.height = container.clientHeight;
-  // renderer.setSize(renderer.width, renderer.height);
-  // camera.aspect = renderer.width / renderer.height;
-  // camera.updateProjectionMatrix();
-
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 function updateCamera() {

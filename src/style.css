@@ -1,4 +1,25 @@
 
+section {
+  position: absolute;
+  bottom: 10%;
+  padding: 0 20px;
+  max-width: 350px;
+  width: 100%;
+  color: rgba(255, 255, 255, 0.5);
+  z-index: 9999;
+  line-height: 1.5;
+}
+h1 {
+  font-weight: lighter;
+  font-size: 30px;
+  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+}
+p {
+  margin-bottom: 20px;
+}
+
+
 
 #camera-btn {
   position: absolute;
@@ -15,22 +36,3 @@
   border-radius: 50%;
 }
 
-html, body {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.webgl {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-}
-.container {
-  height: 1200vh;
-}
