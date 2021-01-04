@@ -31,7 +31,7 @@ function initThree() {
 
   clock = new THREE.Clock();
 
-  //var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
   scene = new THREE.Scene();
   envMap = new THREE.CubeTextureLoader()
@@ -116,7 +116,6 @@ function initTimeline() {
     duration: 1000,
     update: camera.updateProjectionMatrix()
   });
-
 
   timeline.add({
     targets: camera.position,
@@ -210,11 +209,7 @@ function playerCam() {
   cameras = [];
   cameraIndex = 0;
 
-  const scrollCam = camera;
-  scrollCam.position.copy(camera.position);
-  player.add(scrollCam);
-  cameras.push(scrollCam);
-
+  
   const followCam = new THREE.Object3D();
   followCam.position.copy(camera.position);
   player.add(followCam);
@@ -228,6 +223,12 @@ function playerCam() {
   const overheadCam = new THREE.Object3D();
   overheadCam.position.set(0, 200, 120);
   cameras.push(overheadCam);
+
+ 
+  const scrollCam = camera;
+  scrollCam.position.copy(camera.position);
+  player.add(scrollCam);
+  cameras.push(scrollCam);
 
   addKeyboardControl();
 
@@ -385,6 +386,31 @@ function geoThree() {
   //===================================================== data
   const our_data = [
     {
+      origin: { name: "a", latitude: 1, longitude: 1 },
+      destination: { name: "Jamaica", latitude: 2, longitude: 3 }
+    },
+    {
+      origin: { name: "b", latitude: 5, longitude: 8 },
+      destination: { name: "Jamaica", latitude: 13, longitude: 21 }
+    },
+    {
+      origin: { name: "c", latitude: 55, longitude: 89 },
+      destination: { name: "Jamaica", latitude: 144, longitude: 233 }
+    },
+    {
+      origin: { name: "d", latitude: 377, longitude: 610 },
+      destination: { name: "Jamaica", latitude: 100, longitude: 100 }
+    },
+    {
+      origin: { name: "e", latitude: 987, longitude: 1024 },
+      destination: { name: "Jamaica", latitude: 512, longitude: 1024 }
+    },
+    {
+      origin: { name: "f", latitude: 2056, longitude: 0 },
+      destination: { name: "Jamaica", latitude: 100, longitude: 100 }
+    },
+
+    {
       origin: { name: "Bogotá", latitude: 4.624335, longitude: -74.063644 },
       destination: { name: "Jamaica", latitude: 22.97917, longitude: -82.17028 }
     },
@@ -487,6 +513,10 @@ function geoThree() {
       });
       var earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
       earthMesh.name = "earth";
+      var earthMesh02 = earthMesh.clone();
+      earthMesh02.position.x = 500;
+      earthMesh02.scale.set(0.3,0.3,0.3);
+      group.add(earthMesh02);
       group.add(earthMesh);
 
       //===================================================== add glow effect to globe
