@@ -43,7 +43,7 @@ function initThree() {
   scene.add(ambient);
 
   const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(1, 10, 6);
+  light.position.set(1, 140, 200);
   scene.add(light);
 
   //Add meshes here
@@ -99,13 +99,32 @@ function addGeometry() {
   sphere.position.y = 140;
   sphere.position.z = 0;
   scene.add(sphere);
+  
+  particle = new THREE.Object3D();
+  scene.add(particle);
+  var geometry = new THREE.TetrahedronGeometry(2, 0);
+  var material = new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    shading: THREE.FlatShading
+  });
+  for (var i = 0; i < 500; i++) {
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+    mesh.position.multiplyScalar(90 + (Math.random() * 700));
+    mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+    particle.add(mesh);
+  }
+
 }
+
+
 
 function initTimeline() {
   timeline = anime.timeline({
     autoplay: false,
     duration: 8000,
     easing: "easeOutSine"
+   
   });
 
   timeline.add({
@@ -355,6 +374,7 @@ function render() {
   //cube.rotation.x += 0.01;
   //cube.rotation.y += 0.0125;
   //cube.rotation.z += 0.012;
+  particle.rotation.y += 0.001;
   //updateCamera();
   renderer.render(scene, camera);
 }
@@ -524,19 +544,26 @@ function geoThree() {
       mapTexture.needsUpdate = true;
 
       //===================================================== add globe
-      var group = new THREE.Group();
+      group = new THREE.Group();
       scene.add(group);
-      group.rotateX(Math.PI / 8);
+      //group.rotateX(Math.PI / 8);
 
       var RADIUS = 140;
 
       var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
-      var sphereMaterial = new THREE.MeshPhongMaterial({
-        map: mapTexture,
-        transparent: false,
-        opacity: 1,
-        color: new THREE.Color("white")
-      });
+      // var sphereMaterial = new THREE.MeshPhongMaterial({
+      //   map: mapTexture,
+      //   transparent: false,
+      //   opacity: 1,
+      //   color: new THREE.Color("white")
+      // });
+      var sphereMaterial = new THREE.MeshPhongMaterial( { color: 0x000000 } );
+      // var grid = new THREE.Mesh( sphereGeometry, sphereMaterial );
+      // var gridEdge = new THREE.EdgesHelper(grid, 0xaaaaff);
+      // gridEdge.material.linewidth = 3;
+      // grid.rotateZ(1/2*Math.PI);
+      // group.add(grid);
+      // group.add(gridEdge);
       var earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
       earthMesh.name = "earth";
       var earthMesh02 = earthMesh.clone();
@@ -596,14 +623,14 @@ function geoThree() {
           var end = new THREE.Vector3(x2, y2, z2);
 
           //points
-          var pointGeom = new THREE.SphereGeometry(1, 10, 10);
+          var pointGeom = new THREE.SphereGeometry(10, 10, 10);
           var point = new THREE.Mesh(
             pointGeom,
-            new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
+            new THREE.MeshBasicMaterial({ color: new THREE.Color("skyblue") })
           );
           var point2 = new THREE.Mesh(
             pointGeom,
-            new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
+            new THREE.MeshBasicMaterial({ color: new THREE.Color("skyblue") })
           );
 
           //spaces out the points
@@ -615,8 +642,8 @@ function geoThree() {
           group.add(point2);
 
           //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
-          const CURVE_MIN_ALTITUDE = 20;
-          const CURVE_MAX_ALTITUDE = 100;
+          const CURVE_MIN_ALTITUDE = 5;
+          const CURVE_MAX_ALTITUDE = 20;
           const altitude = clamp(
             start.distanceTo(end) * 0.75,
             CURVE_MIN_ALTITUDE,
@@ -646,11 +673,15 @@ function geoThree() {
           var curve = new THREE.CubicBezierCurve3(start, mid1, mid2, end);
           var g = new THREE.TubeGeometry(curve, 100, 0.35, 10, false);
           var m = new THREE.MeshBasicMaterial({
-            color: new THREE.Color(
-              "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
-            )
-          });
-          curveObject = new THREE.Mesh(g, m);
+          //   color: new THREE.Color(
+          //     "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
+          //   )
+          // });
+          color: new THREE.Color(
+            "rgb(0,144,255))"
+          )
+        });
+          var curveObject = new THREE.Mesh(g, m);
           group.add(curveObject);
         });
       } //end Destination()
