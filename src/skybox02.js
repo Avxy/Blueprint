@@ -117,6 +117,16 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
+
+  timeline.add({
+    targets: camera.position,
+    x: 500,
+    y: 500,
+    z: 0,
+    duration: 1000,
+    update: camera.updateProjectionMatrix()
+  });
+
   timeline.add({
     targets: cube.rotation,
     x: Math.PI / 2,
@@ -200,10 +210,10 @@ function playerCam() {
   cameras = [];
   cameraIndex = 0;
 
-  // const scrollCam = camera;
-  // scrollCam.position.copy(camera.position);
-  // player.add(scrollCam);
-  // cameras.push(scrollCam);
+  const scrollCam = camera;
+  scrollCam.position.copy(camera.position);
+  player.add(scrollCam);
+  cameras.push(scrollCam);
 
   const followCam = new THREE.Object3D();
   followCam.position.copy(camera.position);
@@ -471,7 +481,7 @@ function geoThree() {
       var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
       var sphereMaterial = new THREE.MeshPhongMaterial({
         map: mapTexture,
-        transparent: true,
+        transparent: false,
         opacity: 1,
         color: new THREE.Color("white")
       });
