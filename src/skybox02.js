@@ -30,7 +30,7 @@ function initThree() {
   const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
 
   clock = new THREE.Clock();
-
+ 
   var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
   scene = new THREE.Scene();
@@ -386,62 +386,88 @@ function geoThree() {
   //===================================================== data
   const our_data = [
     {
-      origin: { name: "a", latitude: 1, longitude: 1 },
-      destination: { name: "Jamaica", latitude: 2, longitude: 3 }
-    },
+      origin: { name: "mexico", latitude: 10, longitude: -90 },
+      destination: { name: "Jamaica", latitude: 10, longitude: -90 }
+    }, 
     {
-      origin: { name: "b", latitude: 5, longitude: 8 },
-      destination: { name: "Jamaica", latitude: 13, longitude: 21 }
-    },
+      origin: { name: "mexico", latitude: 10, longitude: -90 },
+      destination: { name: "Jamaica", latitude: 20, longitude: -100 }
+    }, 
     {
-      origin: { name: "c", latitude: 55, longitude: 89 },
-      destination: { name: "Jamaica", latitude: 144, longitude: 233 }
-    },
+      origin: { name: "mexico", latitude: 20, longitude: -100 },
+      destination: { name: "Jamaica", latitude: 30, longitude: -80 }
+    }, 
     {
-      origin: { name: "d", latitude: 377, longitude: 610 },
-      destination: { name: "Jamaica", latitude: 100, longitude: 100 }
-    },
+      origin: { name: "mexico", latitude: 30, longitude: -80 },
+      destination: { name: "Jamaica", latitude: 40, longitude: -80 }
+    }, 
     {
-      origin: { name: "e", latitude: 987, longitude: 1024 },
-      destination: { name: "Jamaica", latitude: 512, longitude: 1024 }
-    },
+      origin: { name: "mexico", latitude: 40, longitude: -80 },
+      destination: { name: "Jamaica", latitude: 40, longitude: -90 }
+    }, 
     {
-      origin: { name: "f", latitude: 2056, longitude: 0 },
-      destination: { name: "Jamaica", latitude: 100, longitude: 100 }
-    },
-
+      origin: { name: "mexico", latitude: 40, longitude: -90 },
+      destination: { name: "Jamaica", latitude: 50, longitude: -100 }
+    }, 
     {
-      origin: { name: "Bogotá", latitude: 4.624335, longitude: -74.063644 },
-      destination: { name: "Jamaica", latitude: 22.97917, longitude: -82.17028 }
-    },
+      origin: { name: "mexico", latitude: 40, longitude: -90 },
+      destination: { name: "Jamaica", latitude: 50, longitude: -70 }
+    }, 
     {
-      origin: { name: "Jamaica", latitude: 22.97917, longitude: -82.17028 },
-      destination: { name: "Miami", latitude: 25.761681, longitude: -80.191788 }
-    },
+      origin: { name: "mexico", latitude: 50, longitude: -70 },
+      destination: { name: "Jamaica", latitude: 60, longitude: -60 }
+    }, 
     {
-      origin: { name: "Jamaica", latitude: 22.97917, longitude: -82.17028 },
-      destination: {
-        name: "New York",
-        latitude: 40.73061,
-        longitude: -73.935242
-      }
-    },
+      origin: { name: "mexico", latitude: 50, longitude: -70 },
+      destination: { name: "Jamaica", latitude: 60, longitude: -90 }
+    }, 
     {
-      origin: { name: "Jamaica", latitude: 22.97917, longitude: -82.17028 },
-      destination: {
-        name: "Britain",
-        latitude: 51.509865,
-        longitude: -0.118092
-      }
-    },
+      origin: { name: "mexico", latitude: 60, longitude: -90 },
+      destination: { name: "Jamaica", latitude: 70, longitude: -100 }
+    }, 
     {
-      origin: { name: "New York", latitude: 40.73061, longitude: -73.935242 },
-      destination: {
-        name: "Britain",
-        latitude: 51.509865,
-        longitude: -0.118092
-      }
+      origin: { name: "mexico", latitude: 70, longitude: -100 },
+      destination: { name: "Jamaica", latitude: 70, longitude: -120 }
+    }, 
+    {
+      origin: { name: "mexico", latitude: 70, longitude: -100 },
+      destination: { name: "Jamaica", latitude: 90, longitude: -110 }
+    }, 
+    {
+      origin: { name: "mexico", latitude: 70, longitude: -100 },
+      destination: { name: "Jamaica", latitude: 80, longitude: -90 }
+    }, 
+    {
+      origin: { name: "mexico", latitude: 80, longitude: -90 },
+      destination: { name: "Jamaica", latitude: 100, longitude: -100 }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   ];
 
   //===================================================== helper functions
