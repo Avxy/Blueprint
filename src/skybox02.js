@@ -1,7 +1,7 @@
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer();
 var camera = new THREE.PerspectiveCamera();
-var clock, binormal, normal, tube, player;
+var clock, binormal, normal, tube, player, particle;
 
 var envMap;
 var cube = null;
@@ -47,7 +47,7 @@ function initThree() {
   scene.add(light);
 
   //Add meshes here
-  const curve = new THREE.Curves.TrefoilKnot();
+  const curve = new THREE.Curves.TrefoilKnot(30);
   const geometry = new THREE.TubeBufferGeometry(curve, 100, 2, 8, true);
   const material = new THREE.MeshBasicMaterial({
     wireframe: true,
@@ -74,29 +74,29 @@ function initThree() {
   geoThree();
   playerCam();
 }
-
+ 
 function addGeometry() {
   cube = new THREE.Mesh(
-    new THREE.CubeGeometry(50, 50, 50),
+    new THREE.CubeGeometry(10, 10, 10),
     new THREE.MeshLambertMaterial({
-      wireframe: false,
-      envMap: envMap
+      color: 0xffffff,
+      side: THREE.DoubleSide
     })
   );
   cube.position.x = 0;
-  cube.position.y = 0;
+  cube.position.y = 140;
   cube.position.z = 0;
   scene.add(cube);
 
   sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(50, 50, 50),
+    new THREE.SphereGeometry(10, 20, 15),
     new THREE.MeshLambertMaterial({
-      wireframe: false,
-      envMap: envMap
+      color: 0xffffff,
+      side: THREE.DoubleSide
     })
   );
   sphere.position.x = 0;
-  sphere.position.y = 0;
+  sphere.position.y = 140;
   sphere.position.z = 0;
   scene.add(sphere);
 }
@@ -109,22 +109,22 @@ function initTimeline() {
   });
 
   timeline.add({
-    targets: cube.position,
-    x: 0,
-    y: 0,
-    z: 950,
-    duration: 1000,
-    update: camera.updateProjectionMatrix()
-  });
-
-  timeline.add({
     targets: camera.position,
-    x: 500,
-    y: 500,
+    x: 0,
+    y: 140,
     z: 0,
-    duration: 1000,
+    duration: 8000,
     update: camera.updateProjectionMatrix()
   });
+  timeline.add({
+    targets: camera.rotation,
+    x: 1,
+    y: 0,
+    z: 0,
+    duration: 8000,
+    update: camera.updateProjectionMatrix()
+  });
+ 
 
   timeline.add({
     targets: cube.rotation,
@@ -225,10 +225,10 @@ function playerCam() {
   cameras.push(overheadCam);
 
  
-  const scrollCam = camera;
-  scrollCam.position.copy(camera.position);
-  player.add(scrollCam);
-  cameras.push(scrollCam);
+  // const scrollCam = camera;
+  // scrollCam.position.copy(camera.position);
+  // player.add(scrollCam);
+  // cameras.push(scrollCam);
 
   addKeyboardControl();
 
