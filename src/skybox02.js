@@ -16,27 +16,31 @@ var _event = {
 };
 var timeline = null;
 var percentage = 0;
-
+  
 //var divContainer = document.querySelector(".container");
 //var maxHeight=(divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight;
 // var element = document.getElementsByClassName("text-animation")[0];
 // element.innerHTML = element.textContent.replace(/\S/g,'<span class="letter">$&</span>');
 
-var group;
+var group, iGroup, iMesh, m_text;
 
 var maxHeight = 7199;
 
 var cameras, cameraIndex;
 
+const canvas = document.querySelector('#canvas');
+
+var controls;
 
 function initThree() {
   const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
-
+  //new THREE.TextGeometry( text, parameters );
   clock = new THREE.Clock();
- 
+ // new THREE.TextGeometry( text, parameters );
   var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 // renderer = new THREE.WebGLRenderer( { alpha: true } );
+
 // renderer.setClearColor( 0x000000, 0 ); // the default
 
   scene = new THREE.Scene();
@@ -80,6 +84,10 @@ function initThree() {
   addGeometry();
   geoThree();
   playerCam();
+  createMesh();
+  createFloor();
+  createText();
+
 }
  
 function addGeometry() {
@@ -107,6 +115,14 @@ function addGeometry() {
   sphere.position.z = 0;
   scene.add(sphere);
   
+
+
+
+
+
+
+
+
   particle = new THREE.Object3D();
   scene.add(particle);
   var geometry = new THREE.TetrahedronGeometry(2, 0);
@@ -124,7 +140,97 @@ function addGeometry() {
 
 }
 
+function createMesh(){
 
+  class StarShape extends THREE.Shape{
+    constructor(sides, innerRadius, outerRadius){
+      super();
+      let theta = 0;
+      const inc = ((2 * Math.PI) / sides) * 0.5;
+    
+      this.moveTo(Math.cos(theta)*outerRadius, Math.sin(theta)*outerRadius);
+    
+      for(let i=0; i<sides; i++){
+        theta += inc;
+        this.lineTo(Math.cos(theta)*innerRadius, Math.sin(theta)*innerRadius);
+        theta += inc;
+        this.lineTo(Math.cos(theta)*outerRadius, Math.sin(theta)*outerRadius);
+      }
+    }  
+  }
+
+  const extrudeSettings = {
+    depth: 6,
+    bevelEnabled: false
+  };
+  const shape = new StarShape(5, 5, 12);
+  const heartGeometry = new THREE.ExtrudeBufferGeometry( shape, extrudeSettings );
+  const ballGeometry = new THREE.SphereBufferGeometry(10,30,30);
+  iGroup = new THREE.Group();
+  scene.add(iGroup);
+  const geometry = new THREE.IcosahedronBufferGeometry( 180, 1 );
+  const mat = new THREE.MeshBasicMaterial({wireframe:true});
+  iMesh = new THREE.Mesh(geometry, mat);
+  scene.add(iMesh);
+  const position = geometry.getAttribute('position');
+  const normal = geometry.getAttribute('normal');
+  for(let i=0; i<position.array.length; i+=3){
+    const color = new THREE.Color("blue");
+    const material = new THREE.MeshStandardMaterial({ color: color });
+    const iBall = new THREE.Mesh(ballGeometry, material);
+    const pos = new THREE.Vector3(position.array[i], position.array[i+1], position.array[i+2]);
+    const norm = new THREE.Vector3(normal.array[i], normal.array[i+1], normal.array[i+2]);
+    iBall.position.copy(pos);
+    const target = pos.clone().add(norm.multiplyScalar(10.0));
+    iBall.lookAt(target);
+    //iGroup.add(iBall);
+  }
+
+}
+
+function createFloor(){
+  const f_geo = new THREE.PlaneGeometry(200,200);
+  const f_mat = new THREE.ShadowMaterial({ opacity:0.35, color:0x000000 });
+  const f_mes = new THREE.Mesh( f_geo, f_mat);
+  f_mes.position.x = 0;
+  f_mes.position.y = 0;
+  f_mes.position.z = 0;
+  f_mes.rotateX( - Math.PI / 2 );
+  f_mes.receiveShadow = true;
+  
+  //return f_mes;
+
+ 
+}
+
+const createText = (m = 'Blueprint') => {
+  let loader = new THREE.FontLoader();
+  loader.load("https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+    function (font) {
+      m_text = m;
+      const t_geo = new THREE.TextGeometry(m_text, {
+        font: font,
+        size: 10,
+        height: 0.5,
+        curveSegments: 6,
+        bevelEnabled: true,
+        bevelThickness: 0.9,
+        bevelSize: 0.3,
+        bevelOffset: 0.1,
+        bevelSegments: 6
+      });
+      t_geo.center();
+      const t_mes = new THREE.Mesh(t_geo, new THREE.MeshStandardMaterial({color:0xffffff}));
+      t_mes.position.set(0,400,-200);
+      t_mes.castShadow = true;
+      t_mes.receiveShadow = true;
+      t_mes.scale.set(10,10,1);
+      //console.log('Children', t_mes.children.length);
+      scene.add(t_mes);
+    }
+  );
+  return null;
+}
 
 function initTimeline() {
 // Wrap every letter in a span
@@ -137,22 +243,7 @@ function initTimeline() {
     easing: "easeOutSine"
   });
 
-  timeline.add({
-    targets:'.text-animation .letter',
-    scale:[3,1],
-    opacity:[0,1],
-    translateZ:0,
-    duration:1000,
-    easing:"easeOutExpo",
-    delay:(elem, index) => index*70
-  })
-  timeline.add({
-    targets:'.text-animation',
-    opacity:0,
-    duration:1000,
-    delay:1000,
-    easing:"easeOutExpo"
-  })
+  
   // timeline.add({
   //   targets: '.c2 .line',
   //   scaleY: [0,1],
@@ -188,7 +279,7 @@ function initTimeline() {
   //   points: '64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96',
   //   easing: 'easeInOutExpo'
   // });
-
+  
   timeline.add({
     targets: player
     .position,
@@ -408,6 +499,25 @@ function changeCamera() {
   if (cameraIndex >= cameras.length) cameraIndex = 0;
 }
 
+
+function updateCamera() {
+  const time = clock.getElapsedTime();
+  const looptime = 200;
+  const t = (time % looptime) / looptime;
+  const t2 = ((time + 0.1) % looptime) / looptime;
+
+  const pos = tube.geometry.parameters.path.getPointAt(t);
+  const pos2 = tube.geometry.parameters.path.getPointAt(t2);
+
+  camera.position.copy(pos);
+  camera.lookAt(pos2);
+}
+
+// linear interpolation function
+function lerp(a, b, t) {
+  return (1 - t) * a + t * b;
+}
+
 function init() {
   initThree();
   initTimeline();
@@ -438,7 +548,10 @@ function animate() {
   const pos = player.position.clone();
   pos.y += 3;
   camera.lookAt(pos);
+
+  controls.update();
 }
+
 
 function render() {
   var dtime = Date.now() - startTime;
@@ -454,10 +567,7 @@ function render() {
   //updateCamera();
   renderer.render(scene, camera);
 }
-// linear interpolation function
-function lerp(a, b, t) {
-  return (1 - t) * a + t * b;
-}
+
 
 function resize() {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -465,18 +575,7 @@ function resize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-function updateCamera() {
-  const time = clock.getElapsedTime();
-  const looptime = 200;
-  const t = (time % looptime) / looptime;
-  const t2 = ((time + 0.1) % looptime) / looptime;
 
-  const pos = tube.geometry.parameters.path.getPointAt(t);
-  const pos2 = tube.geometry.parameters.path.getPointAt(t2);
-
-  camera.position.copy(pos);
-  camera.lookAt(pos2);
-}
 
 function geoThree() {
   //===================================================== data
