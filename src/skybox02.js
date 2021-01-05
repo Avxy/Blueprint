@@ -1,13 +1,13 @@
 var scene = new THREE.Scene();
-var renderer = new THREE.WebGLRenderer();
+var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 var camera = new THREE.PerspectiveCamera();
 var clock, binormal, normal, tube, player, particle;
 
 var envMap;
 var cube = null;
 var sphere = null;
-
-//var container = document.querySelector(".webgl");
+var followCam2;
+var container = document.querySelector(".webgl");
 var startTime = Date.now();
 var scrollY = 0;
 var _event = {
@@ -19,12 +19,15 @@ var percentage = 0;
 
 //var divContainer = document.querySelector(".container");
 //var maxHeight=(divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight;
+// var element = document.getElementsByClassName("text-animation")[0];
+// element.innerHTML = element.textContent.replace(/\S/g,'<span class="letter">$&</span>');
 
 var group;
 
 var maxHeight = 7199;
 
 var cameras, cameraIndex;
+
 
 function initThree() {
   const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
@@ -33,11 +36,14 @@ function initThree() {
  
   var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
+// renderer = new THREE.WebGLRenderer( { alpha: true } );
+// renderer.setClearColor( 0x000000, 0 ); // the default
+
   scene = new THREE.Scene();
   envMap = new THREE.CubeTextureLoader()
     .setPath(`${assetPath}skybox1_`)
     .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
-  scene.background = envMap;
+  //scene.background = envMap;
 
   const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
   scene.add(ambient);
@@ -62,13 +68,14 @@ function initThree() {
 
   // renderer.setPixelRatio(window.devicePixelRatio || 1);
   // renderer.setClearColor(0x161216);
-
+  //renderer.setPixelRatio((window.devicePixelRatio) ? window.devicePixelRatio : 1);
   //renderer.setSize(window.innerWidth, window.innerHeight);
   camera.position.y = 10;
   camera.position.z = 1000;
   camera.lookAt(0, 0, 0);
   resize();
   //container.appendChild(renderer.domElement);
+  //document.getElementById('container').appendChild(renderer.domElement);
   document.body.appendChild(renderer.domElement);
   addGeometry();
   geoThree();
@@ -120,19 +127,87 @@ function addGeometry() {
 
 
 function initTimeline() {
+// Wrap every letter in a span
+
+
+
   timeline = anime.timeline({
     autoplay: false,
     duration: 8000,
     easing: "easeOutSine"
-   
   });
 
   timeline.add({
-    targets: camera.position,
+    targets:'.text-animation .letter',
+    scale:[3,1],
+    opacity:[0,1],
+    translateZ:0,
+    duration:1000,
+    easing:"easeOutExpo",
+    delay:(elem, index) => index*70
+  })
+  timeline.add({
+    targets:'.text-animation',
+    opacity:0,
+    duration:1000,
+    delay:1000,
+    easing:"easeOutExpo"
+  })
+  // timeline.add({
+  //   targets: '.c2 .line',
+  //   scaleY: [0,1],
+  //   opacity: [0.5,1],
+  //   //easing: "easeOutExpo",
+  //   duration: 700
+  // });
+  // timeline.add({
+  //   targets: '.c2 .line',
+  //   translateX: [0, document.querySelector('.c2 .letters').getBoundingClientRect().width + 10],
+  //   //easing: "easeOutExpo",
+  //   duration: 700,
+  //   delay: 100
+  // });
+  // timeline.add({
+  //   targets: '.c2 .letter',
+  //   opacity: [0,1],
+  //   //easing: "easeOutExpo",
+  //   duration: 600,
+  //   offset: '-=775',
+  //   delay: (el, i) => 34 * (i+1)
+  // });
+  // timeline.add({
+  //   targets: '.c2',
+  //   opacity: 0,
+  //   duration: 1000,
+  //   //easing: "easeOutExpo",
+  //   delay: 1000
+  // });
+
+  // timeline.add({
+  //   targets: '#svgAttributes polygon',
+  //   points: '64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96',
+  //   easing: 'easeInOutExpo'
+  // });
+
+  timeline.add({
+    targets: player
+    .position,
     x: 0,
-    y: 140,
+    y: 250,
     z: 0,
-    duration: 8000,
+    // .rotation,
+    // x: 1,
+    // y: 0,
+    // z: 0,
+    duration: 4000,
+    update: camera.updateProjectionMatrix()
+  });
+  timeline.add({
+    targets: player.position,
+    x: 0,
+    y: 250,
+    z: 0,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
   timeline.add({
@@ -140,10 +215,10 @@ function initTimeline() {
     x: 1,
     y: 0,
     z: 0,
-    duration: 8000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
- 
+
 
   timeline.add({
     targets: cube.rotation,
@@ -227,8 +302,7 @@ function playerCam() {
   //===================================================== camera
   cameras = [];
   cameraIndex = 0;
-
-  
+   
   const followCam = new THREE.Object3D();
   followCam.position.copy(camera.position);
   player.add(followCam);
@@ -242,6 +316,8 @@ function playerCam() {
   const overheadCam = new THREE.Object3D();
   overheadCam.position.set(0, 200, 120);
   cameras.push(overheadCam);
+
+
 
  
   // const scrollCam = camera;
@@ -373,7 +449,7 @@ function render() {
   // animate the cube
   //cube.rotation.x += 0.01;
   //cube.rotation.y += 0.0125;
-  //cube.rotation.z += 0.012;
+  //group.rotateX(Math.PI/3600);
   particle.rotation.y += 0.001;
   //updateCamera();
   renderer.render(scene, camera);
@@ -546,7 +622,7 @@ function geoThree() {
       //===================================================== add globe
       group = new THREE.Group();
       scene.add(group);
-      //group.rotateX(Math.PI / 8);
+      group.rotateX(Math.PI / 8);
 
       var RADIUS = 140;
 
@@ -558,6 +634,14 @@ function geoThree() {
       //   color: new THREE.Color("white")
       // });
       var sphereMaterial = new THREE.MeshPhongMaterial( { color: 0x000000 } );
+      
+      // var sphereMaterial = new THREE.MeshPhongMaterial({
+      //   color: 0xffffff,
+      //   wireframe: true,
+      //   side: THREE.DoubleSide
+    
+      //});
+      
       // var grid = new THREE.Mesh( sphereGeometry, sphereMaterial );
       // var gridEdge = new THREE.EdgesHelper(grid, 0xaaaaff);
       // gridEdge.material.linewidth = 3;
@@ -573,18 +657,18 @@ function geoThree() {
       group.add(earthMesh);
 
       //===================================================== add glow effect to globe
-      var customMaterial = new THREE.ShaderMaterial({
-        uniforms: {},
-        vertexShader: document.getElementById("vertexShader").textContent,
-        fragmentShader: document.getElementById("fragmentShader").textContent,
-        side: THREE.BackSide,
-        blending: THREE.AdditiveBlending,
-        transparent: true
-      });
+      // var customMaterial = new THREE.ShaderMaterial({
+      //   uniforms: {},
+      //   vertexShader: document.getElementById("vertexShader").textContent,
+      //   fragmentShader: document.getElementById("fragmentShader").textContent,
+      //   side: THREE.BackSide,
+      //   blending: THREE.AdditiveBlending,
+      //   transparent: true
+      // });
 
-      var ballGeometry = new THREE.SphereGeometry(170, 60, 60);
-      var ball = new THREE.Mesh(ballGeometry, customMaterial);
-      scene.add(ball);
+      // var ballGeometry = new THREE.SphereGeometry(160, 60, 60);
+      // var ball = new THREE.Mesh(ballGeometry, customMaterial);
+      // scene.add(ball);
 
       //===================================================== lng & lat
       function Destination(array) {
