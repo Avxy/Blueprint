@@ -16,19 +16,19 @@ var _event = {
 };
 var timeline = null;
 var percentage = 0;
-  
+
 //var divContainer = document.querySelector(".container");
 //var maxHeight=(divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight;
 // var element = document.getElementsByClassName("text-animation")[0];
 // element.innerHTML = element.textContent.replace(/\S/g,'<span class="letter">$&</span>');
 
-var group, iGroup, iMesh, m_text;
+var group, iGroup, iMesh, mText, mText00, bPlane, bBox01, bBox02, bBox03;
 
 var maxHeight = 7199;
 
 var cameras, cameraIndex;
 
-const canvas = document.querySelector('#canvas');
+const canvas = document.querySelector("#canvas");
 
 var controls;
 
@@ -36,12 +36,12 @@ function initThree() {
   const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
   //new THREE.TextGeometry( text, parameters );
   clock = new THREE.Clock();
- // new THREE.TextGeometry( text, parameters );
+  // new THREE.TextGeometry( text, parameters );
   var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-// renderer = new THREE.WebGLRenderer( { alpha: true } );
+  // renderer = new THREE.WebGLRenderer( { alpha: true } );
 
-// renderer.setClearColor( 0x000000, 0 ); // the default
+  // renderer.setClearColor( 0x000000, 0 ); // the default
 
   scene = new THREE.Scene();
   envMap = new THREE.CubeTextureLoader()
@@ -87,9 +87,9 @@ function initThree() {
   createMesh();
   createFloor();
   createText();
-
+  createText00();
 }
- 
+
 function addGeometry() {
   cube = new THREE.Mesh(
     new THREE.CubeGeometry(10, 10, 10),
@@ -114,14 +114,48 @@ function addGeometry() {
   sphere.position.y = 140;
   sphere.position.z = 0;
   scene.add(sphere);
-  
 
+  bBox01 = new THREE.Mesh(
+    new THREE.CubeGeometry(500, 1, 500),
+    new THREE.MeshLambertMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide
+    })
+  );
+  bBox01.rotation.x = 0.5;
+  bBox01.rotation.y = 0.78;
+  bBox01.position.x = 0;
+  bBox01.position.y = -1000;
+  bBox01.position.z = 0;
+  scene.add(bBox01);
 
+  bBox02 = new THREE.Mesh(
+    new THREE.CubeGeometry(500, 1, 500),
+    new THREE.MeshLambertMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide
+    })
+  );
+  bBox02.rotation.x = 0.5;
+  bBox02.rotation.y = 0.78;
+  bBox02.position.x = 0;
+  bBox02.position.y = -1000;
+  bBox02.position.z = 0;
+  scene.add(bBox02);
 
-
-
-
-
+  bBox03 = new THREE.Mesh(
+    new THREE.CubeGeometry(500, 1, 500),
+    new THREE.MeshLambertMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide
+    })
+  );
+  bBox03.rotation.x = 0.5;
+  bBox03.rotation.y = 0.78;
+  bBox03.position.x = 0;
+  bBox03.position.y = -1000;
+  bBox03.position.z = 0;
+  scene.add(bBox03);
 
   particle = new THREE.Object3D();
   scene.add(particle);
@@ -132,31 +166,37 @@ function addGeometry() {
   });
   for (var i = 0; i < 500; i++) {
     var mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
-    mesh.position.multiplyScalar(90 + (Math.random() * 700));
+    mesh.position
+      .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
+      .normalize();
+    mesh.position.multiplyScalar(90 + Math.random() * 700);
     mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
     particle.add(mesh);
   }
-
 }
 
-function createMesh(){
-
-  class StarShape extends THREE.Shape{
-    constructor(sides, innerRadius, outerRadius){
+function createMesh() {
+  class StarShape extends THREE.Shape {
+    constructor(sides, innerRadius, outerRadius) {
       super();
       let theta = 0;
       const inc = ((2 * Math.PI) / sides) * 0.5;
-    
-      this.moveTo(Math.cos(theta)*outerRadius, Math.sin(theta)*outerRadius);
-    
-      for(let i=0; i<sides; i++){
+
+      this.moveTo(Math.cos(theta) * outerRadius, Math.sin(theta) * outerRadius);
+
+      for (let i = 0; i < sides; i++) {
         theta += inc;
-        this.lineTo(Math.cos(theta)*innerRadius, Math.sin(theta)*innerRadius);
+        this.lineTo(
+          Math.cos(theta) * innerRadius,
+          Math.sin(theta) * innerRadius
+        );
         theta += inc;
-        this.lineTo(Math.cos(theta)*outerRadius, Math.sin(theta)*outerRadius);
+        this.lineTo(
+          Math.cos(theta) * outerRadius,
+          Math.sin(theta) * outerRadius
+        );
       }
-    }  
+    }
   }
 
   const extrudeSettings = {
@@ -164,51 +204,57 @@ function createMesh(){
     bevelEnabled: false
   };
   const shape = new StarShape(5, 5, 12);
-  const heartGeometry = new THREE.ExtrudeBufferGeometry( shape, extrudeSettings );
-  const ballGeometry = new THREE.SphereBufferGeometry(10,30,30);
+  const heartGeometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
+  const ballGeometry = new THREE.SphereBufferGeometry(10, 30, 30);
   iGroup = new THREE.Group();
   scene.add(iGroup);
-  const geometry = new THREE.IcosahedronBufferGeometry( 180, 1 );
-  const mat = new THREE.MeshBasicMaterial({wireframe:true});
+  const geometry = new THREE.IcosahedronBufferGeometry(180, 1);
+  const mat = new THREE.MeshBasicMaterial({ wireframe: true });
   iMesh = new THREE.Mesh(geometry, mat);
   scene.add(iMesh);
-  const position = geometry.getAttribute('position');
-  const normal = geometry.getAttribute('normal');
-  for(let i=0; i<position.array.length; i+=3){
+  const position = geometry.getAttribute("position");
+  const normal = geometry.getAttribute("normal");
+  for (let i = 0; i < position.array.length; i += 3) {
     const color = new THREE.Color("blue");
     const material = new THREE.MeshStandardMaterial({ color: color });
     const iBall = new THREE.Mesh(ballGeometry, material);
-    const pos = new THREE.Vector3(position.array[i], position.array[i+1], position.array[i+2]);
-    const norm = new THREE.Vector3(normal.array[i], normal.array[i+1], normal.array[i+2]);
+    const pos = new THREE.Vector3(
+      position.array[i],
+      position.array[i + 1],
+      position.array[i + 2]
+    );
+    const norm = new THREE.Vector3(
+      normal.array[i],
+      normal.array[i + 1],
+      normal.array[i + 2]
+    );
     iBall.position.copy(pos);
     const target = pos.clone().add(norm.multiplyScalar(10.0));
     iBall.lookAt(target);
     //iGroup.add(iBall);
   }
-
 }
 
-function createFloor(){
-  const f_geo = new THREE.PlaneGeometry(200,200);
-  const f_mat = new THREE.ShadowMaterial({ opacity:0.35, color:0x000000 });
-  const f_mes = new THREE.Mesh( f_geo, f_mat);
+function createFloor() {
+  const f_geo = new THREE.PlaneGeometry(200, 200);
+  const f_mat = new THREE.ShadowMaterial({ opacity: 0.35, color: 0x000000 });
+  const f_mes = new THREE.Mesh(f_geo, f_mat);
   f_mes.position.x = 0;
   f_mes.position.y = 0;
   f_mes.position.z = 0;
-  f_mes.rotateX( - Math.PI / 2 );
+  f_mes.rotateX(-Math.PI / 2);
   f_mes.receiveShadow = true;
-  
-  //return f_mes;
 
- 
+  //return f_mes;
 }
 
-const createText = (m = 'Blueprint') => {
+const createText = (m = "Blueprint") => {
   let loader = new THREE.FontLoader();
-  loader.load("https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+  loader.load(
+    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
     function (font) {
-      m_text = m;
-      const t_geo = new THREE.TextGeometry(m_text, {
+      mText = m;
+      const t_geo = new THREE.TextGeometry(mText, {
         font: font,
         size: 10,
         height: 0.5,
@@ -220,22 +266,57 @@ const createText = (m = 'Blueprint') => {
         bevelSegments: 6
       });
       t_geo.center();
-      const t_mes = new THREE.Mesh(t_geo, new THREE.MeshStandardMaterial({color:0xffffff}));
-      t_mes.position.set(0,400,-200);
+      const t_mes = new THREE.Mesh(
+        t_geo,
+        new THREE.MeshStandardMaterial({ color: 0xffffff })
+      );
+      t_mes.position.set(0, 400, -200);
       t_mes.castShadow = true;
       t_mes.receiveShadow = true;
-      t_mes.scale.set(10,10,1);
+      t_mes.scale.set(8, 5, 1);
       //console.log('Children', t_mes.children.length);
       scene.add(t_mes);
     }
   );
   return null;
-}
+};
+
+
+const createText00 = (m = "The future of education, starts with your experience. explore your world though different dimensions. connect your information, build knolegde and share share your experience") => {
+  let loader = new THREE.FontLoader();
+  loader.load(
+    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+    function (font) {
+      mText00 = m;
+      const t_geo = new THREE.TextGeometry(mText00, {
+        font: font,
+        size: 10,
+        height: 0.5,
+        curveSegments: 6,
+        bevelEnabled: true,
+        bevelThickness: 0.9,
+        bevelSize: 0.3,
+        bevelOffset: 0.1,
+        bevelSegments: 6
+      });
+      t_geo.center();
+      const t_mes = new THREE.Mesh(
+        t_geo,
+        new THREE.MeshStandardMaterial({ color: 0xffffff })
+      );
+      t_mes.position.set(5000, 0, -200);
+      t_mes.castShadow = true;
+      t_mes.receiveShadow = true;
+      t_mes.scale.set(8, 5, 1);
+      //console.log('Children', t_mes.children.length);
+      scene.add(t_mes);
+    }
+  );
+  return null;
+};
 
 function initTimeline() {
-// Wrap every letter in a span
-
-
+  // Wrap every letter in a span
 
   timeline = anime.timeline({
     autoplay: false,
@@ -243,7 +324,6 @@ function initTimeline() {
     easing: "easeOutSine"
   });
 
-  
   // timeline.add({
   //   targets: '.c2 .line',
   //   scaleY: [0,1],
@@ -279,10 +359,9 @@ function initTimeline() {
   //   points: '64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96',
   //   easing: 'easeInOutExpo'
   // });
-  
+
   timeline.add({
-    targets: player
-    .position,
+    targets: player.position,
     x: 0,
     y: 250,
     z: 0,
@@ -309,7 +388,6 @@ function initTimeline() {
     duration: 4000,
     update: camera.updateProjectionMatrix()
   });
-
 
   timeline.add({
     targets: cube.rotation,
@@ -393,7 +471,7 @@ function playerCam() {
   //===================================================== camera
   cameras = [];
   cameraIndex = 0;
-   
+
   const followCam = new THREE.Object3D();
   followCam.position.copy(camera.position);
   player.add(followCam);
@@ -408,9 +486,6 @@ function playerCam() {
   overheadCam.position.set(0, 200, 120);
   cameras.push(overheadCam);
 
-
-
- 
   // const scrollCam = camera;
   // scrollCam.position.copy(camera.position);
   // player.add(scrollCam);
@@ -499,7 +574,6 @@ function changeCamera() {
   if (cameraIndex >= cameras.length) cameraIndex = 0;
 }
 
-
 function updateCamera() {
   const time = clock.getElapsedTime();
   const looptime = 200;
@@ -552,7 +626,6 @@ function animate() {
   controls.update();
 }
 
-
 function render() {
   var dtime = Date.now() - startTime;
   // easing with treshold on 0.08 (should be between .14 & .2 for smooth animations)
@@ -568,14 +641,11 @@ function render() {
   renderer.render(scene, camera);
 }
 
-
 function resize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
-
-
 
 function geoThree() {
   //===================================================== data
@@ -583,86 +653,59 @@ function geoThree() {
     {
       origin: { name: "mexico", latitude: 10, longitude: -90 },
       destination: { name: "Jamaica", latitude: 10, longitude: -90 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 10, longitude: -90 },
       destination: { name: "Jamaica", latitude: 20, longitude: -100 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 20, longitude: -100 },
       destination: { name: "Jamaica", latitude: 30, longitude: -80 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 30, longitude: -80 },
       destination: { name: "Jamaica", latitude: 40, longitude: -80 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 40, longitude: -80 },
       destination: { name: "Jamaica", latitude: 40, longitude: -90 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 40, longitude: -90 },
       destination: { name: "Jamaica", latitude: 50, longitude: -100 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 40, longitude: -90 },
       destination: { name: "Jamaica", latitude: 50, longitude: -70 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 50, longitude: -70 },
       destination: { name: "Jamaica", latitude: 60, longitude: -60 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 50, longitude: -70 },
       destination: { name: "Jamaica", latitude: 60, longitude: -90 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 60, longitude: -90 },
       destination: { name: "Jamaica", latitude: 70, longitude: -100 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 70, longitude: -100 },
       destination: { name: "Jamaica", latitude: 70, longitude: -120 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 70, longitude: -100 },
       destination: { name: "Jamaica", latitude: 90, longitude: -110 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 70, longitude: -100 },
       destination: { name: "Jamaica", latitude: 80, longitude: -90 }
-    }, 
+    },
     {
       origin: { name: "mexico", latitude: 80, longitude: -90 },
       destination: { name: "Jamaica", latitude: 100, longitude: -100 }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   ];
 
   //===================================================== helper functions
@@ -732,15 +775,15 @@ function geoThree() {
       //   opacity: 1,
       //   color: new THREE.Color("white")
       // });
-      var sphereMaterial = new THREE.MeshPhongMaterial( { color: 0x000000 } );
-      
+      var sphereMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+
       // var sphereMaterial = new THREE.MeshPhongMaterial({
       //   color: 0xffffff,
       //   wireframe: true,
       //   side: THREE.DoubleSide
-    
+
       //});
-      
+
       // var grid = new THREE.Mesh( sphereGeometry, sphereMaterial );
       // var gridEdge = new THREE.EdgesHelper(grid, 0xaaaaff);
       // gridEdge.material.linewidth = 3;
@@ -751,9 +794,15 @@ function geoThree() {
       earthMesh.name = "earth";
       var earthMesh02 = earthMesh.clone();
       earthMesh02.position.x = 500;
-      earthMesh02.scale.set(0.3,0.3,0.3);
+      earthMesh02.scale.set(0.3, 0.3, 0.3);
       group.add(earthMesh02);
       group.add(earthMesh);
+
+      bPlane = new THREE.GridHelper(5000, 25);
+      bPlane.material.color = new THREE.Color("white");
+      bPlane.rotateX(Math.PI / 2);
+      bPlane.position.set(0, 0, -500);
+      scene.add(bPlane);
 
       //===================================================== add glow effect to globe
       // var customMaterial = new THREE.ShaderMaterial({
@@ -856,14 +905,12 @@ function geoThree() {
           var curve = new THREE.CubicBezierCurve3(start, mid1, mid2, end);
           var g = new THREE.TubeGeometry(curve, 100, 0.35, 10, false);
           var m = new THREE.MeshBasicMaterial({
-          //   color: new THREE.Color(
-          //     "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
-          //   )
-          // });
-          color: new THREE.Color(
-            "rgb(0,144,255))"
-          )
-        });
+            //   color: new THREE.Color(
+            //     "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
+            //   )
+            // });
+            color: new THREE.Color("rgb(0,144,255))")
+          });
           var curveObject = new THREE.Mesh(g, m);
           group.add(curveObject);
         });
