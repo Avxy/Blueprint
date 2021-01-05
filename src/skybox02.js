@@ -4,8 +4,6 @@ var camera = new THREE.PerspectiveCamera();
 var clock, binormal, normal, tube, player, particle;
 
 var envMap;
-var cube = null;
-var sphere = null;
 var followCam2;
 var container = document.querySelector(".webgl");
 var startTime = Date.now();
@@ -22,7 +20,7 @@ var percentage = 0;
 // var element = document.getElementsByClassName("text-animation")[0];
 // element.innerHTML = element.textContent.replace(/\S/g,'<span class="letter">$&</span>');
 
-var group, iGroup, iMesh, mText, mText00, bPlane, bBox01, bBox02, bBox03;
+var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, mText, mText00, bPlane, bBox01, bBox02, bBox03;
 
 var maxHeight = 7199;
 
@@ -116,7 +114,7 @@ function addGeometry() {
   scene.add(sphere);
 
   bBox01 = new THREE.Mesh(
-    new THREE.CubeGeometry(500, 1, 500),
+    new THREE.CubeGeometry(500, 500, 500),
     new THREE.MeshLambertMaterial({
       color: 0xffffff,
       side: THREE.DoubleSide
@@ -314,76 +312,20 @@ const createText00 = (m = "The future of education, starts with your experience.
   );
   return null;
 };
-
+//var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, mText, mText00, bPlane, bBox01, bBox02, bBox03;
 function initTimeline() {
   // Wrap every letter in a span
 
   timeline = anime.timeline({
     autoplay: false,
-    duration: 8000,
+    duration: 64000,
     easing: "easeOutSine"
   });
 
-  // timeline.add({
-  //   targets: '.c2 .line',
-  //   scaleY: [0,1],
-  //   opacity: [0.5,1],
-  //   //easing: "easeOutExpo",
-  //   duration: 700
-  // });
-  // timeline.add({
-  //   targets: '.c2 .line',
-  //   translateX: [0, document.querySelector('.c2 .letters').getBoundingClientRect().width + 10],
-  //   //easing: "easeOutExpo",
-  //   duration: 700,
-  //   delay: 100
-  // });
-  // timeline.add({
-  //   targets: '.c2 .letter',
-  //   opacity: [0,1],
-  //   //easing: "easeOutExpo",
-  //   duration: 600,
-  //   offset: '-=775',
-  //   delay: (el, i) => 34 * (i+1)
-  // });
-  // timeline.add({
-  //   targets: '.c2',
-  //   opacity: 0,
-  //   duration: 1000,
-  //   //easing: "easeOutExpo",
-  //   delay: 1000
-  // });
-
-  // timeline.add({
-  //   targets: '#svgAttributes polygon',
-  //   points: '64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96',
-  //   easing: 'easeInOutExpo'
-  // });
-
   timeline.add({
-    targets: player.position,
+    targets: camera.position,
     x: 0,
     y: 250,
-    z: 0,
-    // .rotation,
-    // x: 1,
-    // y: 0,
-    // z: 0,
-    duration: 4000,
-    update: camera.updateProjectionMatrix()
-  });
-  timeline.add({
-    targets: player.position,
-    x: 0,
-    y: 250,
-    z: 0,
-    duration: 4000,
-    update: camera.updateProjectionMatrix()
-  });
-  timeline.add({
-    targets: camera.rotation,
-    x: 1,
-    y: 0,
     z: 0,
     duration: 4000,
     update: camera.updateProjectionMatrix()
@@ -630,7 +572,7 @@ function render() {
   var dtime = Date.now() - startTime;
   // easing with treshold on 0.08 (should be between .14 & .2 for smooth animations)
   percentage = lerp(percentage, scrollY, 0.08);
-  timeline.seek(percentage * (8000 / maxHeight));
+  timeline.seek(percentage * (64000 / maxHeight));
 
   // animate the cube
   //cube.rotation.x += 0.01;
@@ -790,9 +732,9 @@ function geoThree() {
       // grid.rotateZ(1/2*Math.PI);
       // group.add(grid);
       // group.add(gridEdge);
-      var earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
       earthMesh.name = "earth";
-      var earthMesh02 = earthMesh.clone();
+      earthMesh02 = earthMesh.clone();
       earthMesh02.position.x = 500;
       earthMesh02.scale.set(0.3, 0.3, 0.3);
       group.add(earthMesh02);
@@ -856,11 +798,11 @@ function geoThree() {
 
           //points
           var pointGeom = new THREE.SphereGeometry(10, 10, 10);
-          var point = new THREE.Mesh(
+          point = new THREE.Mesh(
             pointGeom,
             new THREE.MeshBasicMaterial({ color: new THREE.Color("skyblue") })
           );
-          var point2 = new THREE.Mesh(
+          point2 = new THREE.Mesh(
             pointGeom,
             new THREE.MeshBasicMaterial({ color: new THREE.Color("skyblue") })
           );
