@@ -73,6 +73,10 @@ function initThree() {
   light.position.set(1, 140, 200);
   scene.add(light);
 
+  const light00 = new THREE.DirectionalLight(0xffffff, 1);
+  light00.position.set(0, 0, 0);
+  scene.add(light00);
+
   //Add meshes here
   const curve = new THREE.Curves.TrefoilKnot(30);
   const geometry = new THREE.TubeBufferGeometry(curve, 100, 2, 8, true);
@@ -683,6 +687,20 @@ function scroll(e) {
   scrollY = -evt.y;
 }
 
+function touch(e) {
+  var evt = _event;
+  // limit scroll top
+  if (evt.y + evt.deltaY > 0) {
+    evt.y = 0;
+    // limit scroll bottom
+  } else if (-(evt.y + evt.deltaY) >= maxHeight) {
+    evt.y = -maxHeight;
+  } else {
+    evt.y += evt.deltaY;
+  }
+  scrollY = -evt.y;
+}
+
 function playerCam() {
   //===================================================== player
   //Add meshes here
@@ -834,9 +852,11 @@ function lerp(a, b, t) {
 function init() {
   initThree();
   initTimeline();
-  window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener("resize", resize, { passive: false });
   //divContainer.addEventListener("wheel", onWheel, { passive: false });
   window.addEventListener("wheel", onWheel, { passive: false });
+  window.addEventListener("touchstart", touch, {passive: false} );
+
 
   animate();
 }
@@ -1119,7 +1139,7 @@ function geoThree() {
 
           //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
           const CURVE_MIN_ALTITUDE = 5;
-          const CURVE_MAX_ALTITUDE = 20;
+          const CURVE_MAX_ALTITUDE = 10;
           const altitude = clamp(
             start.distanceTo(end) * 0.75,
             CURVE_MIN_ALTITUDE,
@@ -1157,7 +1177,55 @@ function geoThree() {
           });
           var curveObject = new THREE.Mesh(g, m);
           group.add(curveObject);
+
+
+
+          //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
+          const CURVE_MIN_ALTITUDE00 = -10;
+          const CURVE_MAX_ALTITUDE00 = -10;
+          const altitude00 = clamp(
+            start.distanceTo(end) * 0.75,
+            CURVE_MIN_ALTITUDE00,
+            CURVE_MAX_ALTITUDE00
+          );
+
+          //get the middle position of each location
+          var lat00 = [startLng, startLat];
+          var lng00 = [endLng, endLat];
+          var geoInterpolator00 = d3.geoInterpolate(lat00, lng00);
+
+          const midCoord100 = geoInterpolator(0.25);
+          const midCoord200 = geoInterpolator(0.75);
+
+          const mid100 = coordinateToPosition(
+            midCoord100[1],
+            midCoord100[0],
+            RADIUS + altitude
+          );
+          const mid200 = coordinateToPosition(
+            midCoord200[1],
+            midCoord200[0],
+            RADIUS + altitude
+          );
+
+          //create bezier curve from the lng & lat positions
+          var curve00 = new THREE.CubicBezierCurve3(start, mid100, mid200, end);
+          var g00 = new THREE.TubeGeometry(curve00, 0, 0, 0, false);
+          var m00 = new THREE.MeshBasicMaterial({
+            //   color: new THREE.Color(
+            //     "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
+            //   )
+            // });
+            color: new THREE.Color("rgb(255,255,255))")
+          });
+          var curveObject00 = new THREE.Mesh(g00, m00);
+          group.add(curveObject00);
+ 
+          
         });
+
+        
+
       } //end Destination()
 
       Destination(our_data);

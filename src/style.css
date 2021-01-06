@@ -23,7 +23,7 @@
 #camera-btn {
   position: absolute;
   right: 20px;
-  top: 20px;
+  bottom: 20px;
   color: #ffffff;
   background: #aa0089;
   font-size: 30px;
@@ -35,6 +35,20 @@
   border-radius: 50%;
 }
 
+#camera-scroll {
+  position: absolute;
+  right: 130px;
+  bottom: 20px;
+  color: #ffffff;
+  background: #aa0089;
+  font-size: 30px;
+  text-align: center;
+  line-height: 60px;
+  vertical-align: middle;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
 
  section {
    position: absolute;
