@@ -20,13 +20,15 @@ var percentage = 0;
 // var element = document.getElementsByClassName("text-animation")[0];
 // element.innerHTML = element.textContent.replace(/\S/g,'<span class="letter">$&</span>');
 
-var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, mText, mText00, bPlane, bBox01, bBox02, bBox03;
-
+var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, bPlane, bBox01, bBox02, bBox03;
+var mText;
+var mText00;
+var t_mes;
 var maxHeight = 7199;
 
 var cameras, cameraIndex;
 
-const canvas = document.querySelector("#canvas");
+//const canvas = document.querySelector("#canvas");
 
 var controls;
 
@@ -83,9 +85,9 @@ function initThree() {
   geoThree();
   playerCam();
   createMesh();
-  createFloor();
+  //createFloor();
   createText();
-  createText00();
+  //createText00();
 }
 
 function addGeometry() {
@@ -233,85 +235,113 @@ function createMesh() {
   }
 }
 
-function createFloor() {
-  const f_geo = new THREE.PlaneGeometry(200, 200);
-  const f_mat = new THREE.ShadowMaterial({ opacity: 0.35, color: 0x000000 });
-  const f_mes = new THREE.Mesh(f_geo, f_mat);
-  f_mes.position.x = 0;
-  f_mes.position.y = 0;
-  f_mes.position.z = 0;
-  f_mes.rotateX(-Math.PI / 2);
-  f_mes.receiveShadow = true;
+// function createFloor() {
+//   const f_geo = new THREE.PlaneGeometry(200, 200);
+//   const f_mat = new THREE.ShadowMaterial({ opacity: 0.35, color: 0x000000 });
+//   const f_mes = new THREE.Mesh(f_geo, f_mat);
+//   f_mes.position.x = 0;
+//   f_mes.position.y = 0;
+//   f_mes.position.z = 0;
+//   f_mes.rotateX(-Math.PI / 2);
+//   f_mes.receiveShadow = true;
 
-  //return f_mes;
+//   //return f_mes;
+// }
+
+// const createText = (m = 'ThreeJs + AnimeJs') => {
+//   let loader = new THREE.FontLoader();
+//   loader.load("https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+//     function (font) {
+//       let m_text = m;
+//       const t_geo = new THREE.TextGeometry(m_text, {
+//         font: font,
+//         size: 10,
+//         height: 0.5,
+//         curveSegments: 6,
+//         bevelEnabled: true,
+//         bevelThickness: 0.9,
+//         bevelSize: 0.3,
+//         bevelOffset: 0.1,
+//         bevelSegments: 6
+//       });
+//       t_geo.center();
+//       t_mes = new THREE.Mesh(t_geo, new THREE.MeshStandardMaterial({color:0xFF0000}));
+//       t_mes.position.set(0, 400, -200);
+//       t_mes.castShadow = true;
+//       t_mes.receiveShadow = true;
+//       t_mes.scale.set(8, 5, 1);
+//       //console.log('Children', t_mes.children.length);
+//       scene.add(t_mes);
+//     }
+//   );
+//   //return null;
+  
+// }
+
+function createText(m = "Blueprint") {
+  let loader = new THREE.FontLoader();
+  loader.load(
+    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+    function (font) {
+      let mTex = m;
+      const t_geo = new THREE.TextGeometry(mTex, {
+        font: font,
+        size: 10,
+        height: 0.5,
+        curveSegments: 6,
+        bevelEnabled: true,
+        bevelThickness: 0.9,
+        bevelSize: 0.3,
+        bevelOffset: 0.1,
+        bevelSegments: 6
+      });
+      t_geo.center();
+      mText = new THREE.Mesh(t_geo, new THREE.MeshStandardMaterial({ color: 0xffffff })
+      );
+      mText.position.set(0, 400, -200);
+      mText.castShadow = true;
+      mText.receiveShadow = true;
+      mText.scale.set(8, 5, 1);
+      //console.log('Children', t_mes.children.length);
+      scene.add(mText);
+    }
+  );
+  return null;
+};
+
+
+function createText00(mm = "The future of education, starts with your experience. explore your world though different dimensions. connect your information, build knolegde and share share your experience"){
+  let loader = new THREE.FontLoader();
+  loader.load(
+    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+    function (font) {
+      let mTex00 = mm;
+      const t_geo = new THREE.TextGeometry(mTex00, {
+        font: font,
+        size: 10,
+        height: 0.5,
+        curveSegments: 6,
+        bevelEnabled: true,
+        bevelThickness: 0.9,
+        bevelSize: 0.3,
+        bevelOffset: 0.1,
+        bevelSegments: 6
+      });
+      t_geo.center();
+      mText00 = new THREE.Mesh(
+        t_geo,
+        new THREE.MeshStandardMaterial({ color: 0xffffff })
+      );
+      mText00.position.set(5000, 0, -200);
+      mText00.castShadow = true;
+      mText00.receiveShadow = true;
+      mText00.scale.set(8, 5, 1);
+      //console.log('Children', t_mes.children.length);
+      scene.add(mText00);
+    }
+  );
+  return null;
 }
-
-const createText = (m = "Blueprint") => {
-  let loader = new THREE.FontLoader();
-  loader.load(
-    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
-    function (font) {
-      mText = m;
-      const t_geo = new THREE.TextGeometry(mText, {
-        font: font,
-        size: 10,
-        height: 0.5,
-        curveSegments: 6,
-        bevelEnabled: true,
-        bevelThickness: 0.9,
-        bevelSize: 0.3,
-        bevelOffset: 0.1,
-        bevelSegments: 6
-      });
-      t_geo.center();
-      const t_mes = new THREE.Mesh(
-        t_geo,
-        new THREE.MeshStandardMaterial({ color: 0xffffff })
-      );
-      t_mes.position.set(0, 400, -200);
-      t_mes.castShadow = true;
-      t_mes.receiveShadow = true;
-      t_mes.scale.set(8, 5, 1);
-      //console.log('Children', t_mes.children.length);
-      scene.add(t_mes);
-    }
-  );
-  return null;
-};
-
-
-const createText00 = (m = "The future of education, starts with your experience. explore your world though different dimensions. connect your information, build knolegde and share share your experience") => {
-  let loader = new THREE.FontLoader();
-  loader.load(
-    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
-    function (font) {
-      mText00 = m;
-      const t_geo = new THREE.TextGeometry(mText00, {
-        font: font,
-        size: 10,
-        height: 0.5,
-        curveSegments: 6,
-        bevelEnabled: true,
-        bevelThickness: 0.9,
-        bevelSize: 0.3,
-        bevelOffset: 0.1,
-        bevelSegments: 6
-      });
-      t_geo.center();
-      const t_mes = new THREE.Mesh(
-        t_geo,
-        new THREE.MeshStandardMaterial({ color: 0xffffff })
-      );
-      t_mes.position.set(5000, 0, -200);
-      t_mes.castShadow = true;
-      t_mes.receiveShadow = true;
-      t_mes.scale.set(8, 5, 1);
-      //console.log('Children', t_mes.children.length);
-      scene.add(t_mes);
-    }
-  );
-  return null;
-};
 //var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, mText, mText00, bPlane, bBox01, bBox02, bBox03;
 function initTimeline() {
   // Wrap every letter in a span
@@ -323,11 +353,11 @@ function initTimeline() {
   });
 
   timeline.add({
-    targets: camera.position,
+    targets: cube.position,
     x: 0,
     y: 250,
     z: 0,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -437,83 +467,73 @@ function playerCam() {
 
   const btn = document.getElementById("camera-btn");
   btn.addEventListener("click", changeCamera);
+  
 
-  //=======================================================player control
+}
 
-  function addKeyboardControl() {
-    document.addEventListener("keydown", keyDown);
-    document.addEventListener("keyup", keyUp);
-  }
+//=======================================================player control
 
-  function keyDown(evt) {
-    let forward =
-      player.userData !== undefined && player.userData.move !== undefined
-        ? player.userData.move.forward
-        : 0;
-    let turn =
-      player.userData != undefined && player.userData.move !== undefined
-        ? player.userData.move.turn
-        : 0;
+function changeCamera(){
+  cameraIndex++;
+  if (cameraIndex>=cameras.length) cameraIndex = 0;
+}
 
-    switch (evt.keyCode) {
-      case 87: //W
+function addKeyboardControl(){
+    document.addEventListener( 'keydown', keyDown );
+    document.addEventListener( 'keyup', keyUp );
+}
+  
+function keyDown(evt){
+    let forward = (player.userData!==undefined && player.userData.move!==undefined) ? player.userData.move.forward : 0;
+    let turn = (player.userData!=undefined && player.userData.move!==undefined) ?  player.userData.move.turn : 0;
+    
+    switch(evt.keyCode){
+      case 87://W
         forward = -1;
         break;
-      case 83: //S
+      case 83://S
         forward = 1;
         break;
-      case 65: //A
+      case 65://A
         turn = 1;
         break;
-      case 68: //D
+      case 68://D
         turn = -1;
         break;
     }
-
+    
     playerControl(forward, turn);
-  }
-
-  function keyUp(evt) {
-    let forward =
-      player.userData !== undefined && player.userData.move !== undefined
-        ? player.userData.move.forward
-        : 0;
-    let turn =
-      player.move != undefined && player.userData.move !== undefined
-        ? player.userData.move.turn
-        : 0;
-
-    switch (evt.keyCode) {
-      case 87: //W
+}
+  
+function keyUp(evt){
+    let forward = (player.userData!==undefined && player.userData.move!==undefined) ? player.userData.move.forward : 0;
+    let turn = (player.move!=undefined && player.userData.move!==undefined) ?  player.userData.move.turn : 0;
+    
+    switch(evt.keyCode){
+      case 87://W
         forward = 0;
         break;
-      case 83: //S
+      case 83://S
         forward = 0;
         break;
-      case 65: //A
+      case 65://A
         turn = 0;
         break;
-      case 68: //D
+      case 68://D
         turn = 0;
         break;
     }
-
+    
     playerControl(forward, turn);
-  }
-
-  function playerControl(forward, turn) {
-    if (forward == 0 && turn == 0) {
-      delete player.userData.move;
-    } else {
-      if (player.userData === undefined) player.userData = {};
-      this.player.userData.move = { forward, turn };
-    }
-  }
 }
 
-function changeCamera() {
-  cameraIndex++;
-  if (cameraIndex >= cameras.length) cameraIndex = 0;
+function playerControl(forward, turn){
+   	if (forward==0 && turn==0){
+			delete player.userData.move;
+		}else{
+      if (player.userData===undefined) player.userData = {};
+			this.player.userData.move = { forward, turn }; 
+		}
 }
 
 function updateCamera() {
@@ -545,27 +565,22 @@ function init() {
 }
 
 function animate() {
-  // render the 3D scene
-  render();
-  // relaunch the 'timer'
   requestAnimationFrame(animate);
-
+  render();
+  
   const dt = clock.getDelta();
-
-  if (player.userData !== undefined && player.userData.move !== undefined) {
-    player.translateZ(player.userData.move.forward * dt * 25);
+  
+  if (player.userData!==undefined && player.userData.move!==undefined){
+    player.translateZ(player.userData.move.forward * dt * 5);
     player.rotateY(player.userData.move.turn * dt);
   }
-
-  camera.position.lerp(
-    cameras[cameraIndex].getWorldPosition(new THREE.Vector3()),
-    0.05
-  );
+  
+  camera.position.lerp(cameras[cameraIndex].getWorldPosition(new THREE.Vector3()), 0.05);
   const pos = player.position.clone();
   pos.y += 3;
   camera.lookAt(pos);
 
-  controls.update();
+  //controls.update();
 }
 
 function render() {
@@ -579,6 +594,8 @@ function render() {
   //cube.rotation.y += 0.0125;
   //group.rotateX(Math.PI/3600);
   particle.rotation.y += 0.001;
+  iMesh.rotation.y += 0.001;
+  //particle.rotation.y += 0.001;
   //updateCamera();
   renderer.render(scene, camera);
 }
@@ -593,60 +610,60 @@ function geoThree() {
   //===================================================== data
   const our_data = [
     {
-      origin: { name: "mexico", latitude: 10, longitude: -90 },
-      destination: { name: "Jamaica", latitude: 10, longitude: -90 }
+      origin: { name: "a", latitude: 10, longitude: -90 },
+      destination: { name: "a", latitude: 10, longitude: -90 }
     },
     {
-      origin: { name: "mexico", latitude: 10, longitude: -90 },
-      destination: { name: "Jamaica", latitude: 20, longitude: -100 }
+      origin: { name: "a", latitude: 10, longitude: -90 },
+      destination: { name: "a", latitude: 20, longitude: -100 }
     },
     {
-      origin: { name: "mexico", latitude: 20, longitude: -100 },
-      destination: { name: "Jamaica", latitude: 30, longitude: -80 }
+      origin: { name: "a", latitude: 20, longitude: -100 },
+      destination: { name: "a", latitude: 30, longitude: -80 }
     },
     {
-      origin: { name: "mexico", latitude: 30, longitude: -80 },
-      destination: { name: "Jamaica", latitude: 40, longitude: -80 }
+      origin: { name: "a", latitude: 30, longitude: -80 },
+      destination: { name: "a", latitude: 40, longitude: -80 }
     },
     {
-      origin: { name: "mexico", latitude: 40, longitude: -80 },
-      destination: { name: "Jamaica", latitude: 40, longitude: -90 }
+      origin: { name: "a", latitude: 40, longitude: -80 },
+      destination: { name: "a", latitude: 40, longitude: -90 }
     },
     {
-      origin: { name: "mexico", latitude: 40, longitude: -90 },
-      destination: { name: "Jamaica", latitude: 50, longitude: -100 }
+      origin: { name: "a", latitude: 40, longitude: -90 },
+      destination: { name: "a", latitude: 50, longitude: -100 }
     },
     {
-      origin: { name: "mexico", latitude: 40, longitude: -90 },
-      destination: { name: "Jamaica", latitude: 50, longitude: -70 }
+      origin: { name: "a", latitude: 40, longitude: -90 },
+      destination: { name: "a", latitude: 50, longitude: -70 }
     },
     {
-      origin: { name: "mexico", latitude: 50, longitude: -70 },
-      destination: { name: "Jamaica", latitude: 60, longitude: -60 }
+      origin: { name: "a", latitude: 50, longitude: -70 },
+      destination: { name: "a", latitude: 60, longitude: -60 }
     },
     {
-      origin: { name: "mexico", latitude: 50, longitude: -70 },
-      destination: { name: "Jamaica", latitude: 60, longitude: -90 }
+      origin: { name: "a", latitude: 50, longitude: -70 },
+      destination: { name: "a", latitude: 60, longitude: -90 }
     },
     {
-      origin: { name: "mexico", latitude: 60, longitude: -90 },
-      destination: { name: "Jamaica", latitude: 70, longitude: -100 }
+      origin: { name: "a", latitude: 60, longitude: -90 },
+      destination: { name: "a", latitude: 70, longitude: -100 }
     },
     {
-      origin: { name: "mexico", latitude: 70, longitude: -100 },
-      destination: { name: "Jamaica", latitude: 70, longitude: -120 }
+      origin: { name: "a", latitude: 70, longitude: -100 },
+      destination: { name: "a", latitude: 70, longitude: -120 }
     },
     {
-      origin: { name: "mexico", latitude: 70, longitude: -100 },
-      destination: { name: "Jamaica", latitude: 90, longitude: -110 }
+      origin: { name: "a", latitude: 70, longitude: -100 },
+      destination: { name: "a", latitude: 90, longitude: -110 }
     },
     {
-      origin: { name: "mexico", latitude: 70, longitude: -100 },
-      destination: { name: "Jamaica", latitude: 80, longitude: -90 }
+      origin: { name: "a", latitude: 70, longitude: -100 },
+      destination: { name: "a", latitude: 80, longitude: -90 }
     },
     {
-      origin: { name: "mexico", latitude: 80, longitude: -90 },
-      destination: { name: "Jamaica", latitude: 100, longitude: -100 }
+      origin: { name: "a", latitude: 80, longitude: -90 },
+      destination: { name: "a", latitude: 100, longitude: -100 }
     }
   ];
 
@@ -717,7 +734,7 @@ function geoThree() {
       //   opacity: 1,
       //   color: new THREE.Color("white")
       // });
-      var sphereMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+      var sphereMaterial = new THREE.MeshPhongMaterial({ color: "rgb(9,55,108)" });
 
       // var sphereMaterial = new THREE.MeshPhongMaterial({
       //   color: 0xffffff,
@@ -800,11 +817,11 @@ function geoThree() {
           var pointGeom = new THREE.SphereGeometry(10, 10, 10);
           point = new THREE.Mesh(
             pointGeom,
-            new THREE.MeshBasicMaterial({ color: new THREE.Color("skyblue") })
+            new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
           );
           point2 = new THREE.Mesh(
             pointGeom,
-            new THREE.MeshBasicMaterial({ color: new THREE.Color("skyblue") })
+            new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
           );
 
           //spaces out the points
