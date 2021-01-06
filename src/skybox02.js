@@ -331,7 +331,7 @@ createText = (m = "Blueprint") => {
       mText.position.set(140, 300, -200);
       mText.castShadow = true;
       mText.receiveShadow = true;
-      mText.scale.set(8, 5, 1);
+      mText.scale.set(5, 3, 1);
       //console.log('Children', t_mes.children.length);
       scene.add(mText);
     }
