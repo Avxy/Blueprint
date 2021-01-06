@@ -36,7 +36,7 @@
 }
 
  canvas {
-   position: absolute;
+  position: absolute;
    top: 0;
    left: 0;
    width: 100%;
@@ -53,6 +53,7 @@
    line-height: 5;
  }
  h1 {
+   text-align: center;
    font-weight: lighter;
    font-size: 100px;
    font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial,

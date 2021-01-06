@@ -23,7 +23,9 @@ var percentage = 0;
 var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, bPlane, bBox01, bBox02, bBox03;
 var mText;
 var mText00;
-//var t_mes;
+var createText;
+var m;
+var ggg = 1;
 var maxHeight = 7199;
 
 var cameras, cameraIndex;
@@ -87,7 +89,10 @@ function initThree() {
   createMesh();
   //createFloor();
   createText();
-  //createText00();
+  createText00();
+  createText01();
+  createText02();
+  createText03();
 }
 
 function addGeometry() {
@@ -157,6 +162,12 @@ function addGeometry() {
   bBox03.position.z = 0;
   scene.add(bBox03);
 
+  bPlane = new THREE.GridHelper(5000, 25);
+  bPlane.material.color = new THREE.Color("white");
+  bPlane.rotateX(Math.PI / 2);
+  bPlane.position.set(0, 0, -500);
+  scene.add(bPlane);
+
   particle = new THREE.Object3D();
   scene.add(particle);
   var geometry = new THREE.TetrahedronGeometry(2, 0);
@@ -208,7 +219,7 @@ function createMesh() {
   const ballGeometry = new THREE.SphereBufferGeometry(10, 30, 30);
   iGroup = new THREE.Group();
   scene.add(iGroup);
-  const geometry = new THREE.IcosahedronBufferGeometry(180, 1);
+  const geometry = new THREE.IcosahedronBufferGeometry(2000, 1);
   const mat = new THREE.MeshBasicMaterial({ wireframe: true });
   iMesh = new THREE.Mesh(geometry, mat);
   scene.add(iMesh);
@@ -278,7 +289,7 @@ function createMesh() {
   
 // }
 
-function createText(m = "Blueprint") {
+createText = (m = "Blueprint") => {
   let loader = new THREE.FontLoader();
   loader.load(
     "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
@@ -304,13 +315,115 @@ function createText(m = "Blueprint") {
       mText.scale.set(8, 5, 1);
       //console.log('Children', t_mes.children.length);
       scene.add(mText);
+
+   
     }
+ 
   );
   return null;
 };
 
+//The future of education starts with your experimentation. explore your world though different dimensions. connect your information, build knolegde and share your experience
+const createText00 = (m = "The future of education") => {
+  let loader = new THREE.FontLoader();
+  loader.load(
+    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+    function (font) {
+      let mTex00 = mm;
+      const t_geo = new THREE.TextGeometry(mTex00, {
+        font: font,
+        size: 10,
+        height: 0.5,
+        curveSegments: 6,
+        bevelEnabled: true,
+        bevelThickness: 0.9,
+        bevelSize: 0.3,
+        bevelOffset: 0.1,
+        bevelSegments: 6
+      });
+      t_geo.center();
+      mText00 = new THREE.Mesh(
+        t_geo,
+        new THREE.MeshStandardMaterial({ color: 0xffffff })
+      );
+      mText00.position.set(5000, 0, -200);
+      mText00.castShadow = true;
+      mText00.receiveShadow = true;
+      mText00.scale.set(8, 5, 1);
+      //console.log('Children', t_mes.children.length);
+      scene.add(mText00);
+    }
+  );
+  return null;
+}
 
-function createText00(mm = "The future of education, starts with your experience. explore your world though different dimensions. connect your information, build knolegde and share share your experience"){
+const createText01 = (m = "starts with your experimentation") => {
+  let loader = new THREE.FontLoader();
+  loader.load(
+    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+    function (font) {
+      let mTex00 = mm;
+      const t_geo = new THREE.TextGeometry(mTex00, {
+        font: font,
+        size: 10,
+        height: 0.5,
+        curveSegments: 6,
+        bevelEnabled: true,
+        bevelThickness: 0.9,
+        bevelSize: 0.3,
+        bevelOffset: 0.1,
+        bevelSegments: 6
+      });
+      t_geo.center();
+      mText00 = new THREE.Mesh(
+        t_geo,
+        new THREE.MeshStandardMaterial({ color: 0xffffff })
+      );
+      mText00.position.set(5000, 0, -200);
+      mText00.castShadow = true;
+      mText00.receiveShadow = true;
+      mText00.scale.set(8, 5, 1);
+      //console.log('Children', t_mes.children.length);
+      scene.add(mText00);
+    }
+  );
+  return null;
+}
+
+const createText02 = (m = "explore your world though different dimensions") => {
+  let loader = new THREE.FontLoader();
+  loader.load(
+    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+    function (font) {
+      let mTex00 = mm;
+      const t_geo = new THREE.TextGeometry(mTex00, {
+        font: font,
+        size: 10,
+        height: 0.5,
+        curveSegments: 6,
+        bevelEnabled: true,
+        bevelThickness: 0.9,
+        bevelSize: 0.3,
+        bevelOffset: 0.1,
+        bevelSegments: 6
+      });
+      t_geo.center();
+      mText00 = new THREE.Mesh(
+        t_geo,
+        new THREE.MeshStandardMaterial({ color: 0xffffff })
+      );
+      mText00.position.set(5000, 0, -200);
+      mText00.castShadow = true;
+      mText00.receiveShadow = true;
+      mText00.scale.set(8, 5, 1);
+      //console.log('Children', t_mes.children.length);
+      scene.add(mText00);
+    }
+  );
+  return null;
+}
+
+const createText03 = (m = "connect your information, build knolegde and share your experience") => {
   let loader = new THREE.FontLoader();
   loader.load(
     "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
@@ -348,16 +461,54 @@ function initTimeline() {
 
   timeline = anime.timeline({
     autoplay: false,
-    duration: 64000,
+    duration: 128000,
     easing: "easeOutSine"
+  });
+
+ 
+ 
+  // timeline.add({
+  //   targets: createText.position,
+  //   x: 100,
+  //   y: 0,
+  //   z: 200,
+  //   duration: 8000,
+  //   update: camera.updateProjectionMatrix()
+  // });
+
+  timeline.add({
+    targets: bPlane.scale,
+    x: 10,
+    y: 10,
+    z: 10,
+    duration: 4000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: iMesh.scale,
+    x: 0.09,
+    y: 0.09,
+    z: 0.09,
+    duration: 4000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: iMesh.rotation,
+    x: Math.PI/2,
+    y: Math.PI,
+    z: Math.PI*3/2,
+    duration: 4000,
+    update: camera.updateProjectionMatrix()
   });
 
   timeline.add({
     targets: bBox01.position,
     x: 0,
-    y: 40,
+    y: 0,
     z: 0,
-    duration: 8000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -366,16 +517,25 @@ function initTimeline() {
     x: 0,
     y: 0,
     z: 0,
-    duration: 8000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
+
+  // timeline.add({
+  //   targets: createText.position,
+  //   x: 0,
+  //   y: 0,
+  //   z: 200,
+  //   duration: 8000,
+  //   update: camera.updateProjectionMatrix()
+  // });
 
   timeline.add({
     targets: bBox01.rotation,
     x: 0,
     y: Math.PI / 2,
     z: 0,
-    duration: 8000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -384,7 +544,7 @@ function initTimeline() {
     x: 0,
     y: Math.PI,
     z: 0,
-    duration: 8000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -393,7 +553,7 @@ function initTimeline() {
     x: 0,
     y: (Math.PI * 3) / 2,
     z: 0,
-    duration: 8000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -402,7 +562,43 @@ function initTimeline() {
     x: 0,
     y: Math.PI * 2,
     z: 0,
-    duration: 8000,
+    duration: 4000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: bBox01.position,
+    x: 0,
+    y: -5000,
+    z: 0,
+    duration: 4000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: camera.position,
+    x: 0,
+    y: 300,
+    z: 0,
+    duration: 32000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: player.rotation,
+    x: Math.PI/2*(-1),
+    y: 0,
+    z: 0,
+    duration: 32000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: camera.position,
+    x: 0,
+    y: 300,
+    z: 100,
+    duration: 32000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -411,7 +607,7 @@ function initTimeline() {
     x: Math.PI / 2,
     y: 0,
     z: 0,
-    duration: 1000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -420,7 +616,7 @@ function initTimeline() {
     x: Math.PI,
     y: 0,
     z: 0,
-    duration: 1000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -429,7 +625,7 @@ function initTimeline() {
     x: (Math.PI * 3) / 2,
     y: 0,
     z: 0,
-    duration: 1000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -438,7 +634,7 @@ function initTimeline() {
     x: Math.PI * 2,
     y: 0,
     z: 0,
-    duration: 1000,
+    duration: 4000,
     update: camera.updateProjectionMatrix()
   });
 }
@@ -632,7 +828,7 @@ function render() {
   var dtime = Date.now() - startTime;
   // easing with treshold on 0.08 (should be between .14 & .2 for smooth animations)
   percentage = lerp(percentage, scrollY, 0.08);
-  timeline.seek(percentage * (64000 / maxHeight));
+  timeline.seek(percentage * (512000 / maxHeight));
 
   // animate the cube
   //cube.rotation.x += 0.01;
@@ -768,7 +964,7 @@ function geoThree() {
       //===================================================== add globe
       group = new THREE.Group();
       scene.add(group);
-      group.rotateX(Math.PI / 8);
+      group.rotateX(Math.PI / ggg);
 
       var RADIUS = 140;
 
@@ -802,11 +998,7 @@ function geoThree() {
       group.add(earthMesh02);
       group.add(earthMesh);
 
-      bPlane = new THREE.GridHelper(5000, 25);
-      bPlane.material.color = new THREE.Color("white");
-      bPlane.rotateX(Math.PI / 2);
-      bPlane.position.set(0, 0, -500);
-      scene.add(bPlane);
+
 
       //===================================================== add glow effect to globe
       // var customMaterial = new THREE.ShaderMaterial({
