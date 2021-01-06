@@ -5,7 +5,7 @@ var clock, binormal, normal, tube, player, particle;
 
 var envMap;
 var followCam2;
-var container = document.querySelector(".webgl");
+//var container = document.querySelector(".webgl");
 var startTime = Date.now();
 var scrollY = 0;
 var _event = {
@@ -23,7 +23,7 @@ var percentage = 0;
 var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, bPlane, bBox01, bBox02, bBox03;
 var mText;
 var mText00;
-var t_mes;
+//var t_mes;
 var maxHeight = 7199;
 
 var cameras, cameraIndex;
@@ -353,11 +353,56 @@ function initTimeline() {
   });
 
   timeline.add({
-    targets: cube.position,
+    targets: bBox01.position,
     x: 0,
-    y: 250,
+    y: 40,
     z: 0,
-    duration: 1000,
+    duration: 8000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: bBox01.rotation,
+    x: 0,
+    y: 0,
+    z: 0,
+    duration: 8000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: bBox01.rotation,
+    x: 0,
+    y: Math.PI / 2,
+    z: 0,
+    duration: 8000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: bBox01.rotation,
+    x: 0,
+    y: Math.PI,
+    z: 0,
+    duration: 8000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: bBox01.rotation,
+    x: 0,
+    y: (Math.PI * 3) / 2,
+    z: 0,
+    duration: 8000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: bBox01.rotation,
+    x: 0,
+    y: Math.PI * 2,
+    z: 0,
+    duration: 8000,
     update: camera.updateProjectionMatrix()
   });
 
