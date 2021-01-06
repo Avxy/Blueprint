@@ -23,7 +23,7 @@
 #camera-btn {
   position: absolute;
   right: 20px;
-  bottom: 20px;
+  top: 20px;
   color: #ffffff;
   background: #aa0089;
   font-size: 30px;
@@ -35,13 +35,7 @@
   border-radius: 50%;
 }
 
- canvas {
-  position: absolute;
-   top: 0;
-   left: 0;
-   width: 100%;
-   height: 100%;
- }
+
  section {
    position: absolute;
    bottom: 2%;

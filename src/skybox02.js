@@ -1,6 +1,7 @@
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 var camera = new THREE.PerspectiveCamera();
+//var camera = new THREE.OrthographicCamera( 10000, 10000, 10000, 10000, 1, 1000 );
 var clock, binormal, normal, tube, player, particle;
 
 var envMap;
@@ -20,19 +21,33 @@ var percentage = 0;
 // var element = document.getElementsByClassName("text-animation")[0];
 // element.innerHTML = element.textContent.replace(/\S/g,'<span class="letter">$&</span>');
 
-var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, bPlane, bBox01, bBox02, bBox03;
+var point,
+  point2,
+  earthMesh,
+  earthMesh02,
+  cube,
+  sphere,
+  group,
+  iGroup,
+  iMesh,
+  bPlane,
+  bBox01,
+  bBox02,
+  bBox03;
 var mText;
 var mText00;
 var createText;
 var m;
-var ggg = 1;
+var ggg = -2;
 var maxHeight = 7199;
-
-var cameras, cameraIndex;
+var x;
+var cameras, cameraIndex, cc;
 
 //const canvas = document.querySelector("#canvas");
 
 var controls;
+
+var tour = false;
 
 function initThree() {
   const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
@@ -64,7 +79,8 @@ function initThree() {
   const material = new THREE.MeshBasicMaterial({
     wireframe: true,
     color: 0xffffff,
-    side: THREE.DoubleSide
+    side: THREE.DoubleSide,
+    visible: true
   });
   tube = new THREE.Mesh(geometry, material);
   scene.add(tube);
@@ -76,7 +92,8 @@ function initThree() {
   // renderer.setClearColor(0x161216);
   //renderer.setPixelRatio((window.devicePixelRatio) ? window.devicePixelRatio : 1);
   //renderer.setSize(window.innerWidth, window.innerHeight);
-  camera.position.y = 10;
+  camera.position.x = 0;
+  camera.position.y = 0;
   camera.position.z = 1000;
   camera.lookAt(0, 0, 0);
   resize();
@@ -97,7 +114,7 @@ function initThree() {
 
 function addGeometry() {
   cube = new THREE.Mesh(
-    new THREE.CubeGeometry(10, 10, 10),
+    new THREE.CubeGeometry(0.1, 10, 10),
     new THREE.MeshLambertMaterial({
       color: 0xffffff,
       side: THREE.DoubleSide
@@ -109,7 +126,7 @@ function addGeometry() {
   scene.add(cube);
 
   sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(10, 20, 15),
+    new THREE.SphereGeometry(0.1, 20, 15),
     new THREE.MeshLambertMaterial({
       color: 0xffffff,
       side: THREE.DoubleSide
@@ -165,7 +182,7 @@ function addGeometry() {
   bPlane = new THREE.GridHelper(5000, 25);
   bPlane.material.color = new THREE.Color("white");
   bPlane.rotateX(Math.PI / 2);
-  bPlane.position.set(0, 0, -500);
+  bPlane.position.set(0, 0, -800);
   scene.add(bPlane);
 
   particle = new THREE.Object3D();
@@ -219,7 +236,7 @@ function createMesh() {
   const ballGeometry = new THREE.SphereBufferGeometry(10, 30, 30);
   iGroup = new THREE.Group();
   scene.add(iGroup);
-  const geometry = new THREE.IcosahedronBufferGeometry(2000, 1);
+  const geometry = new THREE.IcosahedronBufferGeometry(3000, 1);
   const mat = new THREE.MeshBasicMaterial({ wireframe: true });
   iMesh = new THREE.Mesh(geometry, mat);
   scene.add(iMesh);
@@ -286,7 +303,7 @@ function createMesh() {
 //     }
 //   );
 //   //return null;
-  
+
 // }
 
 createText = (m = "Blueprint") => {
@@ -307,18 +324,17 @@ createText = (m = "Blueprint") => {
         bevelSegments: 6
       });
       t_geo.center();
-      mText = new THREE.Mesh(t_geo, new THREE.MeshStandardMaterial({ color: 0xffffff })
+      mText = new THREE.Mesh(
+        t_geo,
+        new THREE.MeshStandardMaterial({ color: 0xffffff })
       );
-      mText.position.set(0, 400, -200);
+      mText.position.set(140, 300, -200);
       mText.castShadow = true;
       mText.receiveShadow = true;
       mText.scale.set(8, 5, 1);
       //console.log('Children', t_mes.children.length);
       scene.add(mText);
-
-   
     }
- 
   );
   return null;
 };
@@ -355,7 +371,7 @@ const createText00 = (m = "The future of education") => {
     }
   );
   return null;
-}
+};
 
 const createText01 = (m = "starts with your experimentation") => {
   let loader = new THREE.FontLoader();
@@ -388,7 +404,7 @@ const createText01 = (m = "starts with your experimentation") => {
     }
   );
   return null;
-}
+};
 
 const createText02 = (m = "explore your world though different dimensions") => {
   let loader = new THREE.FontLoader();
@@ -421,9 +437,11 @@ const createText02 = (m = "explore your world though different dimensions") => {
     }
   );
   return null;
-}
+};
 
-const createText03 = (m = "connect your information, build knolegde and share your experience") => {
+const createText03 = (
+  m = "connect your information, build knolegde and share your experience"
+) => {
   let loader = new THREE.FontLoader();
   loader.load(
     "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
@@ -454,27 +472,25 @@ const createText03 = (m = "connect your information, build knolegde and share yo
     }
   );
   return null;
-}
+};
 //var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, mText, mText00, bPlane, bBox01, bBox02, bBox03;
 function initTimeline() {
   // Wrap every letter in a span
 
   timeline = anime.timeline({
     autoplay: false,
-    duration: 128000,
+    duration: 64000,
     easing: "easeOutSine"
   });
 
- 
- 
-  // timeline.add({
-  //   targets: createText.position,
-  //   x: 100,
-  //   y: 0,
-  //   z: 200,
-  //   duration: 8000,
-  //   update: camera.updateProjectionMatrix()
-  // });
+  timeline.add({
+    targets: player.position,
+    x: 0,
+    y: 0,
+    z: 0,
+    duration: 4000,
+    update: camera.updateProjectionMatrix()
+  });
 
   timeline.add({
     targets: bPlane.scale,
@@ -487,18 +503,18 @@ function initTimeline() {
 
   timeline.add({
     targets: iMesh.scale,
-    x: 0.09,
-    y: 0.09,
-    z: 0.09,
+    x: 0.07,
+    y: 0.07,
+    z: 0.07,
     duration: 4000,
     update: camera.updateProjectionMatrix()
   });
 
   timeline.add({
     targets: iMesh.rotation,
-    x: Math.PI/2,
+    x: Math.PI / 2,
     y: Math.PI,
-    z: Math.PI*3/2,
+    z: (Math.PI * 3) / 2,
     duration: 4000,
     update: camera.updateProjectionMatrix()
   });
@@ -579,64 +595,64 @@ function initTimeline() {
     targets: camera.position,
     x: 0,
     y: 300,
-    z: 0,
+    z: -100,
     duration: 32000,
     update: camera.updateProjectionMatrix()
   });
 
   timeline.add({
     targets: player.rotation,
-    x: Math.PI/2*(-1),
+    x: Math.PI * -1,
     y: 0,
     z: 0,
     duration: 32000,
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
-    targets: camera.position,
-    x: 0,
-    y: 300,
-    z: 100,
-    duration: 32000,
-    update: camera.updateProjectionMatrix()
-  });
+  // timeline.add({
+  //   targets: player.position,
+  //   x: 0,
+  //   y: 300,
+  //   z: 0,
+  //   duration: 8000,
+  //   update: camera.updateProjectionMatrix()
+  // });
 
-  timeline.add({
-    targets: cube.rotation,
-    x: Math.PI / 2,
-    y: 0,
-    z: 0,
-    duration: 4000,
-    update: camera.updateProjectionMatrix()
-  });
+  // timeline.add({
+  //   targets: cube.rotation,
+  //   x: Math.PI / 2,
+  //   y: 0,
+  //   z: 0,
+  //   duration: 4000,
+  //   update: camera.updateProjectionMatrix()
+  // });
 
-  timeline.add({
-    targets: cube.rotation,
-    x: Math.PI,
-    y: 0,
-    z: 0,
-    duration: 4000,
-    update: camera.updateProjectionMatrix()
-  });
+  // timeline.add({
+  //   targets: cube.rotation,
+  //   x: Math.PI,
+  //   y: 0,
+  //   z: 0,
+  //   duration: 4000,
+  //   update: camera.updateProjectionMatrix()
+  // });
 
-  timeline.add({
-    targets: cube.rotation,
-    x: (Math.PI * 3) / 2,
-    y: 0,
-    z: 0,
-    duration: 4000,
-    update: camera.updateProjectionMatrix()
-  });
+  // timeline.add({
+  //   targets: cube.rotation,
+  //   x: (Math.PI * 3) / 2,
+  //   y: 0,
+  //   z: 0,
+  //   duration: 4000,
+  //   update: camera.updateProjectionMatrix()
+  // });
 
-  timeline.add({
-    targets: cube.rotation,
-    x: Math.PI * 2,
-    y: 0,
-    z: 0,
-    duration: 4000,
-    update: camera.updateProjectionMatrix()
-  });
+  // timeline.add({
+  //   targets: cube.rotation,
+  //   x: Math.PI * 2,
+  //   y: 0,
+  //   z: 0,
+  //   duration: 4000,
+  //   update: camera.updateProjectionMatrix()
+  // });
 }
 
 function onWheel(e) {
@@ -671,33 +687,34 @@ function playerCam() {
   //===================================================== player
   //Add meshes here
   player = new THREE.Group();
+  player.position.set(140, 140, -650);
   scene.add(player);
 
-  const headGeometry = new THREE.SphereBufferGeometry(10, 20, 15);
+  const headGeometry = new THREE.SphereBufferGeometry(0.1, 20, 15);
   const headMaterial = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     side: THREE.DoubleSide
   });
   const headMesh = new THREE.Mesh(headGeometry, headMaterial);
-  headMesh.position.y = 140;
+  headMesh.position.set(0, 140, 0);
   player.add(headMesh);
   //===================================================== camera
   cameras = [];
   cameraIndex = 0;
-
+  cc = 0;
   const followCam = new THREE.Object3D();
   followCam.position.copy(camera.position);
   player.add(followCam);
   cameras.push(followCam);
 
-  const frontCam = new THREE.Object3D();
-  frontCam.position.set(0, 200, -120);
-  player.add(frontCam);
-  cameras.push(frontCam);
+  // const frontCam = new THREE.Object3D();
+  // frontCam.position.set(-140,-140,650);
+  // player.add(frontCam);
+  // cameras.push(frontCam);
 
-  const overheadCam = new THREE.Object3D();
-  overheadCam.position.set(0, 200, 120);
-  cameras.push(overheadCam);
+  // const overheadCam = new THREE.Object3D();
+  // overheadCam.position.set(0, 200, 120);
+  // cameras.push(overheadCam);
 
   // const scrollCam = camera;
   // scrollCam.position.copy(camera.position);
@@ -706,80 +723,98 @@ function playerCam() {
 
   addKeyboardControl();
 
+  // const btn = document.getElementById("camera-btn");
+  // btn.addEventListener("click", changeCamera);
   const btn = document.getElementById("camera-btn");
-  btn.addEventListener("click", changeCamera);
-  
-
+  btn.addEventListener("click", journey);
 }
 
 //=======================================================player control
+ 
+  function journey() {
+  cc++;
+if (cc>=1) { x = updateCamera();}
+ 
+  }
 
-function changeCamera(){
+function changeCamera() {
   cameraIndex++;
-  if (cameraIndex>=cameras.length) cameraIndex = 0;
+  if (cameraIndex >= cameras.length) cameraIndex = 0;
 }
 
-function addKeyboardControl(){
-    document.addEventListener( 'keydown', keyDown );
-    document.addEventListener( 'keyup', keyUp );
-}
-  
-function keyDown(evt){
-    let forward = (player.userData!==undefined && player.userData.move!==undefined) ? player.userData.move.forward : 0;
-    let turn = (player.userData!=undefined && player.userData.move!==undefined) ?  player.userData.move.turn : 0;
-    
-    switch(evt.keyCode){
-      case 87://W
-        forward = -1;
-        break;
-      case 83://S
-        forward = 1;
-        break;
-      case 65://A
-        turn = 1;
-        break;
-      case 68://D
-        turn = -1;
-        break;
-    }
-    
-    playerControl(forward, turn);
-}
-  
-function keyUp(evt){
-    let forward = (player.userData!==undefined && player.userData.move!==undefined) ? player.userData.move.forward : 0;
-    let turn = (player.move!=undefined && player.userData.move!==undefined) ?  player.userData.move.turn : 0;
-    
-    switch(evt.keyCode){
-      case 87://W
-        forward = 0;
-        break;
-      case 83://S
-        forward = 0;
-        break;
-      case 65://A
-        turn = 0;
-        break;
-      case 68://D
-        turn = 0;
-        break;
-    }
-    
-    playerControl(forward, turn);
+function addKeyboardControl() {
+  document.addEventListener("keydown", keyDown);
+  document.addEventListener("keyup", keyUp);
 }
 
-function playerControl(forward, turn){
-   	if (forward==0 && turn==0){
-			delete player.userData.move;
-		}else{
-      if (player.userData===undefined) player.userData = {};
-			this.player.userData.move = { forward, turn }; 
-		}
+function keyDown(evt) {
+  let forward =
+    player.userData !== undefined && player.userData.move !== undefined
+      ? player.userData.move.forward
+      : 0;
+  let turn =
+    player.userData != undefined && player.userData.move !== undefined
+      ? player.userData.move.turn
+      : 0;
+
+  switch (evt.keyCode) {
+    case 87: //W
+      forward = -1;
+      break;
+    case 83: //S
+      forward = 1;
+      break;
+    case 65: //A
+      turn = 1;
+      break;
+    case 68: //D
+      turn = -1;
+      break;
+  }
+
+  playerControl(forward, turn);
+}
+
+function keyUp(evt) {
+  let forward =
+    player.userData !== undefined && player.userData.move !== undefined
+      ? player.userData.move.forward
+      : 0;
+  let turn =
+    player.move != undefined && player.userData.move !== undefined
+      ? player.userData.move.turn
+      : 0;
+
+  switch (evt.keyCode) {
+    case 87: //W
+      forward = 0;
+      break;
+    case 83: //S
+      forward = 0;
+      break;
+    case 65: //A
+      turn = 0;
+      break;
+    case 68: //D
+      turn = 0;
+      break;
+  }
+
+  playerControl(forward, turn);
+}
+
+function playerControl(forward, turn) {
+  if (forward == 0 && turn == 0) {
+    delete player.userData.move;
+  } else {
+    if (player.userData === undefined) player.userData = {};
+    this.player.userData.move = { forward, turn };
+  }
 }
 
 function updateCamera() {
   const time = clock.getElapsedTime();
-  const looptime = 200;
+  const looptime = 50;
   const t = (time % looptime) / looptime;
   const t2 = ((time + 0.1) % looptime) / looptime;
 
@@ -808,15 +843,18 @@ function init() {
 function animate() {
   requestAnimationFrame(animate);
   render();
-  
+
   const dt = clock.getDelta();
-  
-  if (player.userData!==undefined && player.userData.move!==undefined){
+
+  if (player.userData !== undefined && player.userData.move !== undefined) {
     player.translateZ(player.userData.move.forward * dt * 5);
     player.rotateY(player.userData.move.turn * dt);
   }
-  
-  camera.position.lerp(cameras[cameraIndex].getWorldPosition(new THREE.Vector3()), 0.05);
+
+  camera.position.lerp(
+    cameras[cameraIndex].getWorldPosition(new THREE.Vector3()),
+    0.05
+  );
   const pos = player.position.clone();
   pos.y += 3;
   camera.lookAt(pos);
@@ -828,7 +866,7 @@ function render() {
   var dtime = Date.now() - startTime;
   // easing with treshold on 0.08 (should be between .14 & .2 for smooth animations)
   percentage = lerp(percentage, scrollY, 0.08);
-  timeline.seek(percentage * (512000 / maxHeight));
+  timeline.seek(percentage * (64000 / maxHeight));
 
   // animate the cube
   //cube.rotation.x += 0.01;
@@ -837,7 +875,8 @@ function render() {
   particle.rotation.y += 0.001;
   iMesh.rotation.y += 0.001;
   //particle.rotation.y += 0.001;
-  //updateCamera();
+  x;
+
   renderer.render(scene, camera);
 }
 
@@ -967,7 +1006,7 @@ function geoThree() {
       group.rotateX(Math.PI / ggg);
 
       var RADIUS = 140;
-
+      //var sphereGeometry = new THREE.IcosahedronGeometry(RADIUS, 2);
       var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
       // var sphereMaterial = new THREE.MeshPhongMaterial({
       //   map: mapTexture,
@@ -975,7 +1014,16 @@ function geoThree() {
       //   opacity: 1,
       //   color: new THREE.Color("white")
       // });
-      var sphereMaterial = new THREE.MeshPhongMaterial({ color: "rgb(9,55,108)" });
+      // var sphereMaterial = new THREE.MeshPhongMaterial({
+      //   envMap: envMap,
+      //   transparent: false,
+      //   opacity: 1,
+      //   color: new THREE.Color("white")
+      // });
+      var sphereMaterial = new THREE.MeshPhongMaterial({
+        color: "rgb(9,55,108)",
+        side: THREE.DoubleSide
+      });
 
       // var sphereMaterial = new THREE.MeshPhongMaterial({
       //   color: 0xffffff,
@@ -985,20 +1033,19 @@ function geoThree() {
       //});
 
       // var grid = new THREE.Mesh( sphereGeometry, sphereMaterial );
-      // var gridEdge = new THREE.EdgesHelper(grid, 0xaaaaff);
-      // gridEdge.material.linewidth = 3;
-      // grid.rotateZ(1/2*Math.PI);
+      // var gridEdge = new THREE.EdgesHelper(grid, 0xffffff);
+      // gridEdge.material.linewidth = 0.01;
+      // gridEdge.rotateX(1/2*Math.PI);
       // group.add(grid);
       // group.add(gridEdge);
+
       earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
       earthMesh.name = "earth";
       earthMesh02 = earthMesh.clone();
-      earthMesh02.position.x = 500;
+      earthMesh02.position.x = 800;
       earthMesh02.scale.set(0.3, 0.3, 0.3);
       group.add(earthMesh02);
       group.add(earthMesh);
-
-
 
       //===================================================== add glow effect to globe
       // var customMaterial = new THREE.ShaderMaterial({
