@@ -80,7 +80,7 @@ function initThree() {
     wireframe: true,
     color: 0xffffff,
     side: THREE.DoubleSide,
-    visible: true
+    visible: false
   });
   tube = new THREE.Mesh(geometry, material);
   scene.add(tube);
@@ -707,10 +707,10 @@ function playerCam() {
   player.add(followCam);
   cameras.push(followCam);
 
-  // const frontCam = new THREE.Object3D();
-  // frontCam.position.set(-140,-140,650);
-  // player.add(frontCam);
-  // cameras.push(frontCam);
+  const frontCam = new THREE.Object3D();
+  frontCam.position.set(-200,-150,750);
+  player.add(frontCam);
+  cameras.push(frontCam);
 
   // const overheadCam = new THREE.Object3D();
   // overheadCam.position.set(0, 200, 120);
@@ -726,16 +726,17 @@ function playerCam() {
   // const btn = document.getElementById("camera-btn");
   // btn.addEventListener("click", changeCamera);
   const btn = document.getElementById("camera-btn");
-  btn.addEventListener("click", journey);
+  btn.addEventListener("click", changeCamera);
 }
 
 //=======================================================player control
- 
-  function journey() {
+
+function journey() {
   cc++;
-if (cc>=1) { x = updateCamera();}
- 
+  if (cc >= 1) {
+    x = updateCamera();
   }
+}
 
 function changeCamera() {
   cameraIndex++;
