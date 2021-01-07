@@ -1,3 +1,16 @@
+//visoes:
+//(cosmo(redes sociais), planeta(estrategia de colonização), domo(informação, programação e cursos))
+
+//problemas
+
+//animar os textos
+//implementar scroll/ touch dominante, Resolver o conflito dos botoes com o scroll
+//textura do bBbox01, planeta
+
+//Player andar em cima no planeta, imitar o robox(reuniao, sala de aula)
+//evento de botão pra ele passear pelo tubo
+//armazenar informações nos nos(cells to syngurarity)
+
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 var camera = new THREE.PerspectiveCamera();

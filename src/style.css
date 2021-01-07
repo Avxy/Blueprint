@@ -23,7 +23,7 @@
 #camera-btn {
   position: absolute;
   right: 20px;
-  bottom: 20px;
+  top: 20px;
   color: #ffffff;
   background: #aa0089;
   font-size: 30px;
