@@ -123,10 +123,6 @@ function initThree() {
   createMesh();
   //createFloor();
   createText();
-  createText00();
-  createText01();
-  createText02();
-  createText03();
 }
 
 function addGeometry() {
@@ -293,35 +289,38 @@ function createMesh() {
 //   //return f_mes;
 // }
 
-// const createText = (m = 'ThreeJs + AnimeJs') => {
-//   let loader = new THREE.FontLoader();
-//   loader.load("https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
-//     function (font) {
-//       let m_text = m;
-//       const t_geo = new THREE.TextGeometry(m_text, {
-//         font: font,
-//         size: 10,
-//         height: 0.5,
-//         curveSegments: 6,
-//         bevelEnabled: true,
-//         bevelThickness: 0.9,
-//         bevelSize: 0.3,
-//         bevelOffset: 0.1,
-//         bevelSegments: 6
-//       });
-//       t_geo.center();
-//       t_mes = new THREE.Mesh(t_geo, new THREE.MeshStandardMaterial({color:0xFF0000}));
-//       t_mes.position.set(0, 400, -200);
-//       t_mes.castShadow = true;
-//       t_mes.receiveShadow = true;
-//       t_mes.scale.set(8, 5, 1);
-//       //console.log('Children', t_mes.children.length);
-//       scene.add(t_mes);
-//     }
-//   );
-//   //return null;
-
-// }
+const createText = (m = "ThreeJs + AnimeJs") => {
+  let loader = new THREE.FontLoader();
+  loader.load(
+    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
+    function (font) {
+      let m_text = m;
+      const t_geo = new THREE.TextGeometry(m_text, {
+        font: font,
+        size: 10,
+        height: 0.5,
+        curveSegments: 6,
+        bevelEnabled: true,
+        bevelThickness: 0.9,
+        bevelSize: 0.3,
+        bevelOffset: 0.1,
+        bevelSegments: 6
+      });
+      t_geo.center();
+      t_mes = new THREE.Mesh(
+        t_geo,
+        new THREE.MeshStandardMaterial({ color: 0xff0000 })
+      );
+      t_mes.position.set(0, 400, -200);
+      t_mes.castShadow = true;
+      t_mes.receiveShadow = true;
+      t_mes.scale.set(8, 5, 1);
+      //console.log('Children', t_mes.children.length);
+      scene.add(t_mes);
+    }
+  );
+  return null;
+};
 
 createText = (m = "Blueprint") => {
   let loader = new THREE.FontLoader();
@@ -357,139 +356,7 @@ createText = (m = "Blueprint") => {
 };
 
 //The future of education starts with your experimentation. explore your world though different dimensions. connect your information, build knolegde and share your experience
-const createText00 = (m = "The future of education") => {
-  let loader = new THREE.FontLoader();
-  loader.load(
-    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
-    function (font) {
-      let mTex00 = mm;
-      const t_geo = new THREE.TextGeometry(mTex00, {
-        font: font,
-        size: 10,
-        height: 0.5,
-        curveSegments: 6,
-        bevelEnabled: true,
-        bevelThickness: 0.9,
-        bevelSize: 0.3,
-        bevelOffset: 0.1,
-        bevelSegments: 6
-      });
-      t_geo.center();
-      mText00 = new THREE.Mesh(
-        t_geo,
-        new THREE.MeshStandardMaterial({ color: 0xffffff })
-      );
-      mText00.position.set(5000, 0, -200);
-      mText00.castShadow = true;
-      mText00.receiveShadow = true;
-      mText00.scale.set(8, 5, 1);
-      //console.log('Children', t_mes.children.length);
-      scene.add(mText00);
-    }
-  );
-  return null;
-};
 
-const createText01 = (m = "starts with your experimentation") => {
-  let loader = new THREE.FontLoader();
-  loader.load(
-    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
-    function (font) {
-      let mTex00 = mm;
-      const t_geo = new THREE.TextGeometry(mTex00, {
-        font: font,
-        size: 10,
-        height: 0.5,
-        curveSegments: 6,
-        bevelEnabled: true,
-        bevelThickness: 0.9,
-        bevelSize: 0.3,
-        bevelOffset: 0.1,
-        bevelSegments: 6
-      });
-      t_geo.center();
-      mText00 = new THREE.Mesh(
-        t_geo,
-        new THREE.MeshStandardMaterial({ color: 0xffffff })
-      );
-      mText00.position.set(5000, 0, -200);
-      mText00.castShadow = true;
-      mText00.receiveShadow = true;
-      mText00.scale.set(8, 5, 1);
-      //console.log('Children', t_mes.children.length);
-      scene.add(mText00);
-    }
-  );
-  return null;
-};
-
-const createText02 = (m = "explore your world though different dimensions") => {
-  let loader = new THREE.FontLoader();
-  loader.load(
-    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
-    function (font) {
-      let mTex00 = mm;
-      const t_geo = new THREE.TextGeometry(mTex00, {
-        font: font,
-        size: 10,
-        height: 0.5,
-        curveSegments: 6,
-        bevelEnabled: true,
-        bevelThickness: 0.9,
-        bevelSize: 0.3,
-        bevelOffset: 0.1,
-        bevelSegments: 6
-      });
-      t_geo.center();
-      mText00 = new THREE.Mesh(
-        t_geo,
-        new THREE.MeshStandardMaterial({ color: 0xffffff })
-      );
-      mText00.position.set(5000, 0, -200);
-      mText00.castShadow = true;
-      mText00.receiveShadow = true;
-      mText00.scale.set(8, 5, 1);
-      //console.log('Children', t_mes.children.length);
-      scene.add(mText00);
-    }
-  );
-  return null;
-};
-
-const createText03 = (
-  m = "connect your information, build knolegde and share your experience"
-) => {
-  let loader = new THREE.FontLoader();
-  loader.load(
-    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
-    function (font) {
-      let mTex00 = mm;
-      const t_geo = new THREE.TextGeometry(mTex00, {
-        font: font,
-        size: 10,
-        height: 0.5,
-        curveSegments: 6,
-        bevelEnabled: true,
-        bevelThickness: 0.9,
-        bevelSize: 0.3,
-        bevelOffset: 0.1,
-        bevelSegments: 6
-      });
-      t_geo.center();
-      mText00 = new THREE.Mesh(
-        t_geo,
-        new THREE.MeshStandardMaterial({ color: 0xffffff })
-      );
-      mText00.position.set(5000, 0, -200);
-      mText00.castShadow = true;
-      mText00.receiveShadow = true;
-      mText00.scale.set(8, 5, 1);
-      //console.log('Children', t_mes.children.length);
-      scene.add(mText00);
-    }
-  );
-  return null;
-};
 //var point, point2, earthMesh, earthMesh02, cube, sphere, group, iGroup, iMesh, mText, mText00, bPlane, bBox01, bBox02, bBox03;
 function initTimeline() {
   // Wrap every letter in a span
@@ -553,15 +420,6 @@ function initTimeline() {
     duration: 4000,
     update: camera.updateProjectionMatrix()
   });
-
-  // timeline.add({
-  //   targets: createText.position,
-  //   x: 0,
-  //   y: 0,
-  //   z: 200,
-  //   duration: 8000,
-  //   update: camera.updateProjectionMatrix()
-  // });
 
   timeline.add({
     targets: bBox01.rotation,
@@ -739,7 +597,7 @@ function playerCam() {
   cameras.push(followCam);
 
   const frontCam = new THREE.Object3D();
-  frontCam.position.set(-200,-150,750);
+  frontCam.position.set(-200, -150, 750);
   player.add(frontCam);
   cameras.push(frontCam);
 
@@ -761,13 +619,6 @@ function playerCam() {
 }
 
 //=======================================================player control
-
-function journey() {
-  cc++;
-  if (cc >= 1) {
-    x = updateCamera();
-  }
-}
 
 function changeCamera() {
   cameraIndex++;
@@ -868,8 +719,7 @@ function init() {
   window.addEventListener("resize", resize, { passive: false });
   //divContainer.addEventListener("wheel", onWheel, { passive: false });
   window.addEventListener("wheel", onWheel, { passive: false });
-  window.addEventListener("touchstart", touch, {passive: false} );
-
+  window.addEventListener("touchstart", touch, { passive: false });
 
   animate();
 }
@@ -909,7 +759,6 @@ function render() {
   particle.rotation.y += 0.001;
   iMesh.rotation.y += 0.001;
   //particle.rotation.y += 0.001;
-  x;
 
   renderer.render(scene, camera);
 }
@@ -1191,8 +1040,6 @@ function geoThree() {
           var curveObject = new THREE.Mesh(g, m);
           group.add(curveObject);
 
-
-
           //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
           const CURVE_MIN_ALTITUDE00 = -10;
           const CURVE_MAX_ALTITUDE00 = -10;
@@ -1233,12 +1080,7 @@ function geoThree() {
           });
           var curveObject00 = new THREE.Mesh(g00, m00);
           group.add(curveObject00);
- 
-          
         });
-
-        
-
       } //end Destination()
 
       Destination(our_data);

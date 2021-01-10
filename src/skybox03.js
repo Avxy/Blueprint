@@ -31,7 +31,7 @@ var text;
 
 init();
 
-function init() {
+function init(){
   const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
   scene = new THREE.Scene();
   envMap = new THREE.CubeTextureLoader()
@@ -39,22 +39,17 @@ function init() {
     .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
   //scene.background = envMap;
   //scene.background = new THREE.Color(0xaaaaaa);
-
-  camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
+  
+  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
   camera.position.x = 0;
   camera.position.y = 0;
   camera.position.z = 250;
   camera.lookAt(0, 1.5, 0);
-
+  
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
-
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+  
   const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
   scene.add(ambient);
 
@@ -65,11 +60,11 @@ function init() {
   const light00 = new THREE.DirectionalLight(0xffffff, 1);
   light00.position.set(0, 0, 0);
   scene.add(light00);
-
+    
   clock = new THREE.Clock();
 
   //controls = new THREE.OrbitControls(camera, renderer.domElement);
-
+  
   geod3();
   objMesh();
   metaMesh();
@@ -79,110 +74,73 @@ function init() {
   loadFont();
   //textFF();
   console.log();
+  
 
-  window.addEventListener("resize", resize, false);
+  window.addEventListener( 'resize', resize, false);
   //window.addEventListener("resize", resize, { passive: false });
   window.addEventListener("wheel", onWheel, { passive: false });
   // window.addEventListener("touchstart", touch, {passive: false} );
-
+  
   update();
+  
 }
+
 
 function loadFont() {
   var loader = new THREE.FontLoader();
   loader.load(
     "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/helvetiker_regular.typeface.json",
-    function (res) {
+    function(res) {
       textMesh(res);
     }
   );
 }
 function textMesh(font) {
   const textGeo = new THREE.TextGeometry("Blueprint", {
-    font: font,
-    size: 10,
-    height: 0.5,
-    curveSegments: 1,
-    bevelEnabled: true,
-    bevelThickness: 1,
-    bevelSize: 0.3,
-    bevelOffset: 0,
-    bevelSegments: 5
+        font: font,
+        size: 10,
+        height: 0.5,
+        curveSegments: 1,
+        bevelEnabled: true,
+        bevelThickness: 1,
+        bevelSize: 0.3,
+        bevelOffset: 0,
+        bevelSegments: 5,
+    
   });
   textGeo.computeBoundingBox();
   textGeo.computeVertexNormals();
   var cubeMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
   text = new THREE.Mesh(textGeo, cubeMat);
-  text.position.set(0, 250, -50);
+  text.position.set(0,250,-50);
   text.castShadow = true;
-  text.scale.set(5, 3, 1);
+  text.scale.set(5,3,1);
   scene.add(text);
 }
 
 function initTimeline() {
   var options = {
-    opacityIn: [0, 1],
-    scaleIn: [0.2, 1],
-    scaleOut: 3,
-    durationIn: 800,
-    durationOut: 600,
-    delay: 500,
-    easing: "easeInExpo"
-  };
+    opacityIn:[0,1],
+    scaleIn:[0.2,1],
+    scaleOut:3,
+    durationIn:800,
+    durationOut:600,
+    delay:500,
+    easing:"easeInExpo"
 
-  anime.timeline({ loop: true });
+  };
   timeline = anime.timeline({
     autoplay: false,
     duration: 64000,
     easing: "easeOutSine"
   });
-  timeline.add({
-    targets: ".text-animation .one",
-    opacity: options.opacityIn,
-    scale: options.scaleIn,
-    duration: options.durationIn
-  });
-  timeline.add({
-    targets: ".text-animation .one",
-    opacity: 0,
-    scale: options.scaleOut,
-    easing: options.easing,
-    duration: options.durationOut,
-    delay: options.delay
-  });
-  timeline.add({
-    targets: ".text-animation .two",
-    opacity: options.opacityIn,
-    scale: options.scaleIn,
-    duration: options.durationIn
-  });
-  timeline.add({
-    targets: ".text-animation .two",
-    opacity: 0,
-    scale: options.scaleOut,
-    easing: options.easing,
-    duration: options.durationOut,
-    delay: options.delay
-  });
-  timeline.add({
-    targets: ".text-animation .three",
-    opacity: options.opacityIn,
-    scale: options.scaleIn,
-    duration: options.durationIn
-  });
-  timeline.add({
-    targets: ".text-animation .three",
-    opacity: 0,
-    scale: options.scaleOut,
-    easing: options.easing,
-    duration: options.durationOut,
-    delay: options.delay
-  });
-  timeline.add({
-    targets: ".text-animation",
-    opacity: 0,
-    duration: 500,
-    delay: 500
+
+    timeline.add({
+      targets:'.text-animation .one',
+      opacity:options.opacityIn,
+      scale:options.scaleIn,
+      duration:options.durationIn,
+      //update: camera.updateProjectionMatrix()
   });
 
   timeline.add({
@@ -329,42 +287,43 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  //   timeline.add({
-  //     targets: cube.rotation,
-  //     x: Math.PI / 2,
-  //     y: 0,
-  //     z: 0,
-  //     duration: 4000,
-  //     update: camera.updateProjectionMatrix()
-  //   });
+//   timeline.add({
+//     targets: cube.rotation,
+//     x: Math.PI / 2,
+//     y: 0,
+//     z: 0,
+//     duration: 4000,
+//     update: camera.updateProjectionMatrix()
+//   });
 
-  //   timeline.add({
-  //     targets: cube.rotation,
-  //     x: Math.PI,
-  //     y: 0,
-  //     z: 0,
-  //     duration: 4000,
-  //     update: camera.updateProjectionMatrix()
-  //   });
+//   timeline.add({
+//     targets: cube.rotation,
+//     x: Math.PI,
+//     y: 0,
+//     z: 0,
+//     duration: 4000,
+//     update: camera.updateProjectionMatrix()
+//   });
 
-  //   timeline.add({
-  //     targets: cube.rotation,
-  //     x: (Math.PI * 3) / 2,
-  //     y: 0,
-  //     z: 0,
-  //     duration: 4000,
-  //     update: camera.updateProjectionMatrix()
-  //   });
+//   timeline.add({
+//     targets: cube.rotation,
+//     x: (Math.PI * 3) / 2,
+//     y: 0,
+//     z: 0,
+//     duration: 4000,
+//     update: camera.updateProjectionMatrix()
+//   });
 
-  //   timeline.add({
-  //     targets: cube.rotation,
-  //     x: Math.PI * 2,
-  //     y: 0,
-  //     z: 0,
-  //     duration: 4000,
-  //     update: camera.updateProjectionMatrix()
-  //   });
-}
+//   timeline.add({
+//     targets: cube.rotation,
+//     x: Math.PI * 2,
+//     y: 0,
+//     z: 0,
+//     duration: 4000,
+//     update: camera.updateProjectionMatrix()
+//   });
+
+ }
 
 function onWheel(e) {
   // for embedded demo
@@ -394,7 +353,8 @@ function scroll(e) {
   scrollY = -evt.y;
 }
 
-function tubeMesh() {
+function tubeMesh()
+{
   //Add meshes here
   const curve = new THREE.Curves.TrefoilKnot(30);
   const geometry = new THREE.TubeBufferGeometry(curve, 100, 2, 8, true);
@@ -534,51 +494,58 @@ function metaMesh() {
   }
 }
 
-function geod3() {
-  //===================================================== add canvas
-  // var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  // renderer.setSize(window.innerWidth, window.innerHeight);
-  // renderer.toneMapping = THREE.LinearToneMapping;
-  // document.body.appendChild(renderer.domElement);
 
-  //===================================================== add GLow
-  // var renderScene = new THREE.RenderPass(scene, camera);
-  // var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
-  // effectFXAA.uniforms["resolution"].value.set(
-  //   1 / window.innerWidth,
-  //   1 / window.innerHeight
-  // );
-  // var copyShader = new THREE.ShaderPass(THREE.CopyShader);
-  // copyShader.renderToScreen = true;
 
-  // var bloomStrength = 1;
-  // var bloomRadius = 0;
-  // var bloomThreshold = 0.5;
-  // var bloomPass = new THREE.UnrealBloomPass(
-  //   new THREE.Vector2(window.innerWidth, window.innerHeight),
-  //   bloomStrength,
-  //   bloomRadius,
-  //   bloomThreshold
-  // );
 
-  // var composer = new THREE.EffectComposer(renderer);
-  // composer.setSize(window.innerWidth, window.innerHeight);
-  // composer.addPass(renderScene);
-  // composer.addPass(effectFXAA);
-  // composer.addPass(bloomPass);
-  // composer.addPass(copyShader);
+  
 
-  //===================================================== resize
-  // window.addEventListener("resize", function() {
-  //   let width = window.innerWidth;
-  //   let height = window.innerHeight;
-  //   renderer.setSize(width, height);
-  //   camera.aspect = width / height;
-  //   camera.updateProjectionMatrix();
-  // });
+function geod3()
+{
+  
+//===================================================== add canvas
+// var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+// renderer.setSize(window.innerWidth, window.innerHeight);
+// renderer.toneMapping = THREE.LinearToneMapping;
+// document.body.appendChild(renderer.domElement);
 
-  //===================================================== data
-  const our_data = [
+//===================================================== add GLow
+// var renderScene = new THREE.RenderPass(scene, camera);
+// var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
+// effectFXAA.uniforms["resolution"].value.set(
+//   1 / window.innerWidth,
+//   1 / window.innerHeight
+// );
+// var copyShader = new THREE.ShaderPass(THREE.CopyShader);
+// copyShader.renderToScreen = true;
+
+// var bloomStrength = 1;
+// var bloomRadius = 0;
+// var bloomThreshold = 0.5;
+// var bloomPass = new THREE.UnrealBloomPass(
+//   new THREE.Vector2(window.innerWidth, window.innerHeight),
+//   bloomStrength,
+//   bloomRadius,
+//   bloomThreshold
+// );
+
+// var composer = new THREE.EffectComposer(renderer);
+// composer.setSize(window.innerWidth, window.innerHeight);
+// composer.addPass(renderScene);
+// composer.addPass(effectFXAA);
+// composer.addPass(bloomPass);
+// composer.addPass(copyShader);
+
+//===================================================== resize
+// window.addEventListener("resize", function() {
+//   let width = window.innerWidth;
+//   let height = window.innerHeight;
+//   renderer.setSize(width, height);
+//   camera.aspect = width / height;
+//   camera.updateProjectionMatrix();
+// });
+
+//===================================================== data
+const our_data = [
     {
       origin: { name: "a", latitude: 10, longitude: -90 },
       destination: { name: "a", latitude: 10, longitude: -90 }
@@ -637,308 +604,307 @@ function geod3() {
     }
   ];
 
-  //===================================================== helper functions
-  const clamp = (num, min, max) => (num <= min ? min : num >= max ? max : num);
+//===================================================== helper functions
+const clamp = (num, min, max) => (num <= min ? min : num >= max ? max : num);
 
-  const DEGREE_TO_RADIAN = Math.PI / 180;
+const DEGREE_TO_RADIAN = Math.PI / 180;
 
-  function coordinateToPosition(lat, lng, radius) {
-    const phi = (90 - lat) * DEGREE_TO_RADIAN;
-    const theta = (lng + 180) * DEGREE_TO_RADIAN;
+function coordinateToPosition(lat, lng, radius) {
+  const phi = (90 - lat) * DEGREE_TO_RADIAN;
+  const theta = (lng + 180) * DEGREE_TO_RADIAN;
 
-    return new THREE.Vector3(
-      -radius * Math.sin(phi) * Math.cos(theta),
-      radius * Math.cos(phi),
-      radius * Math.sin(phi) * Math.sin(theta)
-    );
-  }
+  return new THREE.Vector3(
+    -radius * Math.sin(phi) * Math.cos(theta),
+    radius * Math.cos(phi),
+    radius * Math.sin(phi) * Math.sin(theta)
+  );
+}
 
-  //===================================================== d3.json
-  d3.json(
-    "https://raw.githubusercontent.com/baronwatts/data/master/world.json",
-    function (err, data) {
-      //===================================================== crate canvas texturefor the globe
-      var projection = d3.geo
-        .equirectangular()
-        .translate([1024, 512])
-        .scale(326);
+//===================================================== d3.json
+d3.json(
+  "https://raw.githubusercontent.com/baronwatts/data/master/world.json",
+  function(err, data) {
+    //===================================================== crate canvas texturefor the globe
+    var projection = d3.geo
+      .equirectangular()
+      .translate([1024, 512])
+      .scale(326);
 
-      var countries = topojson.feature(data, data.objects.countries);
+    var countries = topojson.feature(data, data.objects.countries);
 
-      var canvas = d3
-        .select("body")
-        .append("canvas")
-        .style("display", "none")
-        .attr("width", "2048px")
-        .attr("height", "1024px");
+    var canvas = d3
+      .select("body")
+      .append("canvas")
+      .style("display", "none")
+      .attr("width", "2048px")
+      .attr("height", "1024px");
 
-      var context = canvas.node().getContext("2d");
+    var context = canvas.node().getContext("2d");
 
-      var path = d3.geo.path().projection(projection).context(context);
+    var path = d3.geo
+      .path()
+      .projection(projection)
+      .context(context);
 
-      context.strokeStyle = "white";
-      context.lineWidth = 0.25;
-      context.fillStyle = "#000";
+    context.strokeStyle = "white";
+    context.lineWidth = 0.25;
+    context.fillStyle = "#000";
 
-      context.beginPath();
+    context.beginPath();
 
-      path(countries);
+    path(countries);
 
-      context.fill();
-      context.stroke();
+    context.fill();
+    context.stroke();
 
-      var mapTexture = new THREE.Texture(canvas.node());
-      mapTexture.needsUpdate = true;
+    var mapTexture = new THREE.Texture(canvas.node());
+    mapTexture.needsUpdate = true;
 
-      //===================================================== add globe
-      group = new THREE.Group();
-      scene.add(group);
-      group.rotateX(Math.PI / 8);
+    //===================================================== add globe
+    group = new THREE.Group();
+    scene.add(group);
+    group.rotateX(Math.PI / 8);
+    
+    var RADIUS = 140;
 
-      var RADIUS = 140;
+    var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
+    var sphereMaterial = new THREE.MeshPhongMaterial({
+    //  map: mapTexture,
+      transparent: false,
+      opacity: 1,
+      color: "rgb(9,55,89)",      
+      side: THREE.DoubleSide
+     // color: new THREE.Color({color:"rgb(9,108,144)"})
+    });
+    var earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    earthMesh.name = "earth";
+    group.add(earthMesh);
 
-      var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
-      var sphereMaterial = new THREE.MeshPhongMaterial({
-        //  map: mapTexture,
-        transparent: false,
-        opacity: 1,
-        color: "rgb(9,55,89)",
-        side: THREE.DoubleSide
-        // color: new THREE.Color({color:"rgb(9,108,144)"})
-      });
-      var earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-      earthMesh.name = "earth";
-      group.add(earthMesh);
+    //===================================================== add glow effect to globe
+    // var customMaterial = new THREE.ShaderMaterial({
+    //   uniforms: {},
+    //   vertexShader: document.getElementById("vertexShader").textContent,
+    //   fragmentShader: document.getElementById("fragmentShader").textContent,
+    //   side: THREE.BackSide,
+    //   blending: THREE.AdditiveBlending,
+    //   transparent: true
+    // });
 
-      //===================================================== add glow effect to globe
-      // var customMaterial = new THREE.ShaderMaterial({
-      //   uniforms: {},
-      //   vertexShader: document.getElementById("vertexShader").textContent,
-      //   fragmentShader: document.getElementById("fragmentShader").textContent,
-      //   side: THREE.BackSide,
-      //   blending: THREE.AdditiveBlending,
-      //   transparent: true
-      // });
+    // var ballGeometry = new THREE.SphereGeometry(170, 60, 60);
+    // var ball = new THREE.Mesh(ballGeometry, customMaterial);
+    // scene.add(ball);
 
-      // var ballGeometry = new THREE.SphereGeometry(170, 60, 60);
-      // var ball = new THREE.Mesh(ballGeometry, customMaterial);
-      // scene.add(ball);
+    //===================================================== lng & lat
+    function Destination(array) {
+      array.map((d, i) => {
+        //convert lng & lat coordinates to 3d space
+        var startLat = d.origin.latitude;
+        var startLng = d.origin.longitude;
 
-      //===================================================== lng & lat
-      function Destination(array) {
-        array.map((d, i) => {
-          //convert lng & lat coordinates to 3d space
-          var startLat = d.origin.latitude;
-          var startLng = d.origin.longitude;
+        var endLat = d.destination.latitude;
+        var endLng = d.destination.longitude;
 
-          var endLat = d.destination.latitude;
-          var endLng = d.destination.longitude;
+        var x = -(
+          RADIUS *
+          Math.sin((90 - startLat) * (Math.PI / 180)) *
+          Math.cos((startLng + 180) * (Math.PI / 180))
+        );
+        var z =
+          RADIUS *
+          Math.sin((90 - startLat) * (Math.PI / 180)) *
+          Math.sin((startLng + 180) * (Math.PI / 180));
+        var y = RADIUS * Math.cos((90 - startLat) * (Math.PI / 180));
 
-          var x = -(
-            RADIUS *
-            Math.sin((90 - startLat) * (Math.PI / 180)) *
-            Math.cos((startLng + 180) * (Math.PI / 180))
-          );
-          var z =
-            RADIUS *
-            Math.sin((90 - startLat) * (Math.PI / 180)) *
-            Math.sin((startLng + 180) * (Math.PI / 180));
-          var y = RADIUS * Math.cos((90 - startLat) * (Math.PI / 180));
+        var x2 = -(
+          RADIUS *
+          Math.sin((90 - endLat) * (Math.PI / 180)) *
+          Math.cos((endLng + 180) * (Math.PI / 180))
+        );
+        var z2 =
+          RADIUS *
+          Math.sin((90 - endLat) * (Math.PI / 180)) *
+          Math.sin((endLng + 180) * (Math.PI / 180));
+        var y2 = RADIUS * Math.cos((90 - endLat) * (Math.PI / 180));
 
-          var x2 = -(
-            RADIUS *
-            Math.sin((90 - endLat) * (Math.PI / 180)) *
-            Math.cos((endLng + 180) * (Math.PI / 180))
-          );
-          var z2 =
-            RADIUS *
-            Math.sin((90 - endLat) * (Math.PI / 180)) *
-            Math.sin((endLng + 180) * (Math.PI / 180));
-          var y2 = RADIUS * Math.cos((90 - endLat) * (Math.PI / 180));
+        //store the starting and ending positions of each location
+        var start = new THREE.Vector3(x, y, z);
+        var end = new THREE.Vector3(x2, y2, z2);
 
-          //store the starting and ending positions of each location
-          var start = new THREE.Vector3(x, y, z);
-          var end = new THREE.Vector3(x2, y2, z2);
+        //points
+        var pointGeom = new THREE.SphereGeometry(10, 10, 10);
+        point = new THREE.Mesh(
+          pointGeom,
+          new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
+        );
+        var point2 = new THREE.Mesh(
+          pointGeom,
+          new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
+        );
 
-          //points
-          var pointGeom = new THREE.SphereGeometry(10, 10, 10);
-          point = new THREE.Mesh(
-            pointGeom,
-            new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
-          );
-          var point2 = new THREE.Mesh(
-            pointGeom,
-            new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
-          );
+        //spaces out the points
+        point.position.set(x, y, z);
+        point2.position.set(x2, y2, z2);
+        point.lookAt(new THREE.Vector3(0, 0, 0));
+        point2.lookAt(new THREE.Vector3(0, 0, 0));
+        group.add(point);
+        group.add(point2);
 
-          //spaces out the points
-          point.position.set(x, y, z);
-          point2.position.set(x2, y2, z2);
-          point.lookAt(new THREE.Vector3(0, 0, 0));
-          point2.lookAt(new THREE.Vector3(0, 0, 0));
-          group.add(point);
-          group.add(point2);
+        //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
+        const CURVE_MIN_ALTITUDE = 20;
+        const CURVE_MAX_ALTITUDE = 100;
+        const altitude = clamp(
+          start.distanceTo(end) * 0.75,
+          CURVE_MIN_ALTITUDE,
+          CURVE_MAX_ALTITUDE
+        );
 
-          //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
-          const CURVE_MIN_ALTITUDE = 20;
-          const CURVE_MAX_ALTITUDE = 100;
-          const altitude = clamp(
-            start.distanceTo(end) * 0.75,
-            CURVE_MIN_ALTITUDE,
-            CURVE_MAX_ALTITUDE
-          );
+        //get the middle position of each location
+        var lat = [startLng, startLat];
+        var lng = [endLng, endLat];
+        var geoInterpolator = d3.geoInterpolate(lat, lng);
 
-          //get the middle position of each location
-          var lat = [startLng, startLat];
-          var lng = [endLng, endLat];
-          var geoInterpolator = d3.geoInterpolate(lat, lng);
+        const midCoord1 = geoInterpolator(0.25);
+        const midCoord2 = geoInterpolator(0.75);
 
-          const midCoord1 = geoInterpolator(0.25);
-          const midCoord2 = geoInterpolator(0.75);
+        const mid1 = coordinateToPosition(
+          midCoord1[1],
+          midCoord1[0],
+          RADIUS + altitude
+        );
+        const mid2 = coordinateToPosition(
+          midCoord2[1],
+          midCoord2[0],
+          RADIUS + altitude
+        );
 
-          const mid1 = coordinateToPosition(
-            midCoord1[1],
-            midCoord1[0],
-            RADIUS + altitude
-          );
-          const mid2 = coordinateToPosition(
-            midCoord2[1],
-            midCoord2[0],
-            RADIUS + altitude
-          );
-
-          //create bezier curve from the lng & lat positions
-          var curve = new THREE.CubicBezierCurve3(start, mid1, mid2, end);
-          var g = new THREE.TubeGeometry(curve, 100, 0.35, 10, false);
-          var m = new THREE.MeshBasicMaterial({
-            color: new THREE.Color(
-              "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
-            )
-          });
-          var curveObject = new THREE.Mesh(g, m);
-          group.add(curveObject);
+        //create bezier curve from the lng & lat positions
+        var curve = new THREE.CubicBezierCurve3(start, mid1, mid2, end);
+        var g = new THREE.TubeGeometry(curve, 100, 0.35, 10, false);
+        var m = new THREE.MeshBasicMaterial({
+          color: new THREE.Color(
+            "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
+          )
         });
-      } //end Destination()
+        var curveObject = new THREE.Mesh(g, m);
+        group.add(curveObject);
 
-      Destination(our_data);
-
-      // //===================================================== add Animation
-    }
-  ); //end d3.json
+        
+      });
+    } //end Destination()
+    
+    Destination(our_data);
+    
+    // //===================================================== add Animation
+  
+    
+  }
+); //end d3.json
 }
 
-function playerCam() {
-  //Add meshes here
-  player = new THREE.Group();
-  player.position.set(140, 140, 0);
-  scene.add(player);
+function playerCam(){
+//Add meshes here
+player = new THREE.Group();
+player.position.set(140,140,0);
+scene.add(player);
 
-  // const bodyGeometry = new THREE.CylinderBufferGeometry(0.5, 0.3, 1.6, 20);
-  const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
-  // const body = new THREE.Mesh(bodyGeometry, material);
-  // body.position.y = 0.8;
-  // body.scale.z = 0.5;
-  // player.add(body);
-  const headGeometry = new THREE.SphereBufferGeometry(0.3, 20, 15);
-  const head = new THREE.Mesh(headGeometry, material);
-  head.position.set = (0, 0, 0);
-  player.add(head);
+// const bodyGeometry = new THREE.CylinderBufferGeometry(0.5, 0.3, 1.6, 20);
+ const material = new THREE.MeshStandardMaterial({color: 0xffff00 });
+// const body = new THREE.Mesh(bodyGeometry, material);
+// body.position.y = 0.8;
+// body.scale.z = 0.5;
+// player.add(body);
+const headGeometry = new THREE.SphereBufferGeometry(0.3, 20, 15);
+const head = new THREE.Mesh(headGeometry, material);
+head.position.set = (0,0,0);
+player.add(head);
 
-  cameras = [];
-  cameraIndex = 0;
+cameras = [];
+cameraIndex = 0; 
 
-  const followCam = new THREE.Object3D();
-  followCam.position.copy(camera.position);
-  player.add(followCam);
-  cameras.push(followCam);
+const followCam = new THREE.Object3D();
+followCam.position.copy(camera.position);
+player.add(followCam);
+cameras.push(followCam);
 
-  const frontCam = new THREE.Object3D();
-  frontCam.position.set(0, 0, -8);
-  player.add(frontCam);
-  cameras.push(frontCam);
+const frontCam = new THREE.Object3D();
+frontCam.position.set(0, 0, -8);
+player.add(frontCam);
+cameras.push(frontCam);
 
-  // const overheadCam = new THREE.Object3D();
-  // overheadCam.position.set(0, 20, 0);
-  // cameras.push(overheadCam);
+// const overheadCam = new THREE.Object3D();
+// overheadCam.position.set(0, 20, 0);
+// cameras.push(overheadCam);
 
-  addKeyboardControl();
 
-  const btn = document.getElementById("camera-btn");
-  btn.addEventListener("click", changeCamera);
+
+addKeyboardControl();
+
+const btn = document.getElementById('camera-btn');
+btn.addEventListener('click', changeCamera);
+
+
 }
 
-function changeCamera() {
-  cameraIndex++;
-  if (cameraIndex >= cameras.length) cameraIndex = 0;
+function changeCamera(){
+cameraIndex++;
+if (cameraIndex>=cameras.length) cameraIndex = 0;
 }
 
-function addKeyboardControl() {
-  document.addEventListener("keydown", keyDown);
-  document.addEventListener("keyup", keyUp);
+function addKeyboardControl(){
+  document.addEventListener( 'keydown', keyDown );
+  document.addEventListener( 'keyup', keyUp );
 }
 
-function keyDown(evt) {
-  let forward =
-    player.userData !== undefined && player.userData.move !== undefined
-      ? player.userData.move.forward
-      : 0;
-  let turn =
-    player.userData != undefined && player.userData.move !== undefined
-      ? player.userData.move.turn
-      : 0;
-
-  switch (evt.keyCode) {
-    case 87: //W
+function keyDown(evt){
+  let forward = (player.userData!==undefined && player.userData.move!==undefined) ? player.userData.move.forward : 0;
+  let turn = (player.userData!=undefined && player.userData.move!==undefined) ?  player.userData.move.turn : 0;
+  
+  switch(evt.keyCode){
+    case 87://W
       forward = -1;
       break;
-    case 83: //S
+    case 83://S
       forward = 1;
       break;
-    case 65: //A
+    case 65://A
       turn = 1;
       break;
-    case 68: //D
+    case 68://D
       turn = -1;
       break;
   }
-
+  
   playerControl(forward, turn);
 }
 
-function keyUp(evt) {
-  let forward =
-    player.userData !== undefined && player.userData.move !== undefined
-      ? player.userData.move.forward
-      : 0;
-  let turn =
-    player.move != undefined && player.userData.move !== undefined
-      ? player.userData.move.turn
-      : 0;
-
-  switch (evt.keyCode) {
-    case 87: //W
+function keyUp(evt){
+  let forward = (player.userData!==undefined && player.userData.move!==undefined) ? player.userData.move.forward : 0;
+  let turn = (player.move!=undefined && player.userData.move!==undefined) ?  player.userData.move.turn : 0;
+  
+  switch(evt.keyCode){
+    case 87://W
       forward = 0;
       break;
-    case 83: //S
+    case 83://S
       forward = 0;
       break;
-    case 65: //A
+    case 65://A
       turn = 0;
       break;
-    case 68: //D
+    case 68://D
       turn = 0;
       break;
   }
-
+  
   playerControl(forward, turn);
 }
 
-function playerControl(forward, turn) {
-  if (forward == 0 && turn == 0) {
+function playerControl(forward, turn){
+   if (forward==0 && turn==0){
     delete player.userData.move;
-  } else {
-    if (player.userData === undefined) player.userData = {};
-    this.player.userData.move = { forward, turn };
+  }else{
+    if (player.userData===undefined) player.userData = {};
+    this.player.userData.move = { forward, turn }; 
   }
 }
 
@@ -954,6 +920,7 @@ function lerp(a, b, t) {
 //   //divContainer.addEventListener("wheel", onWheel, { passive: false });
 //   window.addEventListener("wheel", onWheel, { passive: false });
 //   window.addEventListener("touchstart", touch, {passive: false} );
+
 
 //   animate();
 // }
@@ -1003,35 +970,35 @@ function lerp(a, b, t) {
 //   renderer.setSize(window.innerWidth, window.innerHeight);
 // }
 
-function update() {
+function update()
+{
   const game = this;
   //requestAnimationFrame(function(){game.animate();})
-  requestAnimationFrame(update);
-  renderer.render(scene, camera);
+  requestAnimationFrame( update );
+	renderer.render( scene, camera );
   particle.rotation.y += 0.001;
   group.rotation.x += 0.005;
-
+  
   render();
 }
 
-function resize() {
+function resize(){
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize( window.innerWidth, window.innerHeight );
+ 
 }
 
-function render() {
+function render() 
+{
   const dt = clock.getDelta();
-
-  if (player.userData !== undefined && player.userData.move !== undefined) {
+  
+  if (player.userData!==undefined && player.userData.move!==undefined){
     player.translateZ(player.userData.move.forward * dt * 5);
     player.rotateY(player.userData.move.turn * dt);
   }
-
-  camera.position.lerp(
-    cameras[cameraIndex].getWorldPosition(new THREE.Vector3()),
-    0.05
-  );
+  
+  camera.position.lerp(cameras[cameraIndex].getWorldPosition(new THREE.Vector3()), 0.05);
   const pos = player.position.clone();
   pos.y += 3;
   camera.lookAt(pos);
@@ -1041,4 +1008,5 @@ function render() {
   percentage = lerp(percentage, scrollY, 0.08);
   timeline.seek(percentage * (64000 / maxHeight));
   //tube
+  
 }

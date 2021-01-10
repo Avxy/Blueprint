@@ -1,222 +1,59 @@
-var scene,
-  camera,
-  cameras,
-  cameraIndex,
-  renderer,
-  cube,
-  box,
-  icosahedron,
-  particle,
-  group,
-  player,
-  clock,
-  cubemap,
-  moon,
-  binormal, normal, tube;
-  
-
-init();
-
-function init() {
-  
-
-  clock = new THREE.Clock();
-  //===================================================== add Scene
-  scene = new THREE.Scene();
- 
-  //===================================================== add Camera
-  camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    50,
-    10000
-  );
-  camera.position.set(0, 1000, 0);
-  camera.lookAt(0, 1.5, 0);
-  //===================================================== add front & back lighting
-  var light = new THREE.DirectionalLight(new THREE.Color("white"), 3);
-  light.position.set(1, 3, 2).normalize();
-  scene.add(light);
-
-  const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
-  scene.add(ambient);
-
-  const ballLight = new THREE.DirectionalLight(0xffffff, 3);
-  ballLight.position.set(0, 2, 1);
-  ballLight.target = moon;
-  scene.add(ballLight.target);
-  //===================================================== add canvas
-  renderer = new THREE.WebGLRenderer();
-  //renderer.setPixelRatio( window.devicePixelRatio );
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
-  //===================================================== mouse scroll
-  // window.addEventListener( 'wheel', onMouseWheel, false );
-  // window.addEventListener( 'resize', onWindowResize, false );
-  
-  //===================================================== add controls
-  var controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-  //===================================================== add cubemap
-  const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
-
-  cubemap = new THREE.CubeTextureLoader()
-    .setPath(`${assetPath}skybox1_`)
-    .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
-
-  scene.background = cubemap;
- 
-  //===================================================== player
-  //Add meshes here
-  player = new THREE.Group();
-  scene.add(player);
-
-  const headGeometry = new THREE.SphereBufferGeometry(10, 20, 15);
-  const headMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    side: THREE.DoubleSide
-  });
-  const headMesh = new THREE.Mesh(headGeometry, headMaterial);
-  headMesh.position.y = 140;
-  player.add(headMesh);
-  //===================================================== camera
-  cameras = [];
-  cameraIndex = 0;
-
-  const scrollCam = camera;
-  scrollCam.position.copy(camera.position);
-  player.add(scrollCam);
-  cameras.push(scrollCam);
-
-  const followCam = new THREE.Object3D();
-  followCam.position.copy(camera.position);
-  player.add(followCam);
-  cameras.push(followCam);
-
-  const frontCam = new THREE.Object3D();
-  frontCam.position.set(0, 200, -120);
-  player.add(frontCam);
-  cameras.push(frontCam);
-
-  const overheadCam = new THREE.Object3D();
-  overheadCam.position.set(0, 200, 120);
-  cameras.push(overheadCam);
-
-  addKeyboardControl();
-
-  const btn = document.getElementById("camera-btn");
-  btn.addEventListener("click", changeCamera);
-
-  //=======================================================player control
-
-  function addKeyboardControl() {
-    document.addEventListener("keydown", keyDown);
-    document.addEventListener("keyup", keyUp);
-  }
-
-  function keyDown(evt) {
-    let forward =
-      player.userData !== undefined && player.userData.move !== undefined
-        ? player.userData.move.forward
-        : 0;
-    let turn =
-      player.userData != undefined && player.userData.move !== undefined
-        ? player.userData.move.turn
-        : 0;
-
-    switch (evt.keyCode) {
-      case 87: //W
-        forward = -1;
-        break;
-      case 83: //S
-        forward = 1;
-        break;
-      case 65: //A
-        turn = 1;
-        break;
-      case 68: //D
-        turn = -1;
-        break;
-    }
-
-    playerControl(forward, turn);
-  }
-
-  function keyUp(evt) {
-    let forward =
-      player.userData !== undefined && player.userData.move !== undefined
-        ? player.userData.move.forward
-        : 0;
-    let turn =
-      player.move != undefined && player.userData.move !== undefined
-        ? player.userData.move.turn
-        : 0;
-
-    switch (evt.keyCode) {
-      case 87: //W
-        forward = 0;
-        break;
-      case 83: //S
-        forward = 0;
-        break;
-      case 65: //A
-        turn = 0;
-        break;
-      case 68: //D
-        turn = 0;
-        break;
-    }
-
-    playerControl(forward, turn);
-  }
-
-  function playerControl(forward, turn) {
-    if (forward == 0 && turn == 0) {
-      delete player.userData.move;
-    } else {
-      if (player.userData === undefined) player.userData = {};
-      this.player.userData.move = { forward, turn };
-    }
-  }
-
-
- 
-
-
-
-
-//===================================================== resize
-
-  window.addEventListener("resize", resize, false);
-
-  // update();
-}
-//===================================================== change camera
-function changeCamera() {
-  cameraIndex++;
-  if (cameraIndex >= cameras.length) cameraIndex = 0;
-}
-//===================================================== data
 const our_data = [
   {
-    origin: { name: "Bogotá", latitude: 4.624335, longitude: -74.063644 },
-    destination: { name: "Jamaica", latitude: 22.97917, longitude: -82.17028 }
+    origin: { name: "a", latitude: 10, longitude: -90 },
+    destination: { name: "a", latitude: 10, longitude: -90 }
   },
   {
-    origin: { name: "Jamaica", latitude: 22.97917, longitude: -82.17028 },
-    destination: { name: "Miami", latitude: 25.761681, longitude: -80.191788 }
+    origin: { name: "a", latitude: 10, longitude: -90 },
+    destination: { name: "a", latitude: 20, longitude: -100 }
   },
   {
-    origin: { name: "Jamaica", latitude: 22.97917, longitude: -82.17028 },
-    destination: { name: "New York", latitude: 40.73061, longitude: -73.935242 }
+    origin: { name: "a", latitude: 20, longitude: -100 },
+    destination: { name: "a", latitude: 30, longitude: -80 }
   },
   {
-    origin: { name: "Jamaica", latitude: 22.97917, longitude: -82.17028 },
-    destination: { name: "Britain", latitude: 51.509865, longitude: -0.118092 }
+    origin: { name: "a", latitude: 30, longitude: -80 },
+    destination: { name: "a", latitude: 40, longitude: -80 }
   },
   {
-    origin: { name: "New York", latitude: 40.73061, longitude: -73.935242 },
-    destination: { name: "Britain", latitude: 51.509865, longitude: -0.118092 }
+    origin: { name: "a", latitude: 40, longitude: -80 },
+    destination: { name: "a", latitude: 40, longitude: -90 }
+  },
+  {
+    origin: { name: "a", latitude: 40, longitude: -90 },
+    destination: { name: "a", latitude: 50, longitude: -100 }
+  },
+  {
+    origin: { name: "a", latitude: 40, longitude: -90 },
+    destination: { name: "a", latitude: 50, longitude: -70 }
+  },
+  {
+    origin: { name: "a", latitude: 50, longitude: -70 },
+    destination: { name: "a", latitude: 60, longitude: -60 }
+  },
+  {
+    origin: { name: "a", latitude: 50, longitude: -70 },
+    destination: { name: "a", latitude: 60, longitude: -90 }
+  },
+  {
+    origin: { name: "a", latitude: 60, longitude: -90 },
+    destination: { name: "a", latitude: 70, longitude: -100 }
+  },
+  {
+    origin: { name: "a", latitude: 70, longitude: -100 },
+    destination: { name: "a", latitude: 70, longitude: -120 }
+  },
+  {
+    origin: { name: "a", latitude: 70, longitude: -100 },
+    destination: { name: "a", latitude: 90, longitude: -110 }
+  },
+  {
+    origin: { name: "a", latitude: 70, longitude: -100 },
+    destination: { name: "a", latitude: 80, longitude: -90 }
+  },
+  {
+    origin: { name: "a", latitude: 80, longitude: -90 },
+    destination: { name: "a", latitude: 100, longitude: -100 }
   }
 ];
 
@@ -241,7 +78,10 @@ d3.json(
   "https://raw.githubusercontent.com/baronwatts/data/master/world.json",
   function (err, data) {
     //===================================================== crate canvas texturefor the globe
-    var projection = d3.geo.equirectangular().translate([1024, 512]).scale(326);
+    var projection = d3.geo
+      .equirectangular()
+      .translate([1024, 512])
+      .scale(326);
 
     var countries = topojson.feature(data, data.objects.countries);
 
@@ -270,120 +110,68 @@ d3.json(
     var mapTexture = new THREE.Texture(canvas.node());
     mapTexture.needsUpdate = true;
 
-    particle = new THREE.Object3D();
-    scene.add(particle);
-
-    var particleGeometry = new THREE.TetrahedronGeometry(2, 0);
-    var particleMaterial = new THREE.MeshPhongMaterial({
-      color: 0xffffff,
-      shading: THREE.FlatShading
-    });
-
-    for (var i = 0; i < 500; i++) {
-      var particleMesh = new THREE.Mesh(particleGeometry, particleMaterial);
-      particleMesh.position
-        .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
-        .normalize();
-      particleMesh.position.multiplyScalar(90 + Math.random() * 700);
-      particleMesh.rotation.set(
-        Math.random() * 2,
-        Math.random() * 2,
-        Math.random() * 2
-      );
-      particle.add(particleMesh);
-    }
     //===================================================== add globe
     group = new THREE.Group();
     scene.add(group);
-    group.rotateX(Math.PI / 8);
+    
 
     var RADIUS = 140;
-    var cRADIUS = RADIUS * 4;
-    var tRADIUS = RADIUS * 4;
-    var oRADIUS = RADIUS * 4;
-    var dRADIUS = RADIUS * 2;
-    var iRADIUS = RADIUS * 12;
-
+    //var sphereGeometry = new THREE.IcosahedronGeometry(RADIUS, 2);
     var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
-    var sphereMaterial = new THREE.MeshPhongMaterial({
-      map: mapTexture,
-      transparent: false,
-      opacity: 1,
-      color: new THREE.Color("white")
-    });
     // var sphereMaterial = new THREE.MeshPhongMaterial({
-    //   wireframe: false,
-    //   cubemap: cubemap
+    //   map: mapTexture,
+    //   transparent: false,
+    //   opacity: 1,
+    //   color: new THREE.Color("white")
     // });
-    var earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    earthMesh.name = "earth";
-    group.add(earthMesh);
-
-    //var metatron = new THREE.Object3D();
-
-    // cube = new THREE.Object3D();
-    // tetrahedron = new THREE.Object3D();
-    // octahedron = new THREE.Object3D();
-    // dodecahedron = new THREE.Object3D();
-    // icosahedron = new THREE.Object3D();
-
-    // scene.add(cube);
-    // scene.add(tetrahedron);
-    // scene.add(octahedron);
-    // scene.add(dodecahedron);
-    // scene.add(icosahedron);
-
-    var cubeGeometry = new THREE.BoxGeometry(cRADIUS, cRADIUS, cRADIUS);
-    // var tetrahedronGeometry = new THREE.TetrahedronGeometry(tRADIUS, 0);
-    // var octahedronGeometry = new THREE.OctahedronGeometry(oRADIUS, 0);
-    // var dodecahedronGeometry = new THREE.DodecahedronGeometry(dRADIUS, 0);
-    var icosahedronGeometry = new THREE.IcosahedronGeometry(iRADIUS, 0);
-
-    var metaMaterial = new THREE.MeshPhongMaterial({ wireframe: true });
-
-    cube = new THREE.Mesh(cubeGeometry, metaMaterial);
-    // tetrahedron = new THREE.Mesh(tetrahedronGeometry, metaMaterial);
-    // octahedron = new THREE.Mesh(octahedronGeometry, metaMaterial);
-    // dodecahedron = new THREE.Mesh(dodecahedronGeometry, metaMaterial);
-    icosahedron = new THREE.Mesh(icosahedronGeometry, metaMaterial);
-
-    scene.add(cube);
-    // scene.add(tetrahedron);
-    // scene.add(octahedron);
-    // scene.add(dodecahedron);
-    //scene.add(icosahedron);
-
-    for ( let i = 0; i <= 8; i ++ ) {
-      let ii=0;
-      ii = ii +1000;
-    	const cMesh = new THREE.Mesh( cubeGeometry, metaMaterial );
-      cMesh.position.y = ii;
-    	scene.add( cMesh);
-    	
-    }
-
-    const ballGeometry = new THREE.SphereGeometry(72, 20, 15);
-    // const material = new THREE.MeshStandardMaterial();
-    const ballMaterial = new THREE.MeshLambertMaterial({
-      wireframe: false,
-      cubemap: cubemap
+    // var sphereMaterial = new THREE.MeshPhongMaterial({
+    //   envMap: envMap,
+    //   transparent: false,
+    //   opacity: 1,
+    //   color: new THREE.Color("white")
+    // });
+    var sphereMaterial = new THREE.MeshPhongMaterial({
+      color: "rgb(9,55,108)",
+      side: THREE.DoubleSide
     });
-    const sphere = new THREE.Mesh(ballGeometry, ballMaterial);
 
-    //let ball;
+    // var sphereMaterial = new THREE.MeshPhongMaterial({
+    //   color: 0xffffff,
+    //   wireframe: true,
+    //   side: THREE.DoubleSide
 
-    // for(let x=-2; x<=2; x+=200){
-    //   for(let y=-2; y<=2; y+=200){
-    //     for(let z=-2; z<=2; z+=200){
-    moon = sphere.clone();
-    // ball.position.set(x,y,z);
-    moon.position.set(800, 0, 0);
-    scene.add(moon);
-    //     }
-    //   }
-    // }
-   
+    //});
 
+    // var grid = new THREE.Mesh( sphereGeometry, sphereMaterial );
+    // var gridEdge = new THREE.EdgesHelper(grid, 0xffffff);
+    // gridEdge.material.linewidth = 0.01;
+    // gridEdge.rotateX(1/2*Math.PI);
+    // group.add(grid);
+    // group.add(gridEdge);
+
+    earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    earthMesh.name = "earth";
+    // earthMesh02 = earthMesh.clone();
+    // earthMesh02.position.x = 800;
+    // earthMesh02.scale.set(0.3, 0.3, 0.3);
+    // group.add(earthMesh02);
+    group.add(earthMesh);
+    group.rotateX(Math.PI / 8);
+    //===================================================== add glow effect to globe
+    // var customMaterial = new THREE.ShaderMaterial({
+    //   uniforms: {},
+    //   vertexShader: document.getElementById("vertexShader").textContent,
+    //   fragmentShader: document.getElementById("fragmentShader").textContent,
+    //   side: THREE.BackSide,
+    //   blending: THREE.AdditiveBlending,
+    //   transparent: true
+    // });
+
+    // var ballGeometry = new THREE.SphereGeometry(160, 60, 60);
+    // var ball = new THREE.Mesh(ballGeometry, customMaterial);
+    // scene.add(ball);
+
+    //===================================================== lng & lat
     function Destination(array) {
       array.map((d, i) => {
         //convert lng & lat coordinates to 3d space
@@ -420,12 +208,12 @@ d3.json(
         var end = new THREE.Vector3(x2, y2, z2);
 
         //points
-        var pointGeom = new THREE.SphereGeometry(1, 10, 10);
-        var point = new THREE.Mesh(
+        var pointGeom = new THREE.SphereGeometry(10, 10, 10);
+        point = new THREE.Mesh(
           pointGeom,
           new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
         );
-        var point2 = new THREE.Mesh(
+        point2 = new THREE.Mesh(
           pointGeom,
           new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
         );
@@ -440,7 +228,7 @@ d3.json(
 
         //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
         const CURVE_MIN_ALTITUDE = 5;
-        const CURVE_MAX_ALTITUDE = 25;
+        const CURVE_MAX_ALTITUDE = 10;
         const altitude = clamp(
           start.distanceTo(end) * 0.75,
           CURVE_MIN_ALTITUDE,
@@ -470,76 +258,17 @@ d3.json(
         var curve = new THREE.CubicBezierCurve3(start, mid1, mid2, end);
         var g = new THREE.TubeGeometry(curve, 100, 0.35, 10, false);
         var m = new THREE.MeshBasicMaterial({
-          color: new THREE.Color(
-            "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
-          )
+          //   color: new THREE.Color(
+          //     "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
+          //   )
+          // });
+          color: new THREE.Color("rgb(0,144,255))")
         });
-        curveObject = new THREE.Mesh(g, m);
+        var curveObject = new THREE.Mesh(g, m);
         group.add(curveObject);
+
+        
       });
     } //end Destination()
 
     Destination(our_data);
-
-    //===================================================== add Animation
-
-    update();
-  }
-); //end d3.json
-
-
-
-
-
-function onMouseWheel( event ) {
-
-	event.preventDefault();
-
-	camera.position.y -= event.deltaY * 0.05;
-  
-  // prevent scrolling beyond a min/max value
-  
-  camera.position.clampScalar( 0, 10 );
-
-}
-
-function onWindowResize() {
-
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth, window.innerHeight );
-
-}
-
-function update() {
-  requestAnimationFrame(update);
-  renderer.render(scene, camera);
-
-  // composer.render();
-  cube.rotation.x += 0.001;
-  icosahedron.rotation.x += 0.001;
-  icosahedron.rotation.y += 0.0001;
-  particle.rotation.x += 0.0;
-  particle.rotation.y -= 0.0002;
-
-  const dt = clock.getDelta();
-
-  if (player.userData !== undefined && player.userData.move !== undefined) {
-    player.translateZ(player.userData.move.forward * dt * 25);
-    player.rotateY(player.userData.move.turn * dt);
-  }
-
-  camera.position.lerp(
-    cameras[cameraIndex].getWorldPosition(new THREE.Vector3()),
-    0.05
-  );
-  const pos = player.position.clone();
-  pos.y += 3;
-  camera.lookAt(pos);
-}
-
-function resize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}

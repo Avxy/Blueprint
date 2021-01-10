@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+ 
+    <link rel="stylesheet" href="src/style.css" />
+  </head>
+
+  <body>
+    <a id="camera-btn"
+      ><div>
+        <i class="fas fa-camera"></i></div
+    ></a>
+
+    <a id="camera-scroll"
+      ><div>
+        <i class="fas fa-arrow-alt-circle-down"></i></div
+    ></a>
+    <script src="https://cdn.jsdelivr.net/gh/WojciechWKROPCE/letterize-js/lib/letterize.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-geo/1.9.1/d3-geo.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/OrbitControls.js"></script>
+    <script src="https://threejs.org/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.0.1/lib/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+
+    <script src="https://kit.fontawesome.com/86f3d02ba1.js"></script>
+
+    <script src="https://threejs.org/examples/js/loaders/AssimpJSONLoader.js"></script>
+    <script src="https://threejs.org/examples/js/controls/DeviceOrientationControls.js"></script>
+    <script src="https://threejs.org/examples/js/effects/StereoEffect.js"></script>
+    <script src="https://threejs.org/examples/js/libs/tween.min.js"></script>
+    <!-- glowing effect scripts -->
+    <script src="https://threejs.org/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://threejs.org/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
+    <script src="https://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://threejs.org/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://threejs.org/examples/js/shaders/FXAAShader.js"></script>
+    <script src="https://threejs.org/examples/js/shaders/ConvolutionShader.js"></script>
+    <script src="https://threejs.org/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://threejs.org/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/CurveExtras.js"></script>
+    <script src="threex.dynamictexture.js"></script>
+    <script id="vertexShader" type="x-shader/x-vertex">
+      varying vec3 vNormal;
+      void main()
+      {
+          vNormal = normalize( normalMatrix * normal );
+          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+      }
+    </script>
+
+    <!-- fragment shader a.k.a. pixel shader -->
+    <script id="fragmentShader" type="x-shader/x-vertex">
+      varying vec3 vNormal;
+      void main()
+      {
+        float intensity = pow( 0.7 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), 4.0 );
+          gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 ) * intensity;
+      }
+    </script>
+    <script src="https://unpkg.com/three-mesh-ui"></script>
+    <script src="src/skybox.js"></script>
+
+    <section>
+      <!----<h1>Blueprint</h1>-->
+      <p>Scroll_down_here</p>
+      <p>Startup_Voucher</p>
+    </section>
+
+    <div class="name">
+      <div class="letter">A</div>
+      <div class="letter">B</div>
+      <div class="letter">H</div>
+      <div class="letter">I</div>
+      <div class="letter">S</div>
+      <div class="letter">H</div>
+      <div class="letter">E</div>
+      <div class="letter">K</div>
+      <div class="letter">.</div>
+      <div class="letter">K</div>
+      <div class="letter">U</div>
+      <div class="letter">M</div>
+      <div class="letter">A</div>
+      <div class="letter">R</div>
+    </div>
+    <link href="https://fonts.googleapis.com/css?family=Unica+One" rel="stylesheet">
+
+    <script>
+      var camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+
+      // Orbit Controls >
+      var controls = new THREE.OrbitControls(camera);
+      // I prefer to swap the mouse controls, but most examples out there don't:
+      controls.mouseButtons = {
+        ORBIT: THREE.MOUSE.RIGHT,
+        ZOOM: THREE.MOUSE.MIDDLE,
+        PAN: THREE.MOUSE.LEFT
+      };
+      controls.enableDamping = true; // For that slippery Feeling
+      controls.dampingFactor = 0.12; // Needs to call update on render loop
+      controls.rotateSpeed = 0.08; // Rotate speed
+      controls.autoRotate = false; // turn this guy to true for a spinning camera
+      controls.autoRotateSpeed = 0.08; // 30
+      controls.maxPolarAngle = Math.PI / 2; // Don't let to go below the ground
+      // < Orbit Controls
+
+      window.addEventListener("resize", onWindowResize, false);
+      render();
+
+      // Functions :
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function textO() {
+        const loader = new THREE.FontLoader();
+
+        loader.load("fonts/helvetiker_regular.typeface.json", function (font) {
+          const geometry = new THREE.TextGeometry("Hello three.js!", {
+            font: font,
+            size: 80,
+            height: 5,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 8,
+            bevelOffset: 0,
+            bevelSegments: 5
+          });
+        });
+        var textMaterial = new THREE.MeshPhongMaterial({ color: 0xfe98a0 });
+        var text = new THREE.Mesh(geometry, textMaterial);
+        text.position.x = 0;
+        text.position.y = 10;
+        text.position.z = 10;
+        scene.add(text);
+      }
+      window.addEventListener("touchend", this.onUp);
+    </script>
+
+<script>
+  console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
+	
+  var joystick	= new VirtualJoystick({
+    container	: document.getElementById('container'),
+    mouseSupport	: true,
+  });
+  joystick.addEventListener('touchStart', function(){
+    console.log('down')
+  })
+  joystick.addEventListener('touchEnd', function(){
+    console.log('up')
+  })
+
+  setInterval(function(){
+    var outputEl	= document.getElementById('result');
+    outputEl.innerHTML	= '<b>Result:</b> '
+      + ' dx:'+joystick.deltaX()
+      + ' dy:'+joystick.deltaY()
+      + (joystick.right()	? ' right'	: '')
+      + (joystick.up()	? ' up'		: '')
+      + (joystick.left()	? ' left'	: '')
+      + (joystick.down()	? ' down' 	: '')	
+  }, 1/30 * 1000);
+</script>
+
+<script>
+cameras = [];
+
+for(let x=0; x<2; x++){
+const camera = new THREE.PerspectiveCamera( 60, aspect, 0.1, 150 );
+if (x==0){
+  camera.position.set(0, 0, 15);
+  helper = new THREE.CameraHelper(camera);
+  scene.add(helper);
+  helper.visible = false;
+}else{
+  camera.position.set(-48, 0, 8);
+  camera.lookAt(-25,0,-25);
+}
+
+cameras.push(camera);
+}
+
+camera = cameras[0];
+
+
+const controls0 = new THREE.OrbitControls( cameras[0], renderer.domElement );
+
+const controls1 = new THREE.OrbitControls( cameras[1], renderer.domElement );
+controls1.target.set(0,0,5);
+controls1.update();
+controls1.enabled = false;
+
+const gui = new dat.GUI();
+const params = {
+camera: 'main camera',
+fov: 75,
+near: 0.1,
+far: 100
+}
+gui.add(params, 'camera', ['main camera', 'helper view'])
+.onChange( value => {
+if (value==='main camera'){
+  camera = cameras[0];
+  controls0.enabled = true;
+  controls1.enabled = false;
+  helper.visible = false;
+  controls0.update();
+}else{
+  camera = cameras[1];
+  controls0.enabled = false;
+  controls1.enabled = true;
+  helper.visible = true;
+  controls1.update();
+}
+});
+gui.add(params, 'fov')
+.min(20)
+.max(80)
+.step(1)
+.onChange( value => { 
+cameras[0].fov = value;
+cameras[0].updateProjectionMatrix();
+helper.update();
+});
+gui.add(params, 'near')
+.min(0.1)
+.max(20)
+.step(0.1)
+.onChange( value => { 
+cameras[0].near = value;
+cameras[0].updateProjectionMatrix();
+helper.update();
+});
+gui.add(params, 'far')
+.min(5)
+.max(100)
+.step(1)
+.onChange( value => { 
+cameras[0].far = value;
+cameras[0].updateProjectionMatrix();
+helper.update();
+});
+
+window.addEventListener( 'resize', resize, false);
+
+update();
+
+
+function update(){
+requestAnimationFrame( update );
+renderer.render( scene, camera );
+cameras.forEach( subcamera => subcamera.rotation.copy(camera.rotation));
+}
+
+function resize(){
+camera.aspect = window.innerWidth / window.innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize( window.innerWidth, window.innerHeight );
+}
+
+let creategeometry = function(){
+let texture = new THREE.Texture.Loader().load('https://i.pinimg.com/originals/8b/d9/2b/8bd92b9b855d42c2ae2dd1d3fcf88490.jpg')
+let material = new THREE.MeshPhongMaterial({map:texture})
+let geometry = new THREE.BoxGeometry(32,32,32)
+let cube = new THREE.Mesh(geometry, material)
+cube.position.set(800, 0, 0)
+group.add(cube)
+}
+creategeometry()
+
+
+const loader = new THREE.FontLoader();
+
+loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+const geometry = new THREE.TextGeometry( 'Proffz', {
+font: font,
+size: 80,
+height: 30,
+curveSegments: 12,
+bevelEnabled: true,
+bevelThickness: 10,
+bevelSize: 8,
+bevelOffset: 0,
+bevelSegments: 5
+} );
+} );
+</script>
+
+
+
+  </body>
+</html>

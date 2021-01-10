@@ -1,44 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
     <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="src/style.css" />
-  </head>
-  <body>
-    <a id="camera-btn"
-      ><div>
-        <i class="fas fa-camera"></i></div
-    ></a>
+    <a id="camera-btn"><div>
+      <i class="fas fa-camera"></i>
+    </div></a>
     <link rel="stylesheet" href="src/style.css" />
 
-    <a id="camera-scroll"
-      ><div>
-        <i class="fas fa-arrow-alt-circle-down"></i></div
-    ></a>
+    <a id="camera-scroll"><div>
+      <i class="fas fa-arrow-alt-circle-down"></i>
+    </div></a>
+    <link rel="stylesheet" href="src/style.css" />
 
-    <!-- <div class="text-animation">
-      <span class="one">Ready</span>
-      <span class="two">Steady</span>
-      <span class="three">Go!</span>
-    </div> -->
-
-    <!-- <section> -->
-      <div class="text-animation">
-        <span class="one">Ready</span>
-        <span class="two">Steady</span>
-        <span class="three">Go!</span>
-      </div>
-  
-    <!-- </section> -->
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-geo/1.9.1/d3-geo.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/OrbitControls.js"></script>
     <script src="https://threejs.org/build/three.min.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/3.1.0/anime.min.js'></script>
+
+  
+
+    <script src="https://kit.fontawesome.com/86f3d02ba1.js"></script>
+
     <script src="https://threejs.org/examples/js/loaders/AssimpJSONLoader.js"></script>
     <script src="https://threejs.org/examples/js/controls/DeviceOrientationControls.js"></script>
     <script src="https://threejs.org/examples/js/effects/StereoEffect.js"></script>
@@ -54,13 +43,13 @@
     <script src="https://threejs.org/examples/js/shaders/LuminosityHighPassShader.js"></script>
     <script src="https://threejs.org/examples/js/postprocessing/UnrealBloomPass.js"></script>
     <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
-
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/CurveExtras.js"></script>
     <script id="vertexShader" type="x-shader/x-vertex">
       varying vec3 vNormal;
       void main()
       {
-      vNormal = normalize( normalMatrix * normal );
-      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+          vNormal = normalize( normalMatrix * normal );
+          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
       }
     </script>
 
@@ -69,18 +58,23 @@
       varying vec3 vNormal;
       void main()
       {
-      float intensity = pow( 0.7 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), 4.0 );
-      gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 ) * intensity;
+        float intensity = pow( 0.7 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), 4.0 );
+          gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 ) * intensity;
       }
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.1.0/anime.min.js"></script>
-    <script src="https://kit.fontawesome.com/86f3d02ba1.js"></script>
-    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/CurveExtras.js"></script>
-    <script src="https://fonts.googleapis.com/css?family=Fredoka+One&amp;display=swap"></script>
-    
     <script src="src/index.js"></script>
+
+    <script src="https://fonts.googleapis.com/css?family=Fredoka+One&amp;display=swap"></script>
+
+    
+    <div class="text-animation">
+      <span class="one">Ready</span>
+      <span class="two">Steady</span>
+      <span class="three">Go!</span>
+    </div>
+
+    
+      
   </body>
-</html>
+  </html>
