@@ -78,6 +78,8 @@ function init() {
   initTimeline();
   loadFont();
   //textFF();
+  // preload();
+  // setupP5();
   console.log();
 
   window.addEventListener("resize", resize, false);
@@ -87,6 +89,7 @@ function init() {
 
   update();
 }
+
 
 function loadFont() {
   var loader = new THREE.FontLoader();
@@ -129,13 +132,13 @@ function initTimeline() {
     delay: 500,
     easing: "easeInExpo"
   };
-
-  anime.timeline({ loop: true });
+  //timeline = anime.timeline({ loop: true });
   timeline = anime.timeline({
     autoplay: false,
     duration: 64000,
     easing: "easeOutSine"
   });
+
   timeline.add({
     targets: ".text-animation .one",
     opacity: options.opacityIn,
