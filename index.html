@@ -117,7 +117,9 @@
         }
       }
 
-
+      window.addEventListener("wheel", onMouseWheel, { passive: false });
+      window.addEventListener("touchstart", onTouchStart, { passive: false });
+      window.addEventListener("touchmove", onTouchMove, { passive: false });
     </script>
   </body>
 </html>
