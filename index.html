@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="../src/style.css" />
+    <link rel="stylesheet" href="src/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
     <a id="camera-btn"
       ><div>
         <i class="fas fa-camera"></i></div
     ></a>
-    <link rel="stylesheet" href="src/style.css" />
 
     <a id="camera-scroll"
       ><div>
@@ -31,8 +31,13 @@
       <span class="four">The future of education</span>
       <span class="five">starts with your experimentation.</span>
       <span class="six">explore your world though different dimensions.</span>
-      <span class="seven">connect your information, build knolegde and share your experience</span>
-      <span class="eight">Get to know new players intrested in the same content as you, Colonize planets, learn abour strategy, science and nature care, programming robots, </span>
+      <span class="seven"
+        >connect your information, build knolegde and share your
+        experience</span
+      >
+      <span class="eight"
+        >Get to know new players, Colonize planets, learn about strategy, science and nature care, programming robots,
+      </span>
       <span class="nine">Everthing using GRAPHS</span>
     </div>
 
@@ -86,40 +91,48 @@
     <script src="https://fonts.googleapis.com/css?family=Fredoka+One&amp;display=swap"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
+    <script src="https://fonts.googleapis.com/css?family=Fredoka+One&amp;display=swap"></script>
 
-    <script src="../src/index.js"></script>
+    <script src="src/index.js"></script>
 
     <script>
-      function adjustMixers(deltaY) {
-        const speed = deltaY > 0 ? 5 : -5;
-        const amount = clock.getDelta() * speed;
-        for (let i = 0; i < mixers.length; i++) {
-          mixers[i].update(amount);
-        }
+      document.querySelectorAll("body span").addEventListener("touchstart", f);
+      document.querySelectorAll("body span").addEventListener("touchend", f);
+      document.querySelectorAll("body span").addEventListener("touchmove", f);
 
-        function onMouseWheel(event) {
-          event.preventDefault();
-          adjustMixers(event.deltaY);
-        }
-
-        let lastY;
-        function onTouchStart(event) {
-          event.preventDefault();
-          lastY = event.touches[0].pageY;
-        }
-
-        function onTouchMove(event) {
-          event.preventDefault();
-          const currentY = event.touches[0].pageY;
-          const deltaY = currentY - lastY;
-          lastY = currentY;
-          adjustMixers(deltaY);
-        }
+      function f(ev) {
+        console.log(ev.touches, ev.type);
       }
+      // function adjustMixers(deltaY) {
+      //   const speed = deltaY > 0 ? 5 : -5;
+      //   const amount = clock.getDelta() * speed;
+      //   for (let i = 0; i < mixers.length; i++) {
+      //     mixers[i].update(amount);
+      //   }
 
-      window.addEventListener("wheel", onMouseWheel, { passive: false });
-      window.addEventListener("touchstart", onTouchStart, { passive: false });
-      window.addEventListener("touchmove", onTouchMove, { passive: false });
+      //   function onMouseWheel(event) {
+      //     event.preventDefault();
+      //     adjustMixers(event.deltaY);
+      //   }
+
+      //   let lastY;
+      //   function onTouchStart(event) {
+      //     event.preventDefault();
+      //     lastY = event.touches[0].pageY;
+      //   }
+
+      //   function onTouchMove(event) {
+      //     event.preventDefault();
+      //     const currentY = event.touches[0].pageY;
+      //     const deltaY = currentY - lastY;
+      //     lastY = currentY;
+      //     adjustMixers(deltaY);
+      //   }
+      // }
+
+      // window.addEventListener("wheel", onMouseWheel, { passive: false });
+      // window.addEventListener("touchstart", onTouchStart, { passive: false });
+      // window.addEventListener("touchmove", onTouchMove, { passive: false });
     </script>
   </body>
 </html>

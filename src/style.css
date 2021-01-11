@@ -1,4 +1,14 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed|Didact+Gothic");
+@font-face {
+  font-family: "Fredoka One";
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTlHGCac.woff2)
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
 html {
   box-sizing: border-box;
 }
@@ -14,8 +24,8 @@ body {
 
   overflow: hidden;
   height: 100%;
-  font-family: Arial;
-  font-family: "Didact Gothic", sans-serif;
+  /* font-family: Arial; */
+  /* font-family: "Didact Gothic", sans-serif; */
 
   background: #11cfe8; /* Old browsers */
   background: -moz-linear-gradient(
@@ -45,24 +55,25 @@ canvas {
 
 .text-animation {
   position: relative;
-  font-size: 80px;
-  font-weight: 600;
+  font-size: 50px;
+  font-weight: 60px;
   color: #eee;
   width: 100vw;
   height: 200px;
   text-align: center;
-  line-height: 200px;
-  overflow: hidden;
+  line-height: 100px;
   display: flex;
   justify-content: center;
   align-content: center;
   align-items: center;
   align-self: center;
+  margin: auto;
   top: 50%;
   bottom: 50%;
   z-index: 1;
 }
 .text-animation span {
+  font-family: "Fredoka One";
   position: absolute;
   top: 0;
   bottom: 0;
@@ -76,6 +87,9 @@ canvas {
   align-content: center;
   align-items: center;
   align-self: center;
+  margin: auto;
+  top: 50%;
+  bottom: 50%;
 }
 
 /* div {
