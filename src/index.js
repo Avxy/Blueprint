@@ -1,5 +1,6 @@
 //The future of education starts with your experimentation. explore your world though different dimensions. connect your information, build knolegde and share your experience
 
+
 var scene, camera, renderer, box;
 var clock, binormal, normal, tube, player, particle;
 var envMap;
@@ -85,11 +86,10 @@ function init() {
   window.addEventListener("resize", resize, false);
   //window.addEventListener("resize", resize, { passive: false });
   window.addEventListener("wheel", onWheel, { passive: false });
-  // window.addEventListener("touchstart", touch, {passive: false} );
+  window.addEventListener("touchstart", touch, {passive: false} );
 
   update();
 }
-
 
 function loadFont() {
   var loader = new THREE.FontLoader();
@@ -181,28 +181,13 @@ function initTimeline() {
     duration: options.durationOut,
     delay: options.delay
   });
-  timeline.add({
-    targets: ".text-animation",
-    opacity: 0,
-    duration: 500,
-    delay: 500
-  });
 
   timeline.add({
     targets: player.position,
     x: 0,
     y: 0,
-    z: -250,
-    duration: 4000,
-    update: camera.updateProjectionMatrix()
-  });
-
-  timeline.add({
-    targets: player.position,
-    x: 0,
-    y: 0,
-    z: 500,
-    duration: 4000,
+    z: 300,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -211,7 +196,7 @@ function initTimeline() {
     x: 10,
     y: 10,
     z: 10,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -220,7 +205,7 @@ function initTimeline() {
     x: 0.07,
     y: 0.07,
     z: 0.07,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -229,7 +214,7 @@ function initTimeline() {
     x: Math.PI / 2,
     y: Math.PI,
     z: (Math.PI * 3) / 2,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -238,7 +223,7 @@ function initTimeline() {
     x: 0,
     y: 0,
     z: 0,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
@@ -247,26 +232,47 @@ function initTimeline() {
     x: 0,
     y: 0,
     z: 0,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
-  // timeline.add({
-  //   targets: createText.position,
-  //   x: 0,
-  //   y: 0,
-  //   z: 200,
-  //   duration: 8000,
-  //   update: camera.updateProjectionMatrix()
-  // });
+  timeline.add({
+    targets: ".text-animation .four",
+    opacity: options.opacityIn,
+    scale: options.scaleIn,
+    duration: options.durationIn
+  });
+  timeline.add({
+    targets: ".text-animation .four",
+    opacity: 0,
+    scale: options.scaleOut,
+    easing: options.easing,
+    duration: options.durationOut,
+    delay: options.delay
+  });
 
   timeline.add({
     targets: bBox01.rotation,
     x: 0,
     y: Math.PI / 2,
     z: 0,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: ".text-animation .five",
+    opacity: options.opacityIn,
+    scale: options.scaleIn,
+    duration: options.durationIn
+  });
+  timeline.add({
+    targets: ".text-animation .five",
+    opacity: 0,
+    scale: options.scaleOut,
+    easing: options.easing,
+    duration: options.durationOut,
+    delay: options.delay
   });
 
   timeline.add({
@@ -274,8 +280,23 @@ function initTimeline() {
     x: 0,
     y: Math.PI,
     z: 0,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: ".text-animation .six",
+    opacity: options.opacityIn,
+    scale: options.scaleIn,
+    duration: options.durationIn
+  });
+  timeline.add({
+    targets: ".text-animation .six",
+    opacity: 0,
+    scale: options.scaleOut,
+    easing: options.easing,
+    duration: options.durationOut,
+    delay: options.delay
   });
 
   timeline.add({
@@ -283,8 +304,23 @@ function initTimeline() {
     x: 0,
     y: (Math.PI * 3) / 2,
     z: 0,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: ".text-animation .seven",
+    opacity: options.opacityIn,
+    scale: options.scaleIn,
+    duration: options.durationIn
+  });
+  timeline.add({
+    targets: ".text-animation .seven",
+    opacity: 0,
+    scale: options.scaleOut,
+    easing: options.easing,
+    duration: options.durationOut,
+    delay: options.delay
   });
 
   timeline.add({
@@ -292,44 +328,99 @@ function initTimeline() {
     x: 0,
     y: Math.PI * 2,
     z: 0,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
   timeline.add({
+    targets: ".text-animation .eight",
+    opacity: options.opacityIn,
+    scale: options.scaleIn,
+    duration: options.durationIn
+  });
+  timeline.add({
+    targets: ".text-animation .eight",
+    opacity: 0,
+    scale: options.scaleOut,
+    easing: options.easing,
+    duration: options.durationOut,
+    delay: options.delay
+  });
+    timeline.add({
     targets: bBox01.position,
     x: 0,
     y: -5000,
     z: 0,
-    duration: 4000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
-    targets: camera.position,
-    x: 0,
-    y: 300,
-    z: -100,
-    duration: 32000,
-    update: camera.updateProjectionMatrix()
-  });
-
-  timeline.add({
-    targets: player.rotation,
-    x: Math.PI * -1,
-    y: 0,
-    z: 0,
-    duration: 32000,
-    update: camera.updateProjectionMatrix()
-  });
+  // timeline.add({
+  //   targets: camera.position,
+  //   x: 0,
+  //   y: 300,
+  //   z: -100,
+  //   duration: 1000,
+  //   update: camera.updateProjectionMatrix()
+  // });
 
   timeline.add({
     targets: player.position,
     x: 0,
     y: 300,
     z: 0,
-    duration: 8000,
+    duration: 1000,
     update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: player.rotation,
+    x: Math.PI/4*-1,
+    y: 0,
+    z: 0,
+    duration: 1000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: player.position,
+    x: 0,
+    y: 0,
+    z: -140,
+    duration: 1000,
+    update: camera.updateProjectionMatrix()
+  });
+  timeline.add({
+    targets: iMesh.scale,
+    x: 1,
+    y: 1,
+    z: 1,
+    duration: 1000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: player.position,
+    x: 0,
+    y: -100,
+    z: -150,
+    duration: 1000,
+    update: camera.updateProjectionMatrix()
+  });
+
+  timeline.add({
+    targets: ".text-animation .nine",
+    opacity: options.opacityIn,
+    scale: options.scaleIn,
+    duration: options.durationIn
+  });
+  timeline.add({
+    targets: ".text-animation .nine",
+    opacity: 0,
+    scale: options.scaleOut,
+    easing: options.easing,
+    duration: options.durationOut,
+    delay: options.delay
   });
 
   //   timeline.add({
@@ -378,6 +469,20 @@ function onWheel(e) {
   var evt = _event;
   evt.deltaY = e.wheelDeltaY || e.deltaY * -1;
   // reduce by half the delta amount otherwise it scroll too fast
+  evt.deltaY *= 1;
+
+  scroll(e);
+}
+
+function touch(e) {
+  // for embedded demo
+  e.stopImmediatePropagation();
+  e.preventDefault();
+  e.stopPropagation();
+
+  var evt = _event;
+  evt.deltaY = e.wheelDeltaY || e.deltaY * -1;
+  // reduce by half the delta amount otherwise it scroll too fast
   evt.deltaY *= 5;
 
   scroll(e);
@@ -396,6 +501,8 @@ function scroll(e) {
   }
   scrollY = -evt.y;
 }
+
+
 
 function tubeMesh() {
   //Add meshes here
@@ -442,7 +549,7 @@ function objMesh() {
   bBox01 = new THREE.Mesh(
     new THREE.CubeGeometry(500, 500, 500),
     new THREE.MeshLambertMaterial({
-      color: 0xffffff,
+      color: "rgb(9,55,89)",
       side: THREE.DoubleSide
     })
   );
@@ -453,7 +560,7 @@ function objMesh() {
   bBox01.position.z = 0;
   scene.add(bBox01);
 
-  bPlane = new THREE.GridHelper(5000, 25);
+  bPlane = new THREE.GridHelper(5000, 42);
   bPlane.material.color = new THREE.Color("white");
   bPlane.rotateX(Math.PI / 2);
   bPlane.position.set(0, 0, -200);
@@ -696,7 +803,7 @@ function geod3() {
       //===================================================== add globe
       group = new THREE.Group();
       scene.add(group);
-      group.rotateX(Math.PI / 8);
+      group.rotateZ(Math.PI );
 
       var RADIUS = 140;
 
@@ -764,7 +871,7 @@ function geod3() {
           var end = new THREE.Vector3(x2, y2, z2);
 
           //points
-          var pointGeom = new THREE.SphereGeometry(10, 10, 10);
+          var pointGeom = new THREE.SphereGeometry(8, 8, 8);
           point = new THREE.Mesh(
             pointGeom,
             new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
@@ -783,8 +890,8 @@ function geod3() {
           group.add(point2);
 
           //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
-          const CURVE_MIN_ALTITUDE = 20;
-          const CURVE_MAX_ALTITUDE = 100;
+          const CURVE_MIN_ALTITUDE = 5;
+          const CURVE_MAX_ALTITUDE = 10;
           const altitude = clamp(
             start.distanceTo(end) * 0.75,
             CURVE_MIN_ALTITUDE,
@@ -820,6 +927,48 @@ function geod3() {
           });
           var curveObject = new THREE.Mesh(g, m);
           group.add(curveObject);
+
+
+          //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
+          const CURVE_MIN_ALTITUDE00 = -5;
+          const CURVE_MAX_ALTITUDE00 = -10;
+          const altitude00 = clamp(
+            start.distanceTo(end) * 0.75,
+            CURVE_MIN_ALTITUDE00,
+            CURVE_MAX_ALTITUDE00
+          );
+
+          //get the middle position of each location
+          // var lat = [startLng, startLat];
+          // var lng = [endLng, endLat];
+          // var geoInterpolator = d3.geoInterpolate(lat, lng);
+
+          // const midCoord1 = geoInterpolator(0.25);
+          // const midCoord2 = geoInterpolator(0.75);
+
+          const mid100 = coordinateToPosition(
+            midCoord1[1],
+            midCoord1[0],
+            RADIUS + altitude00
+          );
+          const mid200 = coordinateToPosition(
+            midCoord2[1],
+            midCoord2[0],
+            RADIUS + altitude00
+          );
+
+          //create bezier curve from the lng & lat positions
+          var curve00 = new THREE.CubicBezierCurve3(start, mid100, mid200, end);
+          var g00 = new THREE.TubeGeometry(curve00, 100, 0.35, 10, false);
+          var m00 = new THREE.MeshBasicMaterial({
+            color: new THREE.Color(
+              "hsl(" + Math.floor(Math.random() * 360) + ",50%,50%)"
+            )
+          });
+          var curveObject00 = new THREE.Mesh(g00, m00);
+          group.add(curveObject00);
+
+
         });
       } //end Destination()
 

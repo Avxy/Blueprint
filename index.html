@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="src/style.css" />
+    <link rel="stylesheet" href="../src/style.css" />
   </head>
   <body>
     <a id="camera-btn"
@@ -24,15 +24,20 @@
     </div> -->
 
     <!-- <section> -->
-      <div class="text-animation">
-        <span class="one">Ready</span>
-        <span class="two">Steady</span>
-        <span class="three">Go!</span>
-      </div>
-  
+    <div class="text-animation">
+      <span class="one">Ready</span>
+      <span class="two">Steady</span>
+      <span class="three">Go!</span>
+      <span class="four">The future of education</span>
+      <span class="five">starts with your experimentation.</span>
+      <span class="six">explore your world though different dimensions.</span>
+      <span class="seven">connect your information, build knolegde and share your experience</span>
+      <span class="eight">Get to know new players intrested in the same content as you, Colonize planets, learn abour strategy, science and nature care, programming robots, </span>
+      <span class="nine">Everthing using GRAPHS</span>
+    </div>
+
     <!-- </section> -->
 
-    
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-geo/1.9.1/d3-geo.min.js"></script>
@@ -81,7 +86,38 @@
     <script src="https://fonts.googleapis.com/css?family=Fredoka+One&amp;display=swap"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
-    
-    <script src="src/index.js"></script>
+
+    <script src="../src/index.js"></script>
+
+    <script>
+      function adjustMixers(deltaY) {
+        const speed = deltaY > 0 ? 5 : -5;
+        const amount = clock.getDelta() * speed;
+        for (let i = 0; i < mixers.length; i++) {
+          mixers[i].update(amount);
+        }
+
+        function onMouseWheel(event) {
+          event.preventDefault();
+          adjustMixers(event.deltaY);
+        }
+
+        let lastY;
+        function onTouchStart(event) {
+          event.preventDefault();
+          lastY = event.touches[0].pageY;
+        }
+
+        function onTouchMove(event) {
+          event.preventDefault();
+          const currentY = event.touches[0].pageY;
+          const deltaY = currentY - lastY;
+          lastY = currentY;
+          adjustMixers(deltaY);
+        }
+      }
+
+
+    </script>
   </body>
 </html>
