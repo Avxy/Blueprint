@@ -478,7 +478,7 @@ function onWheel(e) {
   var evt = _event;
   evt.deltaY = e.wheelDeltaY || e.deltaY * -1;
   // reduce by half the delta amount otherwise it scroll too fast
-  evt.deltaY *= 1;
+  evt.deltaY *= 5;
 
   scroll(e);
 }
@@ -532,7 +532,7 @@ function tubeMesh() {
 
 function objMesh() {
   cube = new THREE.Mesh(
-    new THREE.CubeGeometry(0.1, 10, 10),
+    new THREE.CubeGeometry(0.1, 0.1, 0.1),
     new THREE.MeshLambertMaterial({
       color: 0xffffff,
       side: THREE.DoubleSide
@@ -569,7 +569,7 @@ function objMesh() {
   bBox01.position.z = 0;
   scene.add(bBox01);
 
-  bPlane = new THREE.GridHelper(5000, 42);
+  bPlane = new THREE.GridHelper(5000, 37);
   bPlane.material.color = new THREE.Color("white");
   bPlane.rotateX(Math.PI / 2);
   bPlane.position.set(0, 0, -200);
@@ -626,7 +626,7 @@ function metaMesh() {
   const ballGeometry = new THREE.SphereBufferGeometry(10, 30, 30);
   iGroup = new THREE.Group();
   scene.add(iGroup);
-  const geometry = new THREE.IcosahedronBufferGeometry(2500, 1);
+  const geometry = new THREE.IcosahedronBufferGeometry(2010, 1);
   const mat = new THREE.MeshBasicMaterial({ wireframe: true });
   iMesh = new THREE.Mesh(geometry, mat);
   scene.add(iMesh);
@@ -819,8 +819,8 @@ function geod3() {
       var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
       var sphereMaterial = new THREE.MeshPhongMaterial({
         //  map: mapTexture,
-        transparent: false,
-        opacity: 1,
+        transparent: true,
+        opacity: 0.8,
         color: "rgb(9,55,89)",
         side: THREE.DoubleSide
         // color: new THREE.Color({color:"rgb(9,108,144)"})
@@ -880,7 +880,7 @@ function geod3() {
           var end = new THREE.Vector3(x2, y2, z2);
 
           //points
-          var pointGeom = new THREE.SphereGeometry(8, 8, 8);
+          var pointGeom = new THREE.SphereGeometry(8, 15, 15);
           point = new THREE.Mesh(
             pointGeom,
             new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
