@@ -1,7 +1,10 @@
-//The future of education starts with your experimentation. explore your world though different dimensions. connect your information, build knolegde and share your experience
 
 
-var scene, camera, renderer, box;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera();
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+var sphereBox;
 var clock, binormal, normal, tube, player, particle;
 var envMap;
 var startTime = Date.now();
@@ -10,7 +13,7 @@ var _event = {
   y: 0,
   deltaY: 0
 };
-var timeline = null;
+var t1 = null;
 var percentage = 0;
 var point;
 var point2;
@@ -29,43 +32,48 @@ var controls;
 var playerPos;
 var t_mes;
 var text;
+var uniforms = {};
+//var uniforms;
+var tMeta = { begin: 0 };
+
+var planeGeometry, ballSound, ballGeometry, simplex, sound, analyser;
 
 init();
 
 function init() {
-  const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
-  scene = new THREE.Scene();
-  envMap = new THREE.CubeTextureLoader()
-    .setPath(`${assetPath}skybox1_`)
-    .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
-  //scene.background = envMap;
-  //scene.background = new THREE.Color(0xaaaaaa);
+  // const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
 
-  camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
+  // envMap = new THREE.CubeTextureLoader()
+  //   .setPath(`${assetPath}skybox1_`)
+  //   .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
+  // //scene.background = envMap;
+  // //scene.background = new THREE.Color(0xaaaaaa);
+
+  camera.fov = 60;
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.near = 0.1;
+  camera.far = 1000;
+
   camera.position.x = 0;
   camera.position.y = 0;
-  camera.position.z = 250;
-  camera.lookAt(0, 1.5, 0);
+  camera.position.z = 300;
+  camera.lookAt(0, 0, 0);
 
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  // renderer.antialias=true;
+  // renderer.alpha=true;
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
-  scene.add(ambient);
+  // const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
+  // scene.add(ambient);
 
   const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(1, 140, 200);
+  light.position.set(2, 500, 1000);
   scene.add(light);
 
-  const light00 = new THREE.DirectionalLight(0xffffff, 1);
-  light00.position.set(0, 0, 0);
-  scene.add(light00);
+  // const light00 = new THREE.DirectionalLight(0xffffff, 1);
+  // light00.position.set(0, 0, 0);
+  // scene.add(light00);
 
   clock = new THREE.Clock();
 
@@ -73,20 +81,39 @@ function init() {
 
   geod3();
   objMesh();
-  metaMesh();
+  //metaMesh();
   tubeMesh();
   playerCam();
-  initTimeline();
+  //initTimeline();
   loadFont();
+  //metaShader();
+  //metaSound();
   //textFF();
   // preload();
   // setupP5();
-  console.log();
 
   window.addEventListener("resize", resize, false);
-  //window.addEventListener("resize", resize, { passive: false });
+
   window.addEventListener("wheel", onWheel, { passive: false });
-  window.addEventListener("touchstart", touch, {passive: false} );
+
+  window.addEventListener("mousedown", onMouseDown, false);
+
+  //  // onWindowResize();
+  // if ('ontouchstart' in window){
+  //   document.addEventListener('mousemove', move);
+  // }else{
+  //   window.addEventListener( 'resize', onWindowResize, false );
+  //   document.addEventListener('touchmove', move);
+  // }
+
+  function move(evt) {
+    uniforms.u_mouse.value.x = evt.touches
+      ? evt.touches[0].clientX
+      : evt.clientX;
+    uniforms.u_mouse.value.y = evt.touches
+      ? evt.touches[0].clientY
+      : evt.clientY;
+  }
 
   update();
 }
@@ -114,7 +141,7 @@ function textMesh(font) {
   });
   textGeo.computeBoundingBox();
   textGeo.computeVertexNormals();
-  var cubeMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
+  var cubeMat = new THREE.MeshToonMaterial({ color: 0xffffff });
   text = new THREE.Mesh(textGeo, cubeMat);
   text.position.set(0, 250, -50);
   text.castShadow = true;
@@ -133,19 +160,19 @@ function initTimeline() {
     easing: "easeInExpo"
   };
   //timeline = anime.timeline({ loop: true });
-  timeline = anime.timeline({
+  t1 = anime.timeline({
     autoplay: false,
     duration: 64000,
-    easing: "easeOutSine"
+    easing: "linear"
   });
 
-  timeline.add({
+  t1.add({
     targets: ".text-animation .one",
     opacity: options.opacityIn,
     scale: options.scaleIn,
     duration: options.durationIn
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .one",
     opacity: 0,
     scale: options.scaleOut,
@@ -153,13 +180,13 @@ function initTimeline() {
     duration: options.durationOut,
     delay: options.delay
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .two",
     opacity: options.opacityIn,
     scale: options.scaleIn,
     duration: options.durationIn
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .two",
     opacity: 0,
     scale: options.scaleOut,
@@ -167,13 +194,13 @@ function initTimeline() {
     duration: options.durationOut,
     delay: options.delay
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .three",
     opacity: options.opacityIn,
     scale: options.scaleIn,
     duration: options.durationIn
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .three",
     opacity: 0,
     scale: options.scaleOut,
@@ -182,7 +209,7 @@ function initTimeline() {
     delay: options.delay
   });
 
-  timeline.add({
+  t1.add({
     targets: player.position,
     x: 0,
     y: 0,
@@ -191,7 +218,17 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  // t1.add({
+  //   targets: uniforms.u_time,
+  //   value: 1.0,
+  //   // y: 0,
+  //   // z: 0,
+  //   duration: 1000,
+  //   //update: uniforms.u_time.value += clock.getDelta()
+  //   update: uniforms.u_time = (uniforms)
+  //  });
+
+  t1.add({
     targets: bPlane.scale,
     x: 10,
     y: 10,
@@ -200,7 +237,7 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  t1.add({
     targets: iMesh.scale,
     x: 0.07,
     y: 0.07,
@@ -209,7 +246,7 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  t1.add({
     targets: iMesh.rotation,
     x: Math.PI / 2,
     y: Math.PI,
@@ -218,31 +255,38 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
-    targets: bBox01.position,
-    x: 0,
-    y: 0,
-    z: 0,
-    duration: 1000,
-    update: camera.updateProjectionMatrix()
-  });
+  // timeline.add({
+  //   targets: uniforms,
+  //   meta: 0.5,
+  //   duration: 1000,
+  //   //update: uniforms.meta.value = 1.0;
+  // });
 
-  timeline.add({
-    targets: bBox01.rotation,
-    x: 0,
-    y: 0,
-    z: 0,
-    duration: 1000,
-    update: camera.updateProjectionMatrix()
-  });
+  // timeline.add({
+  //   targets: bBox01.position,
+  //   x: 0,
+  //   y: 0,
+  //   z: 0,
+  //   duration: 1000,
+  //   update: camera.updateProjectionMatrix()
+  // });
 
-  timeline.add({
+  // timeline.add({
+  //   targets: bBox01.rotation,
+  //   x: 0,
+  //   y: 0,
+  //   z: 0,
+  //   duration: 1000,
+  //   update: camera.updateProjectionMatrix()
+  // });
+
+  t1.add({
     targets: ".text-animation .four",
     opacity: options.opacityIn,
     scale: options.scaleIn,
     duration: options.durationIn
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .four",
     opacity: 0,
     scale: options.scaleOut,
@@ -251,7 +295,7 @@ function initTimeline() {
     delay: options.delay
   });
 
-  timeline.add({
+  t1.add({
     targets: bBox01.rotation,
     x: 0,
     y: Math.PI / 2,
@@ -260,13 +304,13 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  t1.add({
     targets: ".text-animation .five",
     opacity: options.opacityIn,
     scale: options.scaleIn,
     duration: options.durationIn
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .five",
     opacity: 0,
     scale: options.scaleOut,
@@ -275,7 +319,7 @@ function initTimeline() {
     delay: options.delay
   });
 
-  timeline.add({
+  t1.add({
     targets: bBox01.rotation,
     x: 0,
     y: Math.PI,
@@ -284,13 +328,13 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  t1.add({
     targets: ".text-animation .six",
     opacity: options.opacityIn,
     scale: options.scaleIn,
     duration: options.durationIn
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .six",
     opacity: 0,
     scale: options.scaleOut,
@@ -299,7 +343,7 @@ function initTimeline() {
     delay: options.delay
   });
 
-  timeline.add({
+  t1.add({
     targets: bBox01.rotation,
     x: 0,
     y: (Math.PI * 3) / 2,
@@ -308,13 +352,13 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  t1.add({
     targets: ".text-animation .seven",
     opacity: options.opacityIn,
     scale: options.scaleIn,
     duration: options.durationIn
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .seven",
     opacity: 0,
     scale: options.scaleOut,
@@ -323,7 +367,7 @@ function initTimeline() {
     delay: options.delay
   });
 
-  timeline.add({
+  t1.add({
     targets: bBox01.rotation,
     x: 0,
     y: Math.PI * 2,
@@ -332,13 +376,13 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  t1.add({
     targets: ".text-animation .eight",
     opacity: options.opacityIn,
     scale: options.scaleIn,
     duration: options.durationIn
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .eight",
     opacity: 0,
     scale: options.scaleOut,
@@ -346,7 +390,7 @@ function initTimeline() {
     duration: options.durationOut,
     delay: options.delay
   });
-    timeline.add({
+  t1.add({
     targets: bBox01.position,
     x: 0,
     y: -5000,
@@ -364,7 +408,7 @@ function initTimeline() {
   //   update: camera.updateProjectionMatrix()
   // });
 
-  timeline.add({
+  t1.add({
     targets: player.position,
     x: 0,
     y: 300,
@@ -373,16 +417,16 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  t1.add({
     targets: player.rotation,
-    x: Math.PI/4*-1,
+    x: (Math.PI / 4) * -1,
     y: 0,
     z: 0,
     duration: 1000,
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  t1.add({
     targets: player.position,
     x: 0,
     y: 0,
@@ -390,7 +434,7 @@ function initTimeline() {
     duration: 1000,
     update: camera.updateProjectionMatrix()
   });
-  timeline.add({
+  t1.add({
     targets: iMesh.scale,
     x: 1,
     y: 1,
@@ -399,7 +443,7 @@ function initTimeline() {
     update: camera.updateProjectionMatrix()
   });
 
-  timeline.add({
+  t1.add({
     targets: player.position,
     x: 0,
     y: -100,
@@ -417,13 +461,13 @@ function initTimeline() {
   //   update: camera.updateProjectionMatrix()
   // });
 
-  timeline.add({
+  t1.add({
     targets: ".text-animation .nine",
     opacity: options.opacityIn,
     scale: options.scaleIn,
     duration: options.durationIn
   });
-  timeline.add({
+  t1.add({
     targets: ".text-animation .nine",
     opacity: 0,
     scale: options.scaleOut,
@@ -511,7 +555,184 @@ function scroll(e) {
   scrollY = -evt.y;
 }
 
+//sphere cube circle square
+function metaShader() {
+  const vshader = `
+    #include <noise>
 
+    uniform float u_time;
+    uniform float u_radius;
+    uniform float u_meta;
+    
+    float getDelta(){
+      return ((sin(u_time)+1.0)/2.0);
+    }
+    
+    void main() {
+      float delta = getDelta();
+    
+      vec3 v = normalize(position) * u_radius;
+      vec3 pos = mix(position, v, delta);
+
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 0.5 );
+    }
+    `;
+  const fshader = `
+    void main()
+    {
+      vec3 color = vec3(1.0);
+      gl_FragColor = vec4(color, 1.0);
+    }
+    `;
+
+  const geometry = new THREE.BoxGeometry(140, 140, 140, 10, 10, 10);
+  //const uniforms = {};
+  uniforms.u_time = { value: 0.0 };
+  uniforms.u_mouse = { value: { x: 0.0, y: 0.0 } };
+  uniforms.u_resolution = { value: { x: 0, y: 0 } };
+  uniforms.u_radius = { value: 40.0 };
+  uniforms.u_meta = { value: 0.0 };
+
+  // uniforms = {
+  //   u_time: {value: 0.0},
+  //   u_radius: {value: 70.0}
+  // }
+
+  const material = new THREE.ShaderMaterial({
+    uniforms: uniforms,
+    vertexShader: vshader,
+    fragmentShader: fshader,
+    wireframe: true
+  });
+
+  const ballSound = new THREE.Mesh(geometry, material);
+  scene.add(ballSound);
+}
+
+function metaSound() {
+  //plane
+  planeGeometry = new THREE.PlaneBufferGeometry(1000, 1000, 10, 10);
+  const material1 = new THREE.MeshToonMaterial({
+    color: 0xffffff,
+    wireframe: true
+  });
+
+  const plane = new THREE.Mesh(planeGeometry, material1);
+  plane.rotateX(-Math.PI / 3);
+  plane.position.set(0, -500, 0);
+  scene.add(plane);
+
+  //ball
+  ballGeometry = new THREE.IcosahedronBufferGeometry(200, 2);
+
+  const material2 = new THREE.MeshToonMaterial({
+    color: 0xffffff,
+    wireframe: true
+  });
+
+  ballSound = new THREE.Mesh(ballGeometry, material2);
+  //ballSound.position.y = 100;
+  scene.add(ballSound);
+
+  simplex = new SimplexNoise(4);
+}
+
+function playSound() {
+  listener = new THREE.AudioListener();
+  camera.add(listener);
+
+  sound = new THREE.Audio(listener);
+
+  const loader = new THREE.AudioLoader();
+  loader.setPath(assetsPath);
+  loader.load("against-the-odds.mp3", (buffer) => {
+    sound.setBuffer(buffer);
+    sound.play();
+  });
+
+  analyser = new THREE.AudioAnalyser(sound, 128);
+}
+
+function onMouseDown() {
+  if (sound) {
+    if (sound.isPlaying) {
+      sound.pause();
+    } else {
+      sound.play();
+    }
+  }
+}
+
+function updateGround(geometry, distortionFr, time) {
+  const position = geometry.getAttribute("position");
+  const amp = 0.1;
+  for (let i = 0; i < position.array.length; i += 3) {
+    const offset =
+      simplex.noise2D(
+        position.array[i] + time * 0.0003,
+        position.array[i + 1] + time * 0.0001
+      ) *
+      distortionFr *
+      amp;
+    position.array[i + 2] = offset;
+  }
+  position.needsUpdate = true;
+}
+
+function updateBall(geometry, baseFr, trebleFr, time) {
+  const amp = 0.08;
+  const rf = 0.01;
+  const radius = geometry.parameters.radius;
+  const position = geometry.getAttribute("position");
+
+  for (let i = 0; i < position.array.length; i += 3) {
+    const vertex = new THREE.Vector3(
+      position.array[i],
+      position.array[i + 1],
+      position.array[i + 2]
+    );
+    vertex.normalize();
+    const distance =
+      radius +
+      baseFr * amp * 0.5 +
+      simplex.noise3D(
+        vertex.x + time * rf,
+        vertex.y + time * rf,
+        vertex.z + time * rf
+      ) *
+        amp *
+        trebleFr;
+    vertex.multiplyScalar(distance);
+    position.array[i] = vertex.x;
+    position.array[i + 1] = vertex.y;
+    position.array[i + 2] = vertex.z;
+  }
+  position.needsUpdate = true;
+}
+
+//some helper functions here
+function fractionate(val, minVal, maxVal) {
+  return (val - minVal) / (maxVal - minVal);
+}
+
+function modulate(val, minVal, maxVal, outMin, outMax) {
+  var fr = fractionate(val, minVal, maxVal);
+  var delta = outMax - outMin;
+  return outMin + fr * delta;
+}
+
+function avg(arr) {
+  var total = arr.reduce(function (sum, b) {
+    return sum + b;
+  });
+  return total / arr.length;
+}
+
+function max(arr) {
+  return arr.reduce(function (a, b) {
+    return Math.max(a, b);
+  });
+}
 
 function tubeMesh() {
   //Add meshes here
@@ -533,7 +754,7 @@ function tubeMesh() {
 function objMesh() {
   cube = new THREE.Mesh(
     new THREE.CubeGeometry(0.1, 0.1, 0.1),
-    new THREE.MeshLambertMaterial({
+    new THREE.MeshToonMaterial({
       color: 0xffffff,
       side: THREE.DoubleSide
     })
@@ -545,7 +766,7 @@ function objMesh() {
 
   sphere = new THREE.Mesh(
     new THREE.SphereGeometry(0.1, 20, 15),
-    new THREE.MeshLambertMaterial({
+    new THREE.MeshToonMaterial({
       color: 0xffffff,
       side: THREE.DoubleSide
     })
@@ -557,7 +778,7 @@ function objMesh() {
 
   bBox01 = new THREE.Mesh(
     new THREE.CubeGeometry(500, 500, 500),
-    new THREE.MeshLambertMaterial({
+    new THREE.MeshToonMaterial({
       color: "rgb(9,55,89)",
       side: THREE.DoubleSide
     })
@@ -578,7 +799,7 @@ function objMesh() {
   particle = new THREE.Object3D();
   scene.add(particle);
   var geometry = new THREE.TetrahedronGeometry(2, 0);
-  var material = new THREE.MeshPhongMaterial({
+  var material = new THREE.MeshToonMaterial({
     color: 0xffffff,
     shading: THREE.FlatShading
   });
@@ -626,16 +847,18 @@ function metaMesh() {
   const ballGeometry = new THREE.SphereBufferGeometry(10, 30, 30);
   iGroup = new THREE.Group();
   scene.add(iGroup);
-  const geometry = new THREE.IcosahedronBufferGeometry(2010, 1);
-  const mat = new THREE.MeshBasicMaterial({ wireframe: true });
+  //const geometry = new THREE.IcosahedronBufferGeometry(2010, 1);
+  const geometry = new THREE.IcosahedronBufferGeometry(300, 1);
+  const mat = new THREE.MeshToonMaterial({ wireframe: true });
   iMesh = new THREE.Mesh(geometry, mat);
   scene.add(iMesh);
   const position = geometry.getAttribute("position");
   const normal = geometry.getAttribute("normal");
   for (let i = 0; i < position.array.length; i += 3) {
-    const color = new THREE.Color("blue");
-    const material = new THREE.MeshStandardMaterial({ color: color });
+    const color = new THREE.Color("skyblue");
+    const material = new THREE.MeshPhongMaterial({ color: color });
     const iBall = new THREE.Mesh(ballGeometry, material);
+    //const iBall = new THREE.Mesh(heartGeometry, material);
     const pos = new THREE.Vector3(
       position.array[i],
       position.array[i + 1],
@@ -649,7 +872,7 @@ function metaMesh() {
     iBall.position.copy(pos);
     const target = pos.clone().add(norm.multiplyScalar(10.0));
     iBall.lookAt(target);
-    //iGroup.add(iBall);
+    iGroup.add(iBall);
   }
 }
 
@@ -699,61 +922,105 @@ function geod3() {
   //===================================================== data
   const our_data = [
     {
-      origin: { name: "a", latitude: 10, longitude: -90 },
-      destination: { name: "a", latitude: 10, longitude: -90 }
-    },
-    {
-      origin: { name: "a", latitude: 10, longitude: -90 },
-      destination: { name: "a", latitude: 20, longitude: -100 }
-    },
-    {
-      origin: { name: "a", latitude: 20, longitude: -100 },
-      destination: { name: "a", latitude: 30, longitude: -80 }
-    },
-    {
-      origin: { name: "a", latitude: 30, longitude: -80 },
-      destination: { name: "a", latitude: 40, longitude: -80 }
-    },
-    {
-      origin: { name: "a", latitude: 40, longitude: -80 },
-      destination: { name: "a", latitude: 40, longitude: -90 }
-    },
-    {
-      origin: { name: "a", latitude: 40, longitude: -90 },
-      destination: { name: "a", latitude: 50, longitude: -100 }
-    },
-    {
-      origin: { name: "a", latitude: 40, longitude: -90 },
-      destination: { name: "a", latitude: 50, longitude: -70 }
-    },
-    {
-      origin: { name: "a", latitude: 50, longitude: -70 },
-      destination: { name: "a", latitude: 60, longitude: -60 }
-    },
-    {
-      origin: { name: "a", latitude: 50, longitude: -70 },
-      destination: { name: "a", latitude: 60, longitude: -90 }
-    },
-    {
-      origin: { name: "a", latitude: 60, longitude: -90 },
-      destination: { name: "a", latitude: 70, longitude: -100 }
-    },
-    {
-      origin: { name: "a", latitude: 70, longitude: -100 },
-      destination: { name: "a", latitude: 70, longitude: -120 }
-    },
-    {
-      origin: { name: "a", latitude: 70, longitude: -100 },
-      destination: { name: "a", latitude: 90, longitude: -110 }
-    },
-    {
-      origin: { name: "a", latitude: 70, longitude: -100 },
-      destination: { name: "a", latitude: 80, longitude: -90 }
-    },
-    {
-      origin: { name: "a", latitude: 80, longitude: -90 },
-      destination: { name: "a", latitude: 100, longitude: -100 }
+      origin: { name: "a", latitude: 90, longitude: 0 },
+      destination: { name: "a", latitude: -90, longitude: 0 }
     }
+
+    // {
+    //   origin: { name: "a", latitude: 60, longitude: 30 },
+    //   destination: { name: "a", latitude: 60, longitude: -30 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 30, longitude: 30 },
+    //   destination: { name: "a", latitude: 30, longitude: -30 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 0, longitude: 30 },
+    //   destination: { name: "a", latitude: 0, longitude: -30 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: -30, longitude: 30 },
+    //   destination: { name: "a", latitude: -30, longitude: -30 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: -60, longitude: 30 },
+    //   destination: { name: "a", latitude: -60, longitude: -30 }
+    // },
+
+    // {
+    //   origin: { name: "a", latitude: -60, longitude: 30 },
+    //   destination: { name: "a", latitude: -60, longitude: -30 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 0, longitude: 30 },
+    //   destination: { name: "a", latitude: 0, longitude: -30 }
+    // },
+
+    // {
+    //   origin: { name: "a", latitude: 0, longitude: 30 },
+    //   destination: { name: "a", latitude: 0, longitude: 180 }
+    // }
+
+    // {
+    //   origin: { name: "a", latitude: 0, longitude: 0 },
+    //   destination: { name: "a", latitude: 180, longitude: 0 }
+    // }
+    // {
+    //   origin: { name: "a", latitude: 10, longitude: -90 },
+    //   destination: { name: "a", latitude: 10, longitude: -90 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 10, longitude: -90 },
+    //   destination: { name: "a", latitude: 20, longitude: -100 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 20, longitude: -100 },
+    //   destination: { name: "a", latitude: 30, longitude: -80 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 30, longitude: -80 },
+    //   destination: { name: "a", latitude: 40, longitude: -80 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 40, longitude: -80 },
+    //   destination: { name: "a", latitude: 40, longitude: -90 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 40, longitude: -90 },
+    //   destination: { name: "a", latitude: 50, longitude: -100 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 40, longitude: -90 },
+    //   destination: { name: "a", latitude: 50, longitude: -70 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 50, longitude: -70 },
+    //   destination: { name: "a", latitude: 60, longitude: -60 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 50, longitude: -70 },
+    //   destination: { name: "a", latitude: 60, longitude: -90 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 60, longitude: -90 },
+    //   destination: { name: "a", latitude: 70, longitude: -100 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 70, longitude: -100 },
+    //   destination: { name: "a", latitude: 70, longitude: -120 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 70, longitude: -100 },
+    //   destination: { name: "a", latitude: 90, longitude: -110 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 70, longitude: -100 },
+    //   destination: { name: "a", latitude: 80, longitude: -90 }
+    // },
+    // {
+    //   origin: { name: "a", latitude: 80, longitude: -90 },
+    //   destination: { name: "a", latitude: 100, longitude: -100 }
+    // }
   ];
 
   //===================================================== helper functions
@@ -810,14 +1077,79 @@ function geod3() {
       mapTexture.needsUpdate = true;
 
       //===================================================== add globe
-      group = new THREE.Group();
+      //   <script id="vertexShader" type="x-shader/x-vertex">
+      //   varying vec3 vNormal;
+      //   void main()
+      //   {
+      //   vNormal = normalize( normalMatrix * normal );
+      //   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+      //   }
+      // </script>
+
+      // <!-- fragment shader a.k.a. pixel shader -->
+      // <script id="fragmentShader" type="x-shader/x-vertex">
+      //   varying vec3 vNormal;
+      //   void main()
+      //   {
+      //   float intensity = pow( 0.7 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), 4.0 );
+      //   gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 ) * intensity;
+      //   }
+      // </script>
+      group = new THREE.Object3D();
       scene.add(group);
-      group.rotateZ(Math.PI );
+      //group.rotateZ(Math.PI / 2);
+      group.rotateY(3 * (Math.PI / 2));
 
       var RADIUS = 140;
 
+      const vshader = `
+    #include <noise>
+
+    uniform float uTime;
+
+    varying float vNoise;
+
+    void main() {	
+      float noise = turbulence(position);
+      //float noise = turbulence(normal + uTime * 0.1);
+      //vNoise = turbulence(normal*0.9 + uTime * 0.01);
+      vec3 pos = position + normal * noise ;
+      //vec3 pos = position + normal * vNoise * 30.0;
+
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+    }
+    `;
+      const fshader = `
+    uniform sampler2D uTex;
+
+    varying float vNoise;
+    void main() {
+      vec2 uv = vec2(0.0, abs(fract(-vNoise*1.3)));
+      vec3 color = vec3(0.1,0.3,0.5);
+      //vec3 color = texture2D( uTex, uv ).bgr;
+
+      gl_FragColor = vec4( color, 1.0 );
+    }
+    `;
+      const geometry = new THREE.IcosahedronGeometry(150, 3);
+      uniforms = {
+        uTime: { value: 0.0 }
+        //uTex: { value: new THREE.TextureLoader().load("https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/explosion.png")}
+      };
+
+      const material = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: vshader,
+        fragmentShader: fshader,
+        wireframe: false
+      });
+      //sphere icosahedron shader
+      const ballNoise = new THREE.Mesh(geometry, material);
+      //scene.add(ballNoise);
+      //
+
       var sphereGeometry = new THREE.SphereGeometry(RADIUS, 60, 60);
-      var sphereMaterial = new THREE.MeshPhongMaterial({
+      var sphereMaterial = new THREE.MeshToonMaterial({
         //  map: mapTexture,
         transparent: true,
         opacity: 0.8,
@@ -826,7 +1158,6 @@ function geod3() {
         // color: new THREE.Color({color:"rgb(9,108,144)"})
       });
       var earthMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-      earthMesh.name = "earth";
       group.add(earthMesh);
 
       //===================================================== add glow effect to globe
@@ -880,14 +1211,14 @@ function geod3() {
           var end = new THREE.Vector3(x2, y2, z2);
 
           //points
-          var pointGeom = new THREE.SphereGeometry(8, 15, 15);
+          var pointGeom = new THREE.SphereGeometry(16, 15, 15);
           point = new THREE.Mesh(
             pointGeom,
-            new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
+            new THREE.MeshToonMaterial({ color: new THREE.Color("white") })
           );
           var point2 = new THREE.Mesh(
             pointGeom,
-            new THREE.MeshBasicMaterial({ color: new THREE.Color("white") })
+            new THREE.MeshToonMaterial({ color: new THREE.Color("white") })
           );
 
           //spaces out the points
@@ -899,8 +1230,8 @@ function geod3() {
           group.add(point2);
 
           //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
-          const CURVE_MIN_ALTITUDE = 5;
-          const CURVE_MAX_ALTITUDE = 10;
+          const CURVE_MIN_ALTITUDE = 13;
+          const CURVE_MAX_ALTITUDE = 21;
           const altitude = clamp(
             start.distanceTo(end) * 0.75,
             CURVE_MIN_ALTITUDE,
@@ -936,7 +1267,6 @@ function geod3() {
           });
           var curveObject = new THREE.Mesh(g, m);
           group.add(curveObject);
-
 
           //https://medium.com/@xiaoyangzhao/drawing-curves-on-webgl-globe-using-three-js-and-d3-draft-7e782ffd7ab
           const CURVE_MIN_ALTITUDE00 = -5;
@@ -976,12 +1306,13 @@ function geod3() {
           });
           var curveObject00 = new THREE.Mesh(g00, m00);
           group.add(curveObject00);
-
-
         });
       } //end Destination()
 
       Destination(our_data);
+
+      let om = group.clone();
+      group.om.postion.set(0, 100, 0);
 
       // //===================================================== add Animation
     }
@@ -991,7 +1322,8 @@ function geod3() {
 function playerCam() {
   //Add meshes here
   player = new THREE.Group();
-  player.position.set(140, 140, 0);
+  //player.position.set(140, 140, 0);
+  player.position.set(0, 0, 300);
   scene.add(player);
 
   // const bodyGeometry = new THREE.CylinderBufferGeometry(0.5, 0.3, 1.6, 20);
@@ -1170,7 +1502,28 @@ function update() {
   requestAnimationFrame(update);
   renderer.render(scene, camera);
   particle.rotation.y += 0.001;
-  group.rotation.x += 0.005;
+  //group.rotation.x += 0.005;
+  //if (uniforms.time!==undefined) uniforms.time.value += clock.getDelta();
+  //if (uniforms.meta!==undefined) uniforms.meta.value += tMeta;
+  //uniforms.u_time.value += clock.getDelta();
+  uniforms.uTime.value += clock.getDelta();
+
+  if (analyser) {
+    const divisor = 32;
+    const data = analyser.getFrequencyData();
+    const avgFr = analyser.getAverageFrequency();
+
+    // slice the array into two halves
+    const lowerHalfArray = data.slice(0, data.length / 2 - 1);
+    const upperHalfArray = data.slice(data.length / 2 - 1, data.length - 1);
+
+    const lowerAvgFr = avg(lowerHalfArray) / divisor;
+    const upperAvgFr = avg(upperHalfArray) / divisor;
+
+    updateGround(planeGeometry, modulate(avgFr, 0, divisor, 0.5, 3), time);
+
+    updateBall(ballGeometry, lowerAvgFr, upperAvgFr, time);
+  }
 
   render();
 }
@@ -1182,11 +1535,11 @@ function resize() {
 }
 
 function render() {
-  const dt = clock.getDelta();
+  //const dt = clock.getDelta();
 
   if (player.userData !== undefined && player.userData.move !== undefined) {
-    player.translateZ(player.userData.move.forward * dt * 5);
-    player.rotateY(player.userData.move.turn * dt);
+    player.translateZ(player.userData.move.forward * clock * 5);
+    player.rotateY(player.userData.move.turn * clock);
   }
 
   camera.position.lerp(
@@ -1200,6 +1553,6 @@ function render() {
   var dtime = Date.now() - startTime;
   // easing with treshold on 0.08 (should be between .14 & .2 for smooth animations)
   percentage = lerp(percentage, scrollY, 0.08);
-  timeline.seek(percentage * (64000 / maxHeight));
+  t1.seek(percentage * (64000 / maxHeight));
   //tube
 }
